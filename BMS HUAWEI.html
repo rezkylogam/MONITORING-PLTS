@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<!-- saved from url=(0061)https://fatkhurrr.github.io/lipo4Mon/index.html?id=1161843416 -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Modul Sakti Monitoring</title>
-  <script src="./BMS HUAWEI_files/saved_resource"></script>
-  <script src="./BMS HUAWEI_files/mqtt.min.js.download"></script>
-  <link rel="stylesheet" href="./BMS HUAWEI_files/all.min.css">
-  <link href="./BMS HUAWEI_files/css2" rel="stylesheet">
+  <title>BMS HUAWEI MONITORING</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #2563eb;
@@ -34,11 +34,11 @@
     body[data-theme="dark"] {
       --card-bg: #525252;
       --card-lapis: #222222;
-      --card-text: #dddddd;
-      --card-subtext: #cccccc;
+      --card-text: #ffffff;
+      --card-subtext: #ffffff;
       --icon-voltage: #f59e0b;
       --icon-current: #60a5fa;
-      background-color: #111827;
+      background-color: #000000;
       color: #f3f4f6;
     }
     
@@ -125,8 +125,8 @@
     }
     
     .led.active {
-      background: #10b981;
-      box-shadow: 0 0 8px #10b981;
+      background: #990000;
+      box-shadow: 0 0 8px #990000;
     }
     
     #id_monitoring_footer {
@@ -184,7 +184,7 @@
       <div class="bg-white/20 p-2 rounded-lg mr-3">
         <i class="fas fa-car-battery text-2xl"></i>
       </div>
-      <h1 class="text-2xl font-bold">LiFePo4 Monitoring</h1>
+      <h1 class="text-2xl font-bold">HUAWEI BMS MONITORING By Rezky Logam</h1>
     </div>
 
     <div class="flex items-center space-x-4">
@@ -225,10 +225,10 @@
 <main class="flex-1 p-4 sm:p-6 w-full">
   <div class="max-w-7xl mx-auto">
     <div class="mb-6 flex justify-between items-center">
-      <h2 class="text-xl font-semibold text-gray-500">Overall Summary</h2>
+      <h2 class="text-xl font-semibold text-white-900">BATERAI SISTEM 48V DC</h2>
       <div class="flex items-center gap-4">
-        <div class="text-sm text-gray-500">
-          <span id="total-batteries">7</span> batteries connected
+        <div class="text-lg text-white-1300">
+          <span id="total-batteries">7</span> Baterai Terkoneksi
         </div>
         <div class="sort-indicator" id="sortIndicator">
           <span>Sorted by: Type &amp; Address</span>
@@ -238,36 +238,42 @@
     </div>
 
     <!-- Summary Section -->
-    <div id="summarySection" class="mb-8">
-      <div class="summary-card rounded-xl shadow-sm p-5">
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
-          <div class="space-y-1">
-            <div class="text-gray-600">Avg Pack Voltage</div>
-            <div id="avg-voltage" class="font-semibold text-white-800">49.80 V</div>
-          </div>
-          <div class="space-y-1">
-            <div class="text-gray-600">Avg SOC</div>
-            <div id="avg-soc" class="font-semibold text-white-800">88.1%</div>
-          </div>
-          <div class="space-y-1">
-            <div class="text-gray-600">Avg SOH</div>
-            <div id="avg-soh" class="font-semibold text-white-800">100.0%</div>
-          </div>
-          <div class="space-y-1">
-            <div class="text-gray-600">Total Current</div>
-            <div id="total-current" class="font-semibold text-white-800">-14.63 A</div>
-          </div>
-          <div class="space-y-1">
-            <div class="text-gray-600">Total Power</div>
-            <div id="total-power" class="font-semibold text-white-800">-728.15 W</div>
+      <div id="summarySection" class="mb-8 hidden">
+        <h3 class="text-lg font-semibold text-light gray-850 mb-4">Ringkasan Keseluruhan</h3>
+        <div class="summary-card rounded-xl shadow-sm p-5">
+          <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-lg">
+            <div class="space-y-1">
+              <i class="fa fa-bolt" style="color: yellow;"></i>
+              <div class="text-light gray-1000">Total Tegangan</div>
+              <div id="avg-voltage" class="font-semibold text-white-1500">-</div>
+            </div>
+            <div class="space-y-1">
+              <i class="fa fa-battery-full" style="color: green;"></i>
+              <div class="text-light gray-1000">Total SOC</div>
+              <div id="avg-soc" class="font-semibold text-white-1500">-</div>
+            </div>
+            <div class="space-y-1">
+              <i class="fa fa-heart" style="color: blue;"></i>
+              <div class="text-light gray-1000">Total SOH</div>
+              <div id="avg-soh" class="font-semibold text-white-1500">-</div>
+            </div>
+            <div class="space-y-1">
+              <i class="fa fa-tachometer" style="color: orange;"></i>
+              <div class="text-light gray-1000">Total Arus</div>
+              <div id="total-current" class="font-semibold text-white-1500">-</div>
+            </div>
+            <div class="space-y-1">
+              <i class="fa fa-bolt" style="color: red;"></i>
+              <div class="text-light gray-1000">Total Daya</div>
+              <div id="total-power" class="font-semibold text-white-1500">-</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     
     <div id="batteryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"><div id="card-1161843416-HUAWEI-214" class="battery-card rounded-xl shadow-sm p-5 cursor-pointer hover:shadow-md fade-in" data-logger-id="1161843416" data-addr="214" data-type-battery="HUAWEI">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-800">HUAWEI <span class="text-blue-600">#214 </span></h3>
+          <h3 class="text-lg font-semibold text-gray-800">HUAWEI B1 <span class="text-blue-600">#214 </span></h3>
           <div class="led" id="led-card-1161843416-HUAWEI-214"></div>
         </div>
         <div class="mb-4">
@@ -333,7 +339,7 @@
         </div>
       </div><div id="card-1161843416-HUAWEI-215" class="battery-card rounded-xl shadow-sm p-5 cursor-pointer hover:shadow-md fade-in" data-logger-id="1161843416" data-addr="215" data-type-battery="HUAWEI">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-800">HUAWEI <span class="text-blue-600">#215 </span></h3>
+          <h3 class="text-lg font-semibold text-gray-800">HUAWEI B1 <span class="text-blue-600">#215 </span></h3>
           <div class="led" id="led-card-1161843416-HUAWEI-215"></div>
         </div>
         <div class="mb-4">
@@ -399,7 +405,7 @@
         </div>
       </div><div id="card-1161843416-HUAWEI-216" class="battery-card rounded-xl shadow-sm p-5 cursor-pointer hover:shadow-md fade-in" data-logger-id="1161843416" data-addr="216" data-type-battery="HUAWEI">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-800">HUAWEI <span class="text-blue-600">#216 </span></h3>
+          <h3 class="text-lg font-semibold text-gray-800">HUAWEI B1 <span class="text-blue-600">#216 </span></h3>
           <div class="led" id="led-card-1161843416-HUAWEI-216"></div>
         </div>
         <div class="mb-4">
@@ -465,7 +471,7 @@
         </div>
       </div><div id="card-1161843416-HUAWEI-217" class="battery-card rounded-xl shadow-sm p-5 cursor-pointer hover:shadow-md fade-in" data-logger-id="1161843416" data-addr="217" data-type-battery="HUAWEI">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-800">HUAWEI <span class="text-blue-600">#217 </span></h3>
+          <h3 class="text-lg font-semibold text-gray-800">HUAWEI B1 <span class="text-blue-600">#217 </span></h3>
           <div class="led" id="led-card-1161843416-HUAWEI-217"></div>
         </div>
         <div class="mb-4">
@@ -531,7 +537,7 @@
         </div>
       </div><div id="card-1161843416-HUAWEI-218" class="battery-card rounded-xl shadow-sm p-5 cursor-pointer hover:shadow-md fade-in" data-logger-id="1161843416" data-addr="218" data-type-battery="HUAWEI">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-800">HUAWEI <span class="text-blue-600">#218 </span></h3>
+          <h3 class="text-lg font-semibold text-gray-800">HUAWEI B1 <span class="text-blue-600">#218 </span></h3>
           <div class="led" id="led-card-1161843416-HUAWEI-218"></div>
         </div>
         <div class="mb-4">
@@ -597,7 +603,7 @@
         </div>
       </div><div id="card-1161843416-HUAWEI-219" class="battery-card rounded-xl shadow-sm p-5 cursor-pointer hover:shadow-md fade-in" data-logger-id="1161843416" data-addr="219" data-type-battery="HUAWEI">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-800">HUAWEI <span class="text-blue-600">#219 </span></h3>
+          <h3 class="text-lg font-semibold text-gray-800">HUAWEI B1 <span class="text-blue-600">#219 </span></h3>
           <div class="led" id="led-card-1161843416-HUAWEI-219"></div>
         </div>
         <div class="mb-4">
@@ -663,7 +669,7 @@
         </div>
       </div><div id="card-1161843416-HUAWEI-220" class="battery-card rounded-xl shadow-sm p-5 cursor-pointer hover:shadow-md fade-in" data-logger-id="1161843416" data-addr="220" data-type-battery="HUAWEI">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-800">HUAWEI <span class="text-blue-600">#220 </span></h3>
+          <h3 class="text-lg font-semibold text-gray-800">HUAWEI U2 <span class="text-blue-600">#220 </span></h3>
           <div class="led" id="led-card-1161843416-HUAWEI-220"></div>
         </div>
         <div class="mb-4">
@@ -743,8 +749,8 @@
 <footer class="text-gray-300 py-4 w-full" style="background-color: #1f2937;">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center text-center">
     <div class="text-sm">
-      © 2025 BMS Monitor System |
-      <a href="https://wa.me/628972309993" class="no-underline hover:text-white">
+      © 2026-2027 BMS Monitoring Sistem |
+      <a href="https://wa.me/6285249402703" class="no-underline hover:text-white">
         Hubungi Developer
       </a>
       <label id="id_monitoring_footer" style="display:block;"> 🌐 192.168.8.6 📶-51 ▶️ </label>
