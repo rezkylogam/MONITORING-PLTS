@@ -1704,7 +1704,10 @@ if (targetEl) {
     observerModal.observe(targetEl, { childList: true, subtree: true, characterData: true });
 }
 
-setInterval(hitungModalHuaweiMetrics, 300);
+document.addEventListener("click", () => {
+    setTimeout(hitungModalHuaweiMetrics, 100);
+});
+
 </script>
 
 </body></html>
