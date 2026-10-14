@@ -910,57 +910,7 @@
       <label id="id_monitoring_footer" style="display:block;"> 🌐 192.168.8.6 📶-51 ▶️ </label>
     </div>
   </div>
-</footer>
-  <script>
-function kalkulasiHuaweiMetrics() {
-    const listBMS = [
-        "1161843416-HUAWEI-214",
-        "1161843416-HUAWEI-215",
-        "1161843416-HUAWEI-216",
-        "1161843416-HUAWEI-217",
-        "1161843416-HUAWEI-218",
-        "1161843416-HUAWEI-219",
-        "1161843416-HUAWEI-220"
-    ];
-
-    listBMS.forEach(id => {
-        try {
-            let txtVolt = document.getElementById(`voltage-${id}`)?.innerText || "0";
-            let txtCurr = document.getElementById(`current-${id}`)?.innerText || "0";
-            let txtPower = document.getElementById(`power-${id}`)?.innerText || "0";
-
-            let volt = parseFloat(txtVolt.replace(/[^\d.-]/g, ''));
-            let current = parseFloat(txtCurr.replace(/[^\d.-]/g, ''));
-            let packPower = parseFloat(txtPower.replace(/[^\d.-]/g, ''));
-
-            if (txtPower.includes("kW")) packPower = packPower * 1000;
-
-            let busVoltage = volt; 
-            if (current < 0) {
-                busVoltage = volt - 0.74; 
-            }
-
-            let busCurrent = current;
-            let busPower = busVoltage * busCurrent;
-            let lossPower = Math.abs(packPower - busPower);
-
-            if(document.getElementById(`buscurrent-${id}`)) {
-                document.getElementById(`buscurrent-${id}`).innerText = busCurrent.toFixed(2) + " A";
-            }
-            if(document.getElementById(`buspower-${id}`)) {
-                document.getElementById(`buspower-${id}`).innerText = busPower.toFixed(1) + " W";
-            }
-            if(document.getElementById(`losspower-${id}`)) {
-                document.getElementById(`losspower-${id}`).innerText = (current === 0 ? 0 : lossPower).toFixed(2) + " W";
-            }
-        } catch (e) {
-            console.log("Menunggu data...", e);
-        }
-    });
-}
-setInterval(kalkulasiHuaweiMetrics, 1000);
-</script>
-
+</footer
 
 <!-- Modal -->
 <div id="batteryModal" class="fixed inset-0 hidden bg-black/50 flex items-center justify-center z-50 p-4">
@@ -1040,21 +990,35 @@ setInterval(kalkulasiHuaweiMetrics, 1000);
         </div>
 
         <div class="space-y-4">
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h3 class="font-medium text-gray-700 mb-3 flex items-center">
-              <i class="fas fa-tachometer-alt text-blue-500 mr-2"></i> Current Metrics
-            </h3>
-            <div class="space-y-3">
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Pack Current</span>
-                <span class="font-semibold text-gray-800" id="modalCurrent"></span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Power</span>
-                <span class="font-semibold text-gray-800" id="modalPower"></span>
-              </div>
+    <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="font-medium text-gray-700 mb-3 flex items-center">
+            <i class="fas fa-tachometer-alt text-blue-500 mr-2"></i> Current Metrics
+        </h3>
+        <div class="space-y-3">
+            <div class="flex justify-between items-center">
+                <span class="text-gray-500">Pack Current</span>
+                <span id="modalCurrent" class="font-semibold text-gray-800">0.00 A</span>
             </div>
-          </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-500">Bus Current</span>
+                <span id="modalBusCurrent" class="font-semibold text-gray-800">0.00 A</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-500">Pack Power</span>
+                <span id="modalPower" class="font-semibold text-gray-800">0.0 W</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-500">Bus Power</span>
+                <span id="modalBusPower" class="font-semibold text-gray-800">0.0 W</span>
+            </div>
+            <div class="flex justify-between items-center text-red-500 font-medium">
+                <span class="text-gray-500">Loss Power</span>
+                <span id="modalLossPower" class="font-semibold">0.00 W</span>
+            </div>
+        </div>
+    </div>
+</div>
+
         </div>
       </div>
 
@@ -1688,5 +1652,59 @@ setInterval(kalkulasiHuaweiMetrics, 1000);
   });
 </script>
 
+<script>
+// Fungsi otomatis menghitung parameter Bus dan Loss Power khusus di dalam Modal pop-up
+function hitungModalHuaweiMetrics() {
+    const modal = document.getElementById("batteryModal");
+    // Hanya berjalan jika jendela modal sedang diklik aktif/terbuka oleh pengguna
+    if (!modal || modal.classList.contains("hidden")) return;
+
+    try {
+        let txtVolt = document.getElementById("modalVoltage")?.innerText || "0";
+        let txtCurr = document.getElementById("modalCurrent")?.innerText || "0";
+        let txtPower = document.getElementById("modalPower")?.innerText || "0";
+
+        let volt = parseFloat(txtVolt.replace(/[^\d.-]/g, ''));
+        let current = parseFloat(txtCurr.replace(/[^\d.-]/g, ''));
+        let packPower = parseFloat(txtPower.replace(/[^\d.-]/g, ''));
+
+        if (txtPower.includes("kW")) packPower = packPower * 1000;
+
+        // Formula penurunan tegangan sirkuit internal Huawei saat discharge (arus minus)
+        let busVoltage = volt;
+        if (current < 0) {
+            busVoltage = volt - 0.74;
+        }
+
+        let busCurrent = current;
+        let busPower = busVoltage * busCurrent;
+        let lossPower = Math.abs(packPower - busPower);
+
+        // Cetak angka metrik baru ke dalam kolom modal yang tadi kita buat
+        let elBusCurr = document.getElementById("modalBusCurrent");
+        let elBusPow = document.getElementById("modalBusPower");
+        let elLossPow = document.getElementById("modalLossPower");
+
+        if (elBusCurr) elBusCurr.innerText = busCurrent.toFixed(2) + " A";
+        if (elBusPow) elBusPow.innerText = busPower.toFixed(1) + " W";
+        if (elLossPow) elLossPow.innerText = (current === 0 ? 0 : lossPower).toFixed(2) + " W";
+
+    } catch (e) {
+        console.log("Menghubungkan data modal...", e);
+    }
+}
+
+// Mengunci tampilan modal agar nilainya langsung diperbarui setiap kali data utama berubah
+const observerModal = new MutationObserver(() => {
+    hitungModalHuaweiMetrics();
+});
+
+const targetEl = document.getElementById("batteryModal");
+if (targetEl) {
+    observerModal.observe(targetEl, { childList: true, subtree: true, characterData: true });
+}
+
+setInterval(hitungModalHuaweiMetrics, 300);
+</script>
 
 </body></html>
