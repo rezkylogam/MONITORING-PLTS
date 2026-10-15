@@ -843,23 +843,23 @@
             <div class="space-y-3">
               <div class="flex justify-between items-center">
                 <span class="text-gray-600">Pack Current</span>
-                <span class="font-semibold text-gray-800" id="modalCurrent"></span>
+                <span class="font-semibold text-gray-800" id="modalPackCurrent"></span>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-gray-600">Bus Current</span>
-                <span class="font-semibold text-gray-800" id="modalPower"></span>
+                <span class="font-semibold text-gray-800" id="modalBusCurrent"></span>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-gray-600">Pack Power</span>
-                <span class="font-semibold text-gray-800" id="modalPower"></span>
+                <span class="font-semibold text-gray-800" id="modalPackPower"></span>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-gray-600">Bus Power</span>
-                <span class="font-semibold text-gray-800" id="modalPower"></span>
+                <span class="font-semibold text-gray-800" id="modalBusPower"></span>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-gray-600">Loss Power</span>
-                <span class="font-semibold text-gray-800" id="modalPower"></span>
+                <span class="font-semibold text-gray-800" id="modalLossPower"></span>
               </div>
             </div>
           </div>
@@ -1294,20 +1294,40 @@
     const batt = batteries.find(b => b.loggerId === currentLoggerId && b.addr === currentAddr && b.typeBattery === currentTypeBattery);
     if (!batt) return;
 
-    document.getElementById("modalTitle").textContent = `${batt.typeBattery} #${batt.addr}`;
-    document.getElementById("modalSOC").textContent = `${batt.soc}%`;
-    document.getElementById("modalSOH").textContent = `${batt.soh}%`;
-    document.getElementById("modalCycles").textContent = batt.cycles;
-    document.getElementById("modalVoltage").textContent = `${batt.voltage} V`;
-    document.getElementById("modalBusVoltage").textContent = `${batt.busVoltage} V`;
-    document.getElementById("modalCurrent").textContent = `${batt.current} A`;
-    document.getElementById("modalCapacity").textContent = `${batt.capacity}`;
-    document.getElementById("modalRemaining").textContent = `${batt.remaining}`;
-    document.getElementById("modalLastUpdate").textContent = batt.time;
-    document.getElementById("modalcellmin").textContent = `${batt.cell_vmin} V`;
-    document.getElementById("modalcellmax").textContent = `${batt.cell_vmax} V`;
-    document.getElementById("modalcelldif").textContent = `${batt.cell_vdif} mV`;
-    document.getElementById("modalPower").textContent = `${batt.power} W`;
+    // --- POTONGAN KODE BARU UNTUK MENGISI POPUP MODAL ---
+document.getElementById("modalTitle").textContent = `${batt.typeBattery} #${batt.addr}`;
+document.getElementById("modalSOC").textContent = `${batt.soc}%`;
+document.getElementById("modalSOH").textContent = `${batt.soh}%`;
+document.getElementById("modalCycles").textContent = batt.cycles;
+
+// 1. Bagian Voltage Metrics
+document.getElementById("modalVoltage").textContent = `${batt.voltage} V`;
+document.getElementById("modalBusVoltage").textContent = `${batt.busVoltage} V`;
+document.getElementById("modalcellmin").textContent = `${batt.cell_vmin} V`;
+document.getElementById("modalcellmax").textContent = `${batt.cell_vmax} V`;
+document.getElementById("modalcelldif").textContent = `${batt.cell_vdif} mV`;
+
+// 2. Bagian Informasi Kapasitas & Waktu
+document.getElementById("modalCapacity").textContent = `${batt.capacity} Ah`;
+document.getElementById("modalRemaining").textContent = `${batt.remaining} Ah`;
+document.getElementById("modalLastUpdate").textContent = batt.time;
+
+// 3. Bagian CURRENT METRICS (Perbaikan Utama Anda)
+const packCurrent = parseFloat(batt.current) || 0;
+const busCurrent = parseFloat(batt.busCurrent) || 0; 
+
+// Menghitung Watt/Daya secara otomatis (Tegangan x Arus)
+const packPower = (parseFloat(batt.voltage) * packCurrent).toFixed(2);
+const busPower = (parseFloat(batt.busVoltage) * busCurrent).toFixed(2);
+const lossPower = Math.abs(busPower - packPower).toFixed(2);
+
+// Memasukkan angka hasil hitungan ke tampilan Layar/HTML
+document.getElementById("modalCurrent").textContent = `${packCurrent.toFixed(2)} A`;
+document.getElementById("modalBusCurrent").textContent = `${busCurrent.toFixed(2)} A`;
+document.getElementById("modalPackPower").textContent = `${packPower} W`;
+document.getElementById("modalBusPower").textContent = `${busPower} W`;
+document.getElementById("modalLossPower").textContent = `${lossPower} W`;
+
 
     document.getElementById("soc-progress").style.width = `${batt.soc}%`;
     document.getElementById("soh-progress").style.width = `${batt.soh}%`;
