@@ -25,11 +25,15 @@
     }
     
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--light);
-      color: var(--dark);
-      transition: background-color 0.3s, color 0.3s;
-    }
+    font-family: 'Inter', sans-serif;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('IMG_20261016_032811.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: var(--dark);
+    transition: background-color 0.3s, color 0.3s;
+}
     
     body[data-theme="dark"] {
       --card-bg: #525252;
