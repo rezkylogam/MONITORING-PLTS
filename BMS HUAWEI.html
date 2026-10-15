@@ -1291,26 +1291,46 @@
 
   function updateModal() {
     if (currentAddr === null || currentLoggerId === null || currentTypeBattery === null) return;
+
     const batt = batteries.find(b => b.loggerId === currentLoggerId && b.addr === currentAddr && b.typeBattery === currentTypeBattery);
     if (!batt) return;
 
+    // 1. Mengisi Informasi Judul dan Persentase Utama
     document.getElementById("modalTitle").textContent = `${batt.typeBattery} #${batt.addr}`;
     document.getElementById("modalSOC").textContent = `${batt.soc}%`;
     document.getElementById("modalSOH").textContent = `${batt.soh}%`;
     document.getElementById("modalCycles").textContent = batt.cycles;
+
+    // 2. Mengisi Data Voltage Metrics
     document.getElementById("modalVoltage").textContent = `${batt.voltage} V`;
-    document.getElementById("modalBusVoltage").textContent = `${batt.busVoltage} V`;
-    document.getElementById("modalCurrent").textContent = `${batt.current} A`;
-    document.getElementById("modalBusCurrent").textContent = `${batt.busCurrent} A`;
+    const busVolt = batt.busVoltage !== undefined ? batt.busVoltage : batt.voltage;
+    document.getElementById("modalBusVoltage").textContent = `${busVolt} V`;
+
+    // 3. Mengambil Data Arus (Current) & Mengamankan Nilai jika Kosong
+    const pCurrent = parseFloat(batt.current) || 0;
+    const bCurrent = batt.busCurrent !== undefined ? parseFloat(batt.busCurrent) : pCurrent;
+
+    // 4. Memasukkan Nilai ke Menu CURRENT METRICS
+    document.getElementById("modalCurrent").textContent = `${pCurrent.toFixed(2)} A`;
+    document.getElementById("modalBusCurrent").textContent = `${bCurrent.toFixed(2)} A`;
+
+    // 5. Mengisi Data Kapasitas dan Detail Cell Voltages
     document.getElementById("modalCapacity").textContent = `${batt.capacity}`;
     document.getElementById("modalRemaining").textContent = `${batt.remaining}`;
     document.getElementById("modalLastUpdate").textContent = batt.time;
     document.getElementById("modalcellmin").textContent = `${batt.cell_vmin} V`;
     document.getElementById("modalcellmax").textContent = `${batt.cell_vmax} V`;
     document.getElementById("modalcelldif").textContent = `${batt.cell_vdif} mV`;
-    document.getElementById("modalPower").textContent = `${batt.power} W`;
-    document.getElementById("modalBusPower").textContent = `${batt.busPower} W`;
-    document.getElementById("modalLossPower").textContent = `${batt.lossPower} W`;
+
+    // 6. Kalkulasi Otomatis untuk Nilai Power / Daya Watt (Tegangan x Arus)
+    const pPower = batt.power !== undefined ? parseFloat(batt.power) : (parseFloat(batt.voltage) * pCurrent);
+    const bPower = (parseFloat(busVolt) * bCurrent);
+    const lPower = Math.abs(bPower - pPower);
+
+    // 7. Memasukkan Hasil Hitungan Daya ke Layar Menu Modal
+    document.getElementById("modalPower").textContent = `${pPower.toFixed(2)} W`;
+    document.getElementById("modalBusPower").textContent = `${bPower.toFixed(2)} W`;
+    document.getElementById("modalLossPower").textContent = `${lPower.toFixed(2)} W`;
 
     document.getElementById("soc-progress").style.width = `${batt.soc}%`;
     document.getElementById("soh-progress").style.width = `${batt.soh}%`;
