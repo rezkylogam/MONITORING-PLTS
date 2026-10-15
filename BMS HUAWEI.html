@@ -1289,32 +1289,32 @@
     document.body.style.overflow = 'hidden';
   }
 
-  function updateModal() {
+function updateModal() {
     if (currentAddr === null || currentLoggerId === null || currentTypeBattery === null) return;
 
     const batt = batteries.find(b => b.loggerId === currentLoggerId && b.addr === currentAddr && b.typeBattery === currentTypeBattery);
     if (!batt) return;
 
-    // 1. Mengisi Informasi Judul, Persentase, dan Kapasitas Utama (Dengan Satuan Ah)
+    // 1. Mengisi Informasi Judul, Persentase, dan Kapasitas Utama (Disesuaikan variabel Huawei)
     document.getElementById("modalTitle").textContent = `${batt.typeBattery} #${batt.addr}`;
     document.getElementById("modalSOC").textContent = `${batt.soc}%`;
     document.getElementById("modalSOH").textContent = `${batt.soh}%`;
     document.getElementById("modalCycles").textContent = batt.cycles;
     
-    // Mengamankan nilai kapasitas jika data kosong dari MQTT agar tidak undefined
-    const capRemaining = batt.remaining !== undefined ? parseFloat(batt.remaining).toFixed(2) : "0.00";
-    const capFull = batt.capacity !== undefined ? parseFloat(batt.capacity).toFixed(2) : "0.00";
+    // Uji coba pencocokan nama variabel kapasitas khas BMS Huawei (remainCap / fullCap)
+    const capRemaining = batt.remainCap !== undefined ? parseFloat(batt.remainCap).toFixed(2) : (batt.remaining !== undefined ? parseFloat(batt.remaining).toFixed(2) : "0.00");
+    const capFull = batt.fullCap !== undefined ? parseFloat(batt.fullCap).toFixed(2) : (batt.capacity !== undefined ? parseFloat(batt.capacity).toFixed(2) : "0.00");
     
-    // Menampilkan ke kotak biru dan hijau di bagian atas dengan satuan Ah
-    document.getElementById("modalRemaining").textContent = `Remaining: ${capRemaining} Ah`;
-    document.getElementById("modalCapacity").textContent = `Full Capacity: ${capFull} Ah`;
+    // Memasukkan HANYA ANGKA saja ke HTML karena teks 'Remaining:' dan 'Ah' sudah ada di file HTML Anda
+    document.getElementById("modalRemaining").textContent = capRemaining;
+    document.getElementById("modalCapacity").textContent = capFull;
 
     // 2. Mengisi Data Voltage Metrics
     document.getElementById("modalVoltage").textContent = `${batt.voltage} V`;
     const busVolt = batt.busVoltage !== undefined ? batt.busVoltage : batt.voltage;
     document.getElementById("modalBusVoltage").textContent = `${busVolt} V`;
 
-    // 3. Mengambil Data Arus (Current) & Mengamankan Nilai jika Kosong
+    // 3. Mengambil Data Arus (Current)
     const pCurrent = parseFloat(batt.current) || 0;
     const bCurrent = batt.busCurrent !== undefined ? parseFloat(batt.busCurrent) : pCurrent;
 
