@@ -1301,6 +1301,7 @@
     document.getElementById("modalVoltage").textContent = `${batt.voltage} V`;
     document.getElementById("modalBusVoltage").textContent = `${batt.busVoltage} V`;
     document.getElementById("modalCurrent").textContent = `${batt.current} A`;
+    document.getElementById("modalBusCurrent").textContent = `${batt.busCurrent} A`;
     document.getElementById("modalCapacity").textContent = `${batt.capacity}`;
     document.getElementById("modalRemaining").textContent = `${batt.remaining}`;
     document.getElementById("modalLastUpdate").textContent = batt.time;
@@ -1308,6 +1309,8 @@
     document.getElementById("modalcellmax").textContent = `${batt.cell_vmax} V`;
     document.getElementById("modalcelldif").textContent = `${batt.cell_vdif} mV`;
     document.getElementById("modalPower").textContent = `${batt.power} W`;
+    document.getElementById("modalBusPower").textContent = `${batt.busPower} W`;
+    document.getElementById("modalLossPower").textContent = `${batt.lossPower} W`;
 
     document.getElementById("soc-progress").style.width = `${batt.soc}%`;
     document.getElementById("soh-progress").style.width = `${batt.soh}%`;
