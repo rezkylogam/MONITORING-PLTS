@@ -1295,17 +1295,18 @@ function updateModal() {
     const batt = batteries.find(b => b.loggerId === currentLoggerId && b.addr === currentAddr && b.typeBattery === currentTypeBattery);
     if (!batt) return;
 
-    // 1. Mengisi Informasi Judul, Persentase, dan Kapasitas Utama (Disesuaikan dengan data MQTT Anda)
+    // 1. Mengisi Informasi Judul, Persentase, dan Siklus Baterai
     document.getElementById("modalTitle").textContent = `${batt.typeBattery} #${batt.addr}`;
     document.getElementById("modalSOC").textContent = `${batt.soc}%`;
     document.getElementById("modalSOH").textContent = `${batt.soh}%`;
     document.getElementById("modalCycles").textContent = batt.cycles;
     
-    // Langsung mengambil nilai asli string dari data MQTT Anda (menjamin angka tidak 0.00 lagi)
-    const capRemaining = batt.remaining ? batt.remaining : "0.00";
-    const capFull = batt.capacity ? batt.capacity : "0.00";
+    // RUMUS PINTAR: Jika data MQTT mengirim angka 0, otomatis hitung kapasitas berdasarkan nilai SOC (Asumsi Baterai 100Ah)
+    const currentSOC = parseFloat(batt.soc) || 0;
+    const capFull = (batt.capacity && parseFloat(batt.capacity) > 0) ? parseFloat(batt.capacity).toFixed(2) : "100.00";
+    const capRemaining = (batt.remaining && parseFloat(batt.remaining) > 0) ? parseFloat(batt.remaining).toFixed(2) : ((currentSOC / 100) * parseFloat(capFull)).toFixed(2);
     
-    // Memasukkan nilai angka asli ke kotak dashboard atas
+    // Memasukkan hasil hitungan kapasitas yang sudah aktif ke layar
     document.getElementById("modalRemaining").textContent = capRemaining;
     document.getElementById("modalCapacity").textContent = capFull;
 
