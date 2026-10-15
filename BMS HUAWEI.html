@@ -1314,13 +1314,6 @@
 
     document.getElementById("soc-progress").style.width = `${batt.soc}%`;
     document.getElementById("soh-progress").style.width = `${batt.soh}%`;
-
-    const Current = parseFloat(batt.current) || 0;
-    const busCurrent = batt.busCurrent !== undefined ? parseFloat(batt.busCurrent) : busCurrent;
-
-    const Power = batt.power !== undefined ? parseFloat(batt.power) : (parseFloat(batt.voltage) * Current);
-    const busPower = (parseFloat(batt.busVoltage) * busCurrent);
-    const lossPower = Math.abs(busPower - Power);
     
     const socProgress = document.getElementById("soc-progress");
     const sohProgress = document.getElementById("soh-progress");
