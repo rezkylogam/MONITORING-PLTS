@@ -1295,17 +1295,17 @@ function updateModal() {
     const batt = batteries.find(b => b.loggerId === currentLoggerId && b.addr === currentAddr && b.typeBattery === currentTypeBattery);
     if (!batt) return;
 
-    // 1. Mengisi Informasi Judul, Persentase, dan Kapasitas Utama (Disesuaikan variabel Huawei)
+    // 1. Mengisi Informasi Judul, Persentase, dan Kapasitas Utama (Disesuaikan dengan data MQTT Anda)
     document.getElementById("modalTitle").textContent = `${batt.typeBattery} #${batt.addr}`;
     document.getElementById("modalSOC").textContent = `${batt.soc}%`;
     document.getElementById("modalSOH").textContent = `${batt.soh}%`;
     document.getElementById("modalCycles").textContent = batt.cycles;
     
-    // Uji coba pencocokan nama variabel kapasitas khas BMS Huawei (remainCap / fullCap)
-    const capRemaining = batt.remainCap !== undefined ? parseFloat(batt.remainCap).toFixed(2) : (batt.remaining !== undefined ? parseFloat(batt.remaining).toFixed(2) : "0.00");
-    const capFull = batt.fullCap !== undefined ? parseFloat(batt.fullCap).toFixed(2) : (batt.capacity !== undefined ? parseFloat(batt.capacity).toFixed(2) : "0.00");
+    // Langsung mengambil nilai asli string dari data MQTT Anda (menjamin angka tidak 0.00 lagi)
+    const capRemaining = batt.remaining ? batt.remaining : "0.00";
+    const capFull = batt.capacity ? batt.capacity : "0.00";
     
-    // Memasukkan HANYA ANGKA saja ke HTML karena teks 'Remaining:' dan 'Ah' sudah ada di file HTML Anda
+    // Memasukkan nilai angka asli ke kotak dashboard atas
     document.getElementById("modalRemaining").textContent = capRemaining;
     document.getElementById("modalCapacity").textContent = capFull;
 
