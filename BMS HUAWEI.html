@@ -1295,11 +1295,19 @@
     const batt = batteries.find(b => b.loggerId === currentLoggerId && b.addr === currentAddr && b.typeBattery === currentTypeBattery);
     if (!batt) return;
 
-    // 1. Mengisi Informasi Judul dan Persentase Utama
+    // 1. Mengisi Informasi Judul, Persentase, dan Kapasitas Utama (Dengan Satuan Ah)
     document.getElementById("modalTitle").textContent = `${batt.typeBattery} #${batt.addr}`;
     document.getElementById("modalSOC").textContent = `${batt.soc}%`;
     document.getElementById("modalSOH").textContent = `${batt.soh}%`;
     document.getElementById("modalCycles").textContent = batt.cycles;
+    
+    // Mengamankan nilai kapasitas jika data kosong dari MQTT agar tidak undefined
+    const capRemaining = batt.remaining !== undefined ? parseFloat(batt.remaining).toFixed(2) : "0.00";
+    const capFull = batt.capacity !== undefined ? parseFloat(batt.capacity).toFixed(2) : "0.00";
+    
+    // Menampilkan ke kotak biru dan hijau di bagian atas dengan satuan Ah
+    document.getElementById("modalRemaining").textContent = `Remaining: ${capRemaining} Ah`;
+    document.getElementById("modalCapacity").textContent = `Full Capacity: ${capFull} Ah`;
 
     // 2. Mengisi Data Voltage Metrics
     document.getElementById("modalVoltage").textContent = `${batt.voltage} V`;
@@ -1314,9 +1322,7 @@
     document.getElementById("modalCurrent").textContent = `${pCurrent.toFixed(2)} A`;
     document.getElementById("modalBusCurrent").textContent = `${bCurrent.toFixed(2)} A`;
 
-    // 5. Mengisi Data Kapasitas dan Detail Cell Voltages
-    document.getElementById("modalCapacity").textContent = `${batt.capacity}`;
-    document.getElementById("modalRemaining").textContent = `${batt.remaining}`;
+    // 5. Mengisi Detail Cell Voltages dan Waktu Update
     document.getElementById("modalLastUpdate").textContent = batt.time;
     document.getElementById("modalcellmin").textContent = `${batt.cell_vmin} V`;
     document.getElementById("modalcellmax").textContent = `${batt.cell_vmax} V`;
