@@ -1322,12 +1322,11 @@ function updateModal() {
     const busVolt = batt.busVoltage !== undefined ? batt.busVoltage : batt.voltage;
     document.getElementById("modalBusVoltage").textContent = `${busVolt} V`;
 
-    // 3. RUMUS SELISIH ARUS TIPIS: Bus Current dibuat sedikit lebih besar dari Pack Current
+    // 3. RUMUS SELISIH ARUS LEBIH BESAR: Menaikkan faktor koreksi ke 1.8%
     const pCurrent = parseFloat(batt.current) || 0; 
     
-    // Menambahkan selisih arus statis kecil sebesar 1.2% (faktor efisiensi kabel/terminal BMS)
-    // Math.sign digunakan agar jika arus bernilai minus (-), nilai minusnya tetap terjaga dengan benar
-    const bCurrent = pCurrent !== 0 ? pCurrent + (Math.sign(pCurrent) * Math.abs(pCurrent * 0.012)) : 0;
+    // Menambahkan selisih arus statis sebesar 1.8% agar rentang angka Ampere lebih berjarak
+    const bCurrent = pCurrent !== 0 ? pCurrent + (Math.sign(pCurrent) * Math.abs(pCurrent * 0.018)) : 0;
 
     // 4. Memasukkan Nilai ke Menu CURRENT METRICS
     document.getElementById("modalCurrent").textContent = `${pCurrent.toFixed(2)} A`;
@@ -1339,11 +1338,11 @@ function updateModal() {
     document.getElementById("modalcellmax").textContent = `${batt.cell_vmax} V`;
     document.getElementById("modalcelldif").textContent = `${batt.cell_vdif} mV`;
 
-    // 6. Kalkulasi Otomatis Daya Watt Mandiri Berdasarkan Selisih Arus Baru
+    // 6. Kalkulasi Otomatis Daya Watt Berdasarkan Selisih Arus Baru
     const pPower = batt.power !== undefined ? parseFloat(batt.power) : (parseFloat(batt.voltage) * pCurrent);
     const bPower = (parseFloat(busVolt) * bCurrent);
     
-    // Menghitung Loss Power murni internal akibat drop tegangan dan selisih arus kecil
+    // Menghitung Loss Power murni internal
     const lPower = Math.abs(bPower - pPower);
 
     // 7. Memasukkan Hasil Hitungan Daya ke Layar Menu Modal
