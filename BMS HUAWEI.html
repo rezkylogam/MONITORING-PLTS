@@ -1027,6 +1027,33 @@
     
     updateConnectionCount();
   }
+
+  // --- KODE GLOBAL ANTI-LAG MEMORI OTOMATIS ---
+function getQueryData() {
+    const params = new URLSearchParams(window.location.search);
+    let queryData = {};
+    for (const [key, value] of params.entries()) {
+        queryData[key] = value;
+    }
+    return queryData;
+}
+
+let queryData = getQueryData(); 
+let savedLogger = localStorage.getItem("savedLoggerId");
+let id_logger = queryData.id || savedLogger || "";
+
+    if (!id_logger) {
+        let userInput = prompt("Masukkan ID Logger:");
+        if (userInput && userInput.trim() !== "") {
+            id_logger = userInput.trim();
+            localStorage.setItem("savedLoggerId", userInput.trim()); // Mengunci ID di memori internal HP
+        } else {
+            alert("Error: Silakan reload halaman dan masukkan ID Logger!");
+        }
+    }
+
+// Menjalankan koneksi utama secara tunggal di awal
+startMQTT();
   
   function startMQTT(){
     client = mqtt.connect("wss://public.cloud.shiftr.io", {
@@ -1437,32 +1464,8 @@ function updateModal() {
         queryData[key] = value;
       }
       
-      id_logger = queryData.id;
-      
-      if(id_logger === undefined){
-        let userInput = prompt("Masukkan ID Logger:");
-        if (userInput === null || userInput.trim() === "") {
-          alert("Error: Please reload and input a value!");
-        } else {
-          id_logger = userInput;
-          startMQTT();
-          updateConnectionCount();
-        }
-      } else {
-        startMQTT();
-        updateConnectionCount();
-      }
-    } else {
-      let userInput = prompt("Masukkan ID Logger:");
-      if (userInput === null || userInput.trim() === "") {
-        alert("Error: Please reload and input a value!");
-      } else {
-        id_logger = userInput;
-        startMQTT();
-        updateConnectionCount();
-      }
-    }
-  };
+    id_logger = queryData.id;
+}
 </script>
 
 <script>
