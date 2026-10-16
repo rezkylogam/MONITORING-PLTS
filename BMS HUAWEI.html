@@ -1439,33 +1439,37 @@ function updateModal() {
       
       id_logger = queryData.id;
       
-      if(id_logger === undefined){
-        let userInput = prompt("Masukkan ID Logger:");
-        if (userInput === null || userInput.trim() === "") {
-          alert("Error: Please reload and input a value!");
-        } else {
-          id_logger = userInput;
-          startMQTT();
-          updateConnectionCount();
-        }
-      } else {
-        startMQTT();
-        updateConnectionCount();
-      }
-    } else {
-      let userInput = prompt("Masukkan ID Logger:");
-      if (userInput === null || userInput.trim() === "") {
-        alert("Error: Please reload and input a value!");
-      } else {
-        id_logger = userInput;
-        startMQTT();
-        updateConnectionCount();
-      }
-    }
-  };
-</script>
+          // Cek memori lokal apakah ID Logger sudah pernah disimpan sebelumnya
+    let savedLogger = localStorage.getItem("savedLoggerId");
 
-<script>
+    if (id_logger === undefined || id_logger === null || id_logger === "") {
+        if (savedLogger) {
+            id_logger = savedLogger;
+            // Proteksi Anti-Lag: Hanya menjalankan MQTT jika belum terkoneksi
+            if (typeof client === 'undefined' || !client || !client.connected) {
+                startMQTT();
+                updateConnectionCount();
+            }
+        } else {
+            let userInput = prompt("Masukkan ID Logger:");
+            if (userInput === null || userInput.trim() === "") {
+                alert("Error: Please reload and input a value!");
+            } else {
+                id_logger = userInput;
+                localStorage.setItem("savedLoggerId", userInput);
+                if (typeof client === 'undefined' || !client || !client.connected) {
+                    startMQTT();
+                    updateConnectionCount();
+                }
+            }
+        }
+    } else {
+        if (typeof client === 'undefined' || !client || !client.connected) {
+            startMQTT();
+            updateConnectionCount();
+        }
+    }
+
   const btn = document.getElementById("settingsBtn");
   const menu = document.getElementById("dropdownMenu");
 
