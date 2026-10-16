@@ -1309,12 +1309,11 @@ function updateModal() {
     document.getElementById("modalSOH").textContent = `${batt.soh}%`;
     document.getElementById("modalCycles").textContent = batt.cycles;
     
-    // RUMUS PINTAR: Jika data MQTT mengirim angka 0, otomatis hitung kapasitas berdasarkan nilai SOC (Asumsi Baterai 100Ah)
+    // Rumus Kapasitas berdasarkan nilai SOC
     const currentSOC = parseFloat(batt.soc) || 0;
     const capFull = (batt.capacity && parseFloat(batt.capacity) > 0) ? parseFloat(batt.capacity).toFixed(2) : "100.00";
     const capRemaining = (batt.remaining && parseFloat(batt.remaining) > 0) ? parseFloat(batt.remaining).toFixed(2) : ((currentSOC / 100) * parseFloat(capFull)).toFixed(2);
     
-    // Memasukkan hasil hitungan kapasitas yang sudah aktif ke layar
     document.getElementById("modalRemaining").textContent = capRemaining;
     document.getElementById("modalCapacity").textContent = capFull;
 
@@ -1323,13 +1322,16 @@ function updateModal() {
     const busVolt = batt.busVoltage !== undefined ? batt.busVoltage : batt.voltage;
     document.getElementById("modalBusVoltage").textContent = `${busVolt} V`;
 
-    // 3. Mengambil Data Arus (Current)
-    const pCurrent = parseFloat(batt.current) || 0;
-    const bCurrent = batt.busCurrent !== undefined ? parseFloat(batt.busCurrent) : pCurrent;
+    // 3. RUMUS SOLUSI A: Menghitung Total Gabungan Arus Seluruh Baterai Aktif (Bus Current)
+    const pCurrent = parseFloat(batt.current) || 0; 
+    
+    const totalBusCurrent = batteries
+        .filter(b => b.loggerId === currentLoggerId && b.typeBattery === currentTypeBattery)
+        .reduce((sum, b) => sum + (parseFloat(b.current) || 0), 0);
 
     // 4. Memasukkan Nilai ke Menu CURRENT METRICS
     document.getElementById("modalCurrent").textContent = `${pCurrent.toFixed(2)} A`;
-    document.getElementById("modalBusCurrent").textContent = `${bCurrent.toFixed(2)} A`;
+    document.getElementById("modalBusCurrent").textContent = `${totalBusCurrent.toFixed(2)} A`;
 
     // 5. Mengisi Detail Cell Voltages dan Waktu Update
     document.getElementById("modalLastUpdate").textContent = batt.time;
@@ -1339,7 +1341,7 @@ function updateModal() {
 
     // 6. Kalkulasi Otomatis untuk Nilai Power / Daya Watt (Tegangan x Arus)
     const pPower = batt.power !== undefined ? parseFloat(batt.power) : (parseFloat(batt.voltage) * pCurrent);
-    const bPower = (parseFloat(busVolt) * bCurrent);
+    const bPower = (parseFloat(busVolt) * totalBusCurrent);
     const lPower = Math.abs(bPower - pPower);
 
     // 7. Memasukkan Hasil Hitungan Daya ke Layar Menu Modal
