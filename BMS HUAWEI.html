@@ -1439,28 +1439,33 @@ function updateModal() {
       
       id_logger = queryData.id;
       
-      if(id_logger === undefined){
-        let userInput = prompt("Masukkan ID Logger:");
-        if (userInput === null || userInput.trim() === "") {
-          alert("Error: Please reload and input a value!");
+          // Cek memori lokal apakah ID Logger sudah pernah disimpan sebelumnya
+    let savedLogger = localStorage.getItem("savedLoggerId");
+
+    if (id_logger === undefined || id_logger === null || id_logger === "") {
+        if (savedLogger) {
+            // Jika ada di memori, langsung pakai tanpa pop-up
+            id_logger = savedLogger;
+            startMQTT();
+            updateConnectionCount();
         } else {
-          id_logger = userInput;
-          startMQTT();
-          updateConnectionCount();
+            // Jika memori kosong, baru minta input via pop-up
+            let userInput = prompt("Masukkan ID Logger:");
+            if (userInput === null || userInput.trim() === "") {
+                alert("Error: Please reload and input a value!");
+            } else {
+                id_logger = userInput;
+                // Simpan inputan ke memori lokal browser agar permanen
+                localStorage.setItem("savedLoggerId", userInput);
+                startMQTT();
+                updateConnectionCount();
+            }
         }
-      } else {
-        startMQTT();
-        updateConnectionCount();
-      }
     } else {
-      let userInput = prompt("Masukkan ID Logger:");
-      if (userInput === null || userInput.trim() === "") {
-        alert("Error: Please reload and input a value!");
-      } else {
-        id_logger = userInput;
+        // Jika ID Logger ada di URL parameter, jalankan langsung
         startMQTT();
         updateConnectionCount();
-      }
+    }
     }
   };
 </script>
