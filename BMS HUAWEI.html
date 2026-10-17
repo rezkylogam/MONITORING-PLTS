@@ -1126,19 +1126,16 @@
     document.getElementById('total-batteries').textContent = batteries.length.toString();
     
     if (batteries.length === 0) {
-        setTimeout(() => {
-            if (batteries.length === 0) {
-                grid.classList.add('hidden');
-                emptyState.classList.remove('hidden');
-                summarySection.classList.add('hidden');
-            }
-        }, 5000);
+      grid.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      summarySection.classList.add('hidden');
     } else {
-        grid.classList.remove('hidden');
-        emptyState.classList.add('hidden');
-        summarySection.classList.remove('hidden');
+      grid.classList.remove('hidden');
+      emptyState.classList.add('hidden');
+      summarySection.classList.remove('hidden');
     }
-
+  }
+  
   function removeBatteryFromArray(loggerId, typeBattery, addr) {
     batteries = batteries.filter(b => !(b.loggerId === loggerId && b.typeBattery === typeBattery && b.addr === addr));
     updateConnectionCount();
