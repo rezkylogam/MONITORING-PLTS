@@ -1096,7 +1096,7 @@
       loggerId: topic.split('/')[1],
       typeBattery: data.typeBattery,
       addr: data.AddrBattery,
-      soc: parseFloat(data.SOC).toFixed(2),
+      soc: ((parseFloat(data.rem_capacity) / parseFloat(data.full_capacity)) * 100).toFixed(2),
       soh: parseFloat(data.SOH).toFixed(2),
       voltage: data.bat_voltage.toFixed(2),
       busVoltage: data.bus_voltage.toFixed(2),
