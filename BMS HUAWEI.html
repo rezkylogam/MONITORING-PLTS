@@ -1096,7 +1096,7 @@
       loggerId: topic.split('/')[1],
       typeBattery: data.typeBattery,
       addr: data.AddrBattery,
-      soc: (function(){ let v = parseFloat(data.bat_voltage); if(!v || v < 20) return parseFloat(data.SOC).toFixed(2); let est = ((v - 37.50) / (53.60 - 37.50)) * 100; if(est > 100) est = 100; if(est < 0) est = 0; return est.toFixed(2); })(),
+      soc: (function(){ let v = parseFloat(data.bat_voltage); if(!v || v < 20) return parseFloat(data.SOC).toFixed(2); let est = ((v - 47.50) / (53.60 - 47.50)) * 100; if(est > 100) est = 100; if(est < 0) est = 0; return est.toFixed(2); })(),
       soh: parseFloat(data.SOH).toFixed(2),
       voltage: data.bat_voltage.toFixed(2),
       busVoltage: data.bus_voltage.toFixed(2),
