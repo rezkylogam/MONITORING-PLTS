@@ -929,9 +929,9 @@
             </div>
           </div>
         </div>
-        <div class="mt-4 pt-3 border-t border-gray-100 text-xs text-gray-500 flex justify-between">
-          <span>Cycles: ${batt.cycles}</span>
-          <span class="last-update"><i class="far fa-clock mr-1"></i>${batt.time}</span>
+        <div class="mt-4 pt-3 border-t border-gray-100 text-gray-500 flex justify-between items-center w-full">
+          <span class="text-lg font-bold">Cycles: ${batt.cycles}</span>
+          <span class="last-update text-lg font-bold flex items-center"><i class="far fa-clock mr-1.5"></i>${batt.time}</span>
         </div>
       `;
       card.onclick = () => openModal(batt.loggerId, batt.addr, batt.typeBattery);
