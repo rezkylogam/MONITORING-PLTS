@@ -1096,8 +1096,8 @@
       loggerId: topic.split('/')[1],
       typeBattery: data.typeBattery,
       addr: data.AddrBattery,
-      soc: data.SOC.toFixed(1),
-      soh: data.SOH.toFixed(1),
+      soc: parseFloat(data.SOC).toFixed(2),
+      soh: parseFloat(data.SOH).toFixed(2),
       voltage: data.bat_voltage.toFixed(2),
       busVoltage: data.bus_voltage.toFixed(2),
       current: data.bat_current.toFixed(2),
@@ -1217,8 +1217,8 @@
 
     const count = batteries.length;
     document.getElementById("avg-voltage").textContent = `${(totalVoltage / count).toFixed(2)} V`;
-    document.getElementById("avg-soc").textContent = `${(totalSoc / count).toFixed(1)}%`;
-    document.getElementById("avg-soh").textContent = `${(totalSoh / count).toFixed(1)}%`;
+    document.getElementById("avg-soc").textContent = `${(totalSoc / count).toFixed(2)}%`;
+    document.getElementById("avg-soh").textContent = `${(totalSoh / count).toFixed(2)}%`;
     document.getElementById("total-current").textContent = `${totalCurrent.toFixed(2)} A`;
     document.getElementById("total-power").textContent = `${totalPower.toFixed(2)} W`;
   }
