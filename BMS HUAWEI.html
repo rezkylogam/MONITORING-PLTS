@@ -1239,7 +1239,7 @@ function updateModal() {
     if (!batt) return;
 
     // 1. Mengisi Informasi Judul, Persentase, dan Siklus Baterai
-    document.getElementById("modalTitle").innerHTML = `HUAWEI B1 2025 &nbsp; <span class="text-sm font-normal text-blue-600">#${batt.addr}</span>`;
+    document.getElementById("modalTitle").innerHTML = `HUAWEI B1 2025 &nbsp; <span class="text-sm font-semibold text-black-800">#${batt.addr}</span>`;
     document.getElementById("modalSOC").textContent = `${batt.soc}%`;
     document.getElementById("modalSOH").textContent = `${batt.soh}%`;
     document.getElementById("modalCycles").textContent = batt.cycles;
