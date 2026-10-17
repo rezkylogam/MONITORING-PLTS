@@ -280,7 +280,7 @@
         </div>
       </div>
     
-    <div id="batteryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"><div id="card-1161843416-HUAWEI-214" class="battery-card rounded-xl shadow-sm p-5 cursor-pointer hover:shadow-md fade-in" data-logger-id="1161843416" data-addr="214" data-type-battery="HUAWEI">
+    <div id="batteryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5" style="display: none;">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-gray-800">HUAWEI <span class="text-blue-600">#214 </span></h3>
           <div class="led" id="led-card-1161843416-HUAWEI-214"></div>
@@ -706,7 +706,7 @@
   <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
     <div class="flex items-center justify-between px-6 py-4 border-b">
       <div class="flex items-center">
-        <div id="led-modal" class="w-3 h-3 rounded-full bg-#901010-300 mr-3"></div>
+        <div id="led-modal" class="w-3 h-3 rounded-full bg-maroon-300 mr-3"></div>
         <h2 id="modalTitle" class="text-xl font-semibold text-gray-800"></h2>
       </div>
       <button id="closeModal" class="text-gray-500 hover:text-gray-700">
@@ -1126,15 +1126,18 @@
     document.getElementById('total-batteries').textContent = batteries.length.toString();
     
     if (batteries.length === 0) {
-      grid.classList.add('hidden');
-      emptyState.classList.remove('hidden');
-      summarySection.classList.add('hidden');
+        setTimeout(() => {
+            if (batteries.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                summarySection.classList.add('hidden');
+            }
+        }, 5000);
     } else {
-      grid.classList.remove('hidden');
-      emptyState.classList.add('hidden');
-      summarySection.classList.remove('hidden');
+        grid.classList.remove('hidden');
+        emptyState.classList.add('hidden');
+        summarySection.classList.remove('hidden');
     }
-  }
 
   function removeBatteryFromArray(loggerId, typeBattery, addr) {
     batteries = batteries.filter(b => !(b.loggerId === loggerId && b.typeBattery === typeBattery && b.addr === addr));
