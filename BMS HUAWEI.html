@@ -875,10 +875,10 @@
         <div class="mb-4">
           <div class="flex justify-between items-center mb-1">
             <span class="text-sm font-semibold text-gray-800">SOC</span>
-            <span class="font-semibold" id="soc-value-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.soc}%</span>
+            <span class="font-semibold" id="soc-value-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.SOC}%</span>
           </div>
           <div class="progress-bar">
-            <div id="soc-bar-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="progress-fill" style="width: ${batt.soc}%"></div>
+            <div id="soc-bar-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="progress-fill" style="width: ${batt.SOC}%"></div>
           </div>
         </div>
         <div class="grid grid-cols-2 gap-5 text-sm">
@@ -1164,7 +1164,7 @@
     }
 
     // Update card yang sudah ada
-    document.getElementById(`soc-value-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).textContent = `${batt.soc}%`;
+    document.getElementById(`soc-value-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).textContent = `${batt.SOC}%`;
     let progressBar = document.getElementById(`soc-bar-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
     if (progressBar) {
     // 1. Update lebar bar sesuai persentase baterai
@@ -1227,7 +1227,7 @@
 
     batteries.forEach(batt => {
       totalVoltage += parseFloat(batt.voltage);
-      totalSoc += parseFloat(batt.soc);
+      totalSoc += parseFloat(batt.SOC);
       totalSoh += parseFloat(batt.soh);
       totalCurrent += parseFloat(batt.current);
       totalPower += parseFloat(batt.power);
