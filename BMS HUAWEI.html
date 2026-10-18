@@ -1143,6 +1143,13 @@
     // Setelah menghapus baterai, urutkan ulang
     sortBatteries();
   }
+  
+  function getSocColorClass(soc) {
+    let val = parseFloat(soc);
+    if (val <= 20) return 'bg-red-500';       // Merah jika baterai ≤ 20%
+    if (val <= 50) return 'bg-yellow-500';    // Kuning jika baterai 21% - 50%
+    return 'bg-green-500';                    // Hijau jika baterai > 50%
+  }
 
   function update_cards(batt) {
     let cardId = `card-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`;
@@ -1158,7 +1165,18 @@
 
     // Update card yang sudah ada
     document.getElementById(`soc-value-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).textContent = `${batt.soc}%`;
-    document.getElementById(`soc-bar-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).style.width = `${batt.soc}%`;
+    let progressBar = document.getElementById(`soc-bar-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
+    if (progressBar) {
+    // 1. Update lebar bar sesuai persentase baterai
+    progressBar.style.width = `${batt.SOC}%`;
+    
+    // 2. Bersihkan kelas warna bawaan Tailwind agar tidak bentrok
+    progressBar.classList.remove('bg-green-500', 'bg-yellow-500', 'bg-red-500', 'bg-blue-500');
+    
+    // 3. Pasang warna baru yang sesuai dengan kondisi SOC saat ini
+    let colorClass = getSocColorClass(batt.SOC);
+    progressBar.classList.add(colorClass);
+    }
     document.getElementById(`voltage-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).innerHTML = `${batt.voltage} V`;
     document.getElementById(`current-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).innerHTML = `${batt.current} A`;
     document.getElementById(`cellmin-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).innerHTML = `${batt.cell_vmin} V`;
