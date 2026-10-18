@@ -288,7 +288,7 @@
         <div class="mb-4">
           <div class="flex justify-between items-center mb-1">
             <span class="text-sm text-gray-600">SOC</span>
-            <span class="font-semibold" id="soc-value-1161843416-HUAWEI-214">83.0%</span>
+            <span class="font-semibold" id="soc-value-1161843416-HUAWEI-214">--%</span>
           </div>
           <div class="progress-bar">
             <div id="soc-bar-1161843416-HUAWEI-214" class="progress-fill bg-green-500" style="width: 83.0%"></div>
@@ -354,7 +354,7 @@
         <div class="mb-4">
           <div class="flex justify-between items-center mb-1">
             <span class="text-sm text-gray-600">SOC</span>
-            <span class="font-semibold" id="soc-value-1161843416-HUAWEI-215">95.0%</span>
+            <span class="font-semibold" id="soc-value-1161843416-HUAWEI-215">--%</span>
           </div>
           <div class="progress-bar">
             <div id="soc-bar-1161843416-HUAWEI-215" class="progress-fill bg-green-500" style="width: 95.0%"></div>
@@ -420,7 +420,7 @@
         <div class="mb-4">
           <div class="flex justify-between items-center mb-1">
             <span class="text-sm text-gray-600">SOC</span>
-            <span class="font-semibold" id="soc-value-1161843416-HUAWEI-216">92.0%</span>
+            <span class="font-semibold" id="soc-value-1161843416-HUAWEI-216">--%</span>
           </div>
           <div class="progress-bar">
             <div id="soc-bar-1161843416-HUAWEI-216" class="progress-fill bg-green-500" style="width: 92.0%"></div>
@@ -486,7 +486,7 @@
         <div class="mb-4">
           <div class="flex justify-between items-center mb-1">
             <span class="text-sm text-gray-600">SOC</span>
-            <span class="font-semibold" id="soc-value-1161843416-HUAWEI-217">85.0%</span>
+            <span class="font-semibold" id="soc-value-1161843416-HUAWEI-217">--%</span>
           </div>
           <div class="progress-bar">
             <div id="soc-bar-1161843416-HUAWEI-217" class="progress-fill bg-green-500" style="width: 85%;"></div>
@@ -552,7 +552,7 @@
         <div class="mb-4">
           <div class="flex justify-between items-center mb-1">
             <span class="text-sm text-gray-600">SOC</span>
-            <span class="font-semibold" id="soc-value-1161843416-HUAWEI-218">95.0%</span>
+            <span class="font-semibold" id="soc-value-1161843416-HUAWEI-218">--%</span>
           </div>
           <div class="progress-bar">
             <div id="soc-bar-1161843416-HUAWEI-218" class="progress-fill bg-green-500" style="width: 95.0%"></div>
@@ -618,7 +618,7 @@
         <div class="mb-4">
           <div class="flex justify-between items-center mb-1">
             <span class="text-sm text-gray-600">SOC</span>
-            <span class="font-semibold" id="soc-value-1161843416-HUAWEI-219">90.0%</span>
+            <span class="font-semibold" id="soc-value-1161843416-HUAWEI-219">--%</span>
           </div>
           <div class="progress-bar">
             <div id="soc-bar-1161843416-HUAWEI-219" class="progress-fill bg-green-500" style="width: 90.0%"></div>
@@ -1096,7 +1096,7 @@
       loggerId: topic.split('/')[1],
       typeBattery: data.typeBattery,
       addr: data.AddrBattery,
-      soc: (function(){ let v = parseFloat(data.bat_voltage); if(!v || v < 20) return parseFloat(data.SOC).toFixed(2); let est = ((v - 37.50) / (51.75 - 37.50)) * 99.50; if(est > 100) est = 100; if(est < 0) est = 0; return est.toFixed(2); })(),
+      soc: data.SOC !== undefined ? parseFloat(data.SOC).toFixed(2) : (data.remaining_capacity !== undefined ? parseFloat(data.remaining_capacity).toFixed(2) : "0.00"),
       soh: parseFloat(data.SOH).toFixed(2),
       voltage: data.bat_voltage.toFixed(2),
       busVoltage: data.bus_voltage.toFixed(2),
