@@ -1401,17 +1401,19 @@ function updateModal() {
   }
 
   window.onload = function() {
+    // 1. Ambil ID Logger dari URL terlebih dahulu
     const urlParams = new URLSearchParams(window.location.search);
     let idFromUrl = urlParams.get('id');
 
-    // Jika ada ID baru dari URL, timpa memori lama
     if (idFromUrl && idFromUrl.trim() !== "" && idFromUrl !== "null" && idFromUrl !== "undefined") {
         id_logger = idFromUrl.trim();
         localStorage.setItem('saved_logger_id', id_logger);
+    } else {
+        id_logger = localStorage.getItem('saved_logger_id');
     }
 
-    // Jika memori HP dan URL benar-benar kosong (awal instalasi), baru minta isi manual
-    if (!id_logger || id_logger.trim() === "" || id_logger === "null" || id_logger === "undefined") {
+    // 2. Jika memori kosong, baru minta input lewat pop-up
+    if (!id_logger || id_logger.trim() === "" || id_logger === "null" || id_logger === "undefined" || id_logger === "-") {
         let userInput = prompt("Masukkan ID Logger:");
         if (userInput === null || userInput.trim() === "") {
             alert("Error: Please reload and input a value!");
@@ -1421,11 +1423,15 @@ function updateModal() {
             localStorage.setItem('saved_logger_id', id_logger);
         }
     } else {
-        // Pastikan kembali memori terkunci aman
         localStorage.setItem('saved_logger_id', id_logger);
     }
 
-    // Jalankan monitoring baterai
+    // 3. AKTIFKAN INISIALISASI DATA (Perbaikan agar tidak lag/membeku)
+    sortBatteries();
+    reRenderAllCards();
+    updateSummary();
+
+    // 4. Jalankan koneksi MQTT
     startMQTT();
     updateConnectionCount();
     }
