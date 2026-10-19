@@ -820,7 +820,7 @@
 </div>
 
 <script>
-  let id_logger = "-";
+  let id_logger = localStorage.getItem('saved_logger_id') || "-";
   let client;
   let client2;
   let batteries = [];
@@ -1401,36 +1401,31 @@ function updateModal() {
   }
 
   window.onload = function() {
-    // 1. Ambil ID Logger dari URL terlebih dahulu
     const urlParams = new URLSearchParams(window.location.search);
     let idFromUrl = urlParams.get('id');
 
-    // Deklarasikan variabel id_logger secara resmi agar tidak ter-reset oleh sistem browser HP
-    if (idFromUrl && idFromUrl !== "null" && idFromUrl !== "undefined" && idFromUrl.trim() !== "") {
+    // Jika ada ID baru dari URL, timpa memori lama
+    if (idFromUrl && idFromUrl.trim() !== "" && idFromUrl !== "null" && idFromUrl !== "undefined") {
         id_logger = idFromUrl.trim();
         localStorage.setItem('saved_logger_id', id_logger);
-    } else {
-        // Jika URL kosong, paksa browser membaca dari memori internal HP
-        id_logger = localStorage.getItem('saved_logger_id');
     }
 
-    // 2. Validasi ketat jika data di URL maupun di memori HP benar-benar kosong
-    if (!id_logger || id_logger === "null" || id_logger === "undefined" || id_logger.trim() === "") {
+    // Jika memori HP dan URL benar-benar kosong (awal instalasi), baru minta isi manual
+    if (!id_logger || id_logger.trim() === "" || id_logger === "null" || id_logger === "undefined") {
         let userInput = prompt("Masukkan ID Logger:");
         if (userInput === null || userInput.trim() === "") {
             alert("Error: Please reload and input a value!");
             return;
         } else {
             id_logger = userInput.trim();
-            // Simpan secara permanen ke memori penyimpanan internal browser HP
             localStorage.setItem('saved_logger_id', id_logger);
         }
     } else {
-        // Jika sudah ada di memori, kunci ulang nilainya agar tidak lepas saat refresh
+        // Pastikan kembali memori terkunci aman
         localStorage.setItem('saved_logger_id', id_logger);
     }
 
-    // 3. Jalankan koneksi MQTT menggunakan ID yang sudah terkunci
+    // Jalankan monitoring baterai
     startMQTT();
     updateConnectionCount();
     }
