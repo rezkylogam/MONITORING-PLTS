@@ -1411,28 +1411,30 @@ function updateModal() {
       
       id_logger = queryData.id;
       
-      if(id_logger === undefined){
-        let userInput = prompt("Masukkan ID Logger:");
-        if (userInput === null || userInput.trim() === "") {
-          alert("Error: Please reload and input a value!");
-        } else {
-          id_logger = userInput;
-          startMQTT();
-          updateConnectionCount();
-        }
-      } else {
-        startMQTT();
-        updateConnectionCount();
+        if (id_logger === undefined || id_logger === null || id_logger === "") {
+      // Cek apakah ID sudah pernah tersimpan di memori HP
+      id_logger = localStorage.getItem('saved_logger_id');
+      
+      // Jika di memori HP masih kosong, baru minta isi manual lewat prompt
+      if (!id_logger) {
+          let userInput = prompt("Masukkan ID Logger:");
+          if (userInput === null || userInput.trim() === "") {
+              alert("Error: Please reload and input a value!");
+              return;
+          } else {
+              id_logger = userInput;
+              // Simpan hasil ketikan pertama kali ke memori HP
+              localStorage.setItem('saved_logger_id', id_logger);
+          }
       }
-    } else {
-      let userInput = prompt("Masukkan ID Logger:");
-      if (userInput === null || userInput.trim() === "") {
-        alert("Error: Please reload and input a value!");
-      } else {
-        id_logger = userInput;
-        startMQTT();
-        updateConnectionCount();
-      }
+  } else {
+      // Jika ID sudah ada dari URL query parameter, perbarui memori HP
+      localStorage.setItem('saved_logger_id', id_logger);
+  }
+  
+  // Jalankan MQTT setelah ID Logger dipastikan ada
+  startMQTT();
+  updateConnectionCount();
     }
   };
 </script>
