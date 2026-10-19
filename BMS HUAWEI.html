@@ -1401,37 +1401,33 @@ function updateModal() {
   }
 
   window.onload = function() {
-    const params = new URLSearchParams(window.location.search);
-    
-    if ([...params].length > 0) {
-      let queryData = {};
-      for (const [key, value] of params.entries()) {
-        queryData[key] = value;
-      }
-      
-      id_logger = queryData.id;
-      
-            // Pastikan jika id_logger berupa string kosong atau teks "null" akibat prompt sebelumnya, dibersihkan dulu
-    if (id_logger === undefined || id_logger === null || id_logger === "" || id_logger === "null" || id_logger === "undefined") {
-        id_logger = localStorage.getItem('saved_logger_id');
-        
-        if (!id_logger || id_logger === "null" || id_logger === "undefined") {
-            let userInput = prompt("Masukkan ID Logger:");
-            if (userInput === null || userInput.trim() === "") {
-                alert("Error: Please reload and input a value!");
-                return;
-            } else {
-                id_logger = userInput.trim();
-                localStorage.setItem('saved_logger_id', id_logger);
-            }
-        }
-    } else {
+    // 1. Ambil ID Logger dari URL terlebih dahulu
+    const urlParams = new URLSearchParams(window.location.search);
+    let idFromUrl = urlParams.get('id');
+
+    if (idFromUrl && idFromUrl !== "null" && idFromUrl !== "undefined" && idFromUrl.trim() !== "") {
+        // Jika ada ID di URL, simpan ke memori HP dan gunakan ID ini
+        id_logger = idFromUrl.trim();
         localStorage.setItem('saved_logger_id', id_logger);
+    } else {
+        // Jika di URL kosong, ambil ID yang sudah tersimpan di memori HP
+        id_logger = localStorage.getItem('saved_logger_id');
     }
-    
-    // Paksa simpan sekali lagi untuk memastikan memori HP tidak kosong
-    localStorage.setItem('saved_logger_id', id_logger);
-    
+
+    // 2. Jika di URL kosong DAN di memori HP juga kosong, baru minta input lewat pop-up
+    if (!id_logger || id_logger === "null" || id_logger === "undefined" || id_logger.trim() === "") {
+        let userInput = prompt("Masukkan ID Logger:");
+        if (userInput === null || userInput.trim() === "") {
+            alert("Error: Please reload and input a value!");
+            return;
+        } else {
+            id_logger = userInput.trim();
+            // Kunci hasil ketikan ke memori HP agar tidak hilang saat refresh
+            localStorage.setItem('saved_logger_id', id_logger);
+        }
+    }
+
+    // 3. Jalankan aplikasi menggunakan ID Logger yang sudah valid
     startMQTT();
     updateConnectionCount();
     }
