@@ -1411,30 +1411,29 @@ function updateModal() {
       
       id_logger = queryData.id;
       
-        if (id_logger === undefined || id_logger === null || id_logger === "") {
-      // Cek apakah ID sudah pernah tersimpan di memori HP
-      id_logger = localStorage.getItem('saved_logger_id');
-      
-      // Jika di memori HP masih kosong, baru minta isi manual lewat prompt
-      if (!id_logger) {
-          let userInput = prompt("Masukkan ID Logger:");
-          if (userInput === null || userInput.trim() === "") {
-              alert("Error: Please reload and input a value!");
-              return;
-          } else {
-              id_logger = userInput;
-              // Simpan hasil ketikan pertama kali ke memori HP
-              localStorage.setItem('saved_logger_id', id_logger);
-          }
-      }
-  } else {
-      // Jika ID sudah ada dari URL query parameter, perbarui memori HP
-      localStorage.setItem('saved_logger_id', id_logger);
-  }
-  
-  // Jalankan MQTT setelah ID Logger dipastikan ada
-  startMQTT();
-  updateConnectionCount();
+            // Pastikan jika id_logger berupa string kosong atau teks "null" akibat prompt sebelumnya, dibersihkan dulu
+    if (id_logger === undefined || id_logger === null || id_logger === "" || id_logger === "null" || id_logger === "undefined") {
+        id_logger = localStorage.getItem('saved_logger_id');
+        
+        if (!id_logger || id_logger === "null" || id_logger === "undefined") {
+            let userInput = prompt("Masukkan ID Logger:");
+            if (userInput === null || userInput.trim() === "") {
+                alert("Error: Please reload and input a value!");
+                return;
+            } else {
+                id_logger = userInput.trim();
+                localStorage.setItem('saved_logger_id', id_logger);
+            }
+        }
+    } else {
+        localStorage.setItem('saved_logger_id', id_logger);
+    }
+    
+    // Paksa simpan sekali lagi untuk memastikan memori HP tidak kosong
+    localStorage.setItem('saved_logger_id', id_logger);
+    
+    startMQTT();
+    updateConnectionCount();
     }
   };
 </script>
