@@ -863,7 +863,7 @@
 
       let card = document.createElement("div");
       card.id = cardId;
-      card.className = "battery-card rounded-xl shadow-sm p-5 cursor-pointer hover:shadow-md fade-in";
+      card.className = "battery-card rounded-xl shadow-sm p-5 cursor-pointer hover:shadow-md fade-in hidden";
       card.dataset.loggerId = batt.loggerId;
       card.dataset.addr = String(batt.addr);
       card.dataset.typeBattery = batt.typeBattery;
@@ -1207,6 +1207,11 @@
       }
       delete cardTimers[cardId];
     }, 30000);
+
+    let currentCard = document.getElementById(cardId);
+    if (currentCard) {
+        currentCard.classList.remove('hidden');
+    }
   }
 
   function updateSummary() {
