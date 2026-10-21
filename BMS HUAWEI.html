@@ -218,117 +218,15 @@
   </div>
 </header>
 
-  
-<div id="networkModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 hidden">
-  <div class="nm-modal-box">
-    
-    <div class="nm-header">
-      <div class="nm-header-title">
-        <i class="fas fa-network-wired"></i>
-        Device Modul Information
-      </div>
-      <button id="closeNetwork" class="nm-close-btn">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-
-    
-    <div class="nm-body">
-
-      
-      <div class="nm-section">
-        <div class="nm-section-title">
-          <i class="fas fa-microchip"></i> Device &amp; Memory
-        </div>
-        <div class="nm-row">
-          <span class="nm-label">IP Address</span>
-          <span id="dev-ip" class="nm-value">-</span>
-        </div>
-        <div class="nm-row">
-          <span class="nm-label">RSSI</span>
-          <span id="dev-rssi" class="nm-value">-</span>
-        </div>
-        <div class="nm-row">
-          <span class="nm-label">Free Heap</span>
-          <span id="dev-heap" class="nm-value">-</span>
-        </div>
-        <div class="nm-row">
-          <span class="nm-label">Max Alloc Heap</span>
-          <span id="dev-maxheap" class="nm-value" style="color:#22d3ee;">-</span>
-        </div>
-        <div class="nm-row">
-          <span class="nm-label">Heap Frag.</span>
-          <span id="dev-frag" class="nm-value">-</span>
-        </div>
-        <div class="nm-row">
-          <span class="nm-label">Uptime</span>
-          <span id="dev-uptime" class="nm-value">-</span>
-        </div>
-        <div class="nm-row">
-          <span class="nm-label">Loop </span>
-          <span id="dev-cc" class="nm-value">-</span>
-        </div>
-        <div class="nm-row">
-          <span class="nm-label">Firmware</span>
-          <span id="dev-fw" class="nm-value" style="font-size:0.72rem;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">-</span>
-        </div>
-      </div>
-
-      
-      <div class="nm-section">
-        <div class="nm-section-title">
-          <i class="fas fa-battery-three-quarters"></i> Battery Summary
-        </div>
-        <div style="text-align:center;padding:4px 0 10px;border-bottom:1px solid var(--nm-divider);">
-          <div style="font-size:0.7rem;color:var(--nm-label);margin-bottom:2px;">State of Charge</div>
-          <span id="sum-soc" class="nm-soc-big">-</span>
-        </div>
-        <div class="nm-row" style="margin-top:8px;">
-          <span class="nm-label">VBus / VPack</span>
-          <span id="sum-volt" class="nm-value">-</span>
-        </div>
-        <div class="nm-row">
-          <span class="nm-label">IBus / IPack</span>
-          <span id="sum-curr" class="nm-value">-</span>
-        </div>
-         <div class="nm-row">
-          <span class="nm-label">PBus / PPack</span>
-          <span id="sum-pwr" class="nm-value">-</span>
-        </div>
-        <div class="nm-row">
-          <span class="nm-label">Min / Max Cell</span>
-          <span id="sum-cell" class="nm-value">-</span>
-        </div>
-         <div class="nm-row">
-          <span class="nm-label">Delta Cell</span>
-          <span id="sum-delta" class="nm-value">-</span>
-        </div>
-        <div class="nm-row" style="margin-top:6px;padding-top:10px;border-top:1px solid var(--nm-divider);border-bottom:none;">
-          <span class="nm-label">Total BMS</span>
-          <span id="sum-count" class="nm-badge-count">-</span>
-        </div>
-      </div>
-
-      
-      <div class="nm-section" hidden="">
-        <div class="nm-section-title">
-          <i class="fas fa-sliders-h"></i> Settings
-        </div>
-        <div class="nm-row">
-          <span class="nm-label">Active Status</span>
-          <span id="set-active" class="nm-value">-</span>
-        </div>
-        <div class="nm-row">
-          <span class="nm-label">Baud Rate</span>
-          <span id="set-baud" class="nm-value">-</span>
-        </div>
-        <div class="nm-row">
-          <span class="nm-label">Verbose Mode</span>
-          <span id="set-verbose" class="nm-value">-</span>
-        </div>
-      </div>
-
-    </div>
+<!-- Modal Network -->
+<div id="networkModal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-lg shadow-lg w-96 p-6 relative">
+    <button id="closeNetwork" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+      ✖
+    </button>
+    <h2 class="text-xl font-bold mb-4">Network Info</h2>
+    <p id="network_ip" class="mb-2">IP Address: 192.168.50.5</p>
+    <p id="network_signal">Signal: -51</p>
   </div>
 </div>
 
