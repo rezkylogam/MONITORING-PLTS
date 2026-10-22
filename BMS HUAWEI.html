@@ -1334,15 +1334,29 @@ function updateModal() {
       const maxVal = parseFloat(batt.cell_vmax);
       const minVal = parseFloat(batt.cell_vmin);
 
-      // Logika baru untuk menyorot sel tertinggi (Merah) dan sel terendah (Kuning) secara presisi
+      // 1. Cek sel dengan tegangan tertinggi (Untuk monitoring Balancing)
       if (cellValue === maxVal && maxVal !== minVal) {
-          statusClass = "border-2 border-red-500 bg-red-50/60 text-red-900 shadow-[0_0_8px_rgba(59,130,246,0.4)]";
-      } else if (cellValue === minVal && maxVal !== minVal) {
-          statusClass = "border-2 border-yellow-500 bg-yellow-50/60 text-yellow-900 shadow-[0_0_8px_rgba(239,68,68,0.4)]";
-      } else if (cellValue < 3.2) {
-          statusClass = "border border-red-300 bg-red-50/20";
-      } else {
-          statusClass = "border border-black-200 bg-white text-black-700";
+          statusClass = "border border-blue-500 bg-blue-50/60 text-blue-900 shadow-[0_0_8px_rgba(59,130,246,0.4)]"; 
+      } 
+      // 2. Cek sel dengan tegangan terendah 
+      else if (cellValue === minVal && maxVal !== minVal) {
+        statusClass = "border border-amber-500 bg-amber-50/60 text-amber-900 shadow-[0_0_8px_rgba(245,158,11,0.4)]"; 
+      } 
+      // 3. Kondisi SANGAT KRITIS / KOSONG (Di bawah 3.0V) -> Baterai < 5%, wajib segera diputus/dicas
+      else if (cellValue < 3.0) {
+        statusClass = "border-2 border-red-600 bg-red-100 text-red-700 font-bold pulse-animation"; 
+      } 
+      // 4. Kondisi PERINGATAN / LEMAH (3.0V sampai 3.19V) -> Kapasitas tersisa sekitar 5% - 15%
+      else if (cellValue < 3.2) {
+        statusClass = "border border-red-400 bg-red-50 text-red-600"; 
+      } 
+      // 5. Kondisi NORMAL & SEHAT (3.2V sampai 3.6V) -> Area kerja utama LiFePO4
+      else if (cellValue <= 3.6) {
+        statusClass = "border border-gray-200 bg-white text-gray-700"; 
+      } 
+      // 6. Kondisi PENUH / OVERCHARGE PROTECTION (Di atas 3.6V) -> Sel mendekati batas atas 3.65V
+      else {
+        statusClass = "border border-green-500 bg-green-50 text-green-700 font-medium"; 
       }
 
       const cellBox = document.createElement("div");
