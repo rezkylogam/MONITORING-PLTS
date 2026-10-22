@@ -1334,11 +1334,11 @@ function updateModal() {
       const maxVal = parseFloat(batt.cell_vmax);
       const minVal = parseFloat(batt.cell_vmin);
 
-      // Logika baru untuk menyorot sel tertinggi (Biru) dan sel terendah (Merah) secara presisi
+      // Logika baru untuk menyorot sel tertinggi (Merah) dan sel terendah (Kuning) secara presisi
       if (cellValue === maxVal && maxVal !== minVal) {
-          statusClass = "border-2 border-blue-500 bg-blue-50/60 text-blue-900 shadow-[0_0_8px_rgba(59,130,246,0.4)]";
+          statusClass = "border-2 border-red-500 bg-blue-50/60 text-red-900 shadow-[0_0_8px_rgba(59,130,246,0.4)]";
       } else if (cellValue === minVal && maxVal !== minVal) {
-          statusClass = "border-2 border-red-500 bg-red-50/60 text-red-900 shadow-[0_0_8px_rgba(239,68,68,0.4)]";
+          statusClass = "border-2 border-yellow-500 bg-red-50/60 text-yellow-900 shadow-[0_0_8px_rgba(239,68,68,0.4)]";
       } else if (cellValue < 3.2) {
           statusClass = "border border-red-300 bg-red-50/20";
       } else {
