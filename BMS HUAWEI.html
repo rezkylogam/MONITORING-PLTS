@@ -165,7 +165,6 @@
     .summary-card {
     background-color: var(--card-bg);
     color: var(--card-text);
-    border-left: 5px solid var(--primary);
     backdrop-filter: blur(8px);          /* Pelindung angka ringkasan agar tidak silau */
     -webkit-backdrop-filter: blur(8px);  /* Dukungan browser Safari/Apple */
     }
@@ -249,7 +248,7 @@
     <!-- Summary Section -->
       <div id="summarySection" class="mb-8 hidden">
         <h3 class="text-lg font-semibold text-light gray-850 mb-4">Ringkasan Keseluruhan</h3>
-            <div class="summary-card rounded-xl shadow-sm p-5">
+            <div class="summary-card rounded-xl border border-gray-700/50 shadow-sm p-5">
       <!-- Grid diubah menjadi grid-cols-3 agar mengunci tampilan menjadi 3 kolom sejajar (2 Baris) -->
       <div class="grid grid-cols-3 gap-4 text-center justify-center text-lg">
         
