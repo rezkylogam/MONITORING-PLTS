@@ -1451,40 +1451,45 @@ function updateModal() {
 
   window.onload = function() {
     const params = new URLSearchParams(window.location.search);
+    let queryData = {};
     
-    if ([...params].length > 0) {
-      let queryData = {};
-      for (const [key, value] of params.entries()) {
+    for (const [key, value] of params.entries()) {
         queryData[key] = value;
-      }
-      
-      id_logger = queryData.id;
-      
-      if(id_logger === undefined){
-        let userInput = prompt("Masukkan ID Logger:");
-        if (userInput === null || userInput.trim() === "") {
-          alert("Error: Please reload and input a value!");
-        } else {
-          id_logger = userInput;
-          startMQTT();
-          updateConnectionCount();
-        }
-      } else {
-        startMQTT();
-        updateConnectionCount();
-      }
-    } else {
-      let userInput = prompt("Masukkan ID Logger:");
-      if (userInput === null || userInput.trim() === "") {
-        alert("Error: Please reload and input a value!");
-      } else {
-        id_logger = userInput;
-        startMQTT();
-        updateConnectionCount();
-      }
     }
-  };
-</script>
+    
+    id_logger = queryData.id;
+    
+    // 1. Cek apakah ada ID Logger dari URL Parameter
+    if (id_logger !== undefined && id_logger.trim() !== "") {
+        // Simpan ke localStorage agar sesi berikutnya tersimpan
+        localStorage.setItem("saved_id_logger", id_logger);
+        startMQTT();
+        updateConnectionCount();
+    } else {
+        // 2. Jika tidak ada di URL, cek apakah ada ID yang tersimpan di memori HP (localStorage)
+        let savedId = localStorage.getItem("saved_id_logger");
+        
+        if (savedId && savedId.trim() !== "") {
+            // Jika ada, langsung gunakan ID tersebut tanpa memunculkan prompt
+            id_logger = savedId;
+            startMQTT();
+            updateConnectionCount();
+        } else {
+            // 3. Jika benar-benar kosong (baru pertama kali instal/buka), baru munculkan prompt
+            let userInput = prompt("Masukkan ID Logger:");
+            if (userInput === null || userInput.trim() === "") {
+                alert("Error: Please reload and input a value!");
+            } else {
+                id_logger = userInput.trim();
+                // Simpan hasil input pertama kali ke memori HP
+                localStorage.setItem("saved_id_logger", id_logger);
+                startMQTT();
+                updateConnectionCount();
+            }
+          }
+        }
+      };
+    </script>
 
 <script>
   const btn = document.getElementById("settingsBtn");
