@@ -249,41 +249,58 @@
     <!-- Summary Section -->
       <div id="summarySection" class="mb-8 hidden">
         <h3 class="text-lg font-semibold text-light gray-850 mb-4">Ringkasan Keseluruhan</h3>
-        <div class="summary-card rounded-xl shadow-sm p-5">
-          <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-lg">
-            <div class="space-y-1 bg-white/5 p-2 rounded-lg">
-              <i class="fa fa-bolt" style="color: yellow;"></i>
-              <div class="text-light gray-1000">VOLTAGE</div>
-              <div id="avg-voltage" class="font-semibold text-white-1500">-</div>
-            </div>
-            <div class="space-y-1 bg-white/5 p-2 rounded-lg">
-              <i class="fa-battery-three-quarters" style="color: green;"></i>
-              <div class="text-light gray-1000">SOC</div>
-              <div id="avg-soc" class="font-semibold text-white-1500">-</div>
-            </div>
-            <div class="space-y-1 bg-white/5 p-2 rounded-lg">
-              <i class="fa fa-heartbeat" style="color: blue;"></i>
-              <div class="text-light gray-1000">SOH</div>
-              <div id="avg-soh" class="font-semibold text-white-1500">-</div>
-            </div>
-            <div class="space-y-1 bg-white/5 p-2 rounded-lg">
-              <i class="fa fa-tachometer-alt" style="color: blue;"></i>
-              <div class="text-light gray-1000">EFF</div>
-              <div id="avg-eff" class="font-semibold text-white-1500">-</div>
-            </div>
-            <div class="space-y-1 bg-white/5 p-2 rounded-lg">
-              <i class="fa fa-wave-square" style="color: orange;"></i>
-              <div class="text-light gray-1000">CURRENT</div>
-              <div id="total-current" class="font-semibold text-white-1500">-</div>
-            </div>
-            <div class="space-y-1 bg-white/5 p-2 rounded-lg">
-              <i class="fa-plug" style="color: red;"></i>
-              <div class="text-light gray-1000">POWER</div>
-              <div id="total-power" class="font-semibold text-white-1500">-</div>
-            </div>
-          </div>
+            <div class="summary-card rounded-xl shadow-sm p-5">
+      <!-- Grid diubah menjadi grid-cols-3 agar mengunci tampilan menjadi 3 kolom sejajar (2 Baris) -->
+      <div class="grid grid-cols-3 gap-4 text-center justify-center text-lg">
+        
+        <!-- ==================== BARIS 1 (ATAS) ==================== -->
+        
+        <!-- 1. SOC -->
+        <div class="space-y-1 bg-white/5 p-2 rounded-lg flex flex-col items-center justify-center">
+          <i class="fa fa-battery-three-quarters" style="color: green;"></i>
+          <div class="text-light gray-1000 text-xs font-medium uppercase tracking-wider">SOC</div>
+          <div id="avg-soc" class="font-semibold text-white-1500"></div>
+        </div>
+
+        <!-- 2. SOH -->
+        <div class="space-y-1 bg-white/5 p-2 rounded-lg flex flex-col items-center justify-center">
+          <i class="fa fa-heartbeat" style="color: blue;"></i>
+          <div class="text-light gray-1000 text-xs font-medium uppercase tracking-wider">SOH</div>
+          <div id="avg-soh" class="font-semibold text-white-1500"></div>
+        </div>
+
+        <!-- 3. EFF -->
+        <div class="space-y-1 bg-white/5 p-2 rounded-lg flex flex-col items-center justify-center">
+          <i class="fa fa-tachometer-alt" style="color: blue;"></i>
+          <div class="text-light gray-1000 text-xs font-medium uppercase tracking-wider">EFF</div>
+          <div id="avg-eff" class="font-semibold text-white-1500"></div>
+        </div>
+
+        <!-- ==================== BARIS 2 (BAWAH) ==================== -->
+
+        <!-- 4. VOLTAGE -->
+        <div class="space-y-1 bg-white/5 p-2 rounded-lg flex flex-col items-center justify-center">
+          <i class="fa fa-bolt" style="color: yellow;"></i>
+          <div class="text-light gray-1000 text-xs font-medium uppercase tracking-wider">VOLTAGE</div>
+          <div id="avg-voltage" class="font-semibold text-white-1500"></div>
+        </div>
+
+        <!-- 5. CURRENT -->
+        <div class="space-y-1 bg-white/5 p-2 rounded-lg flex flex-col items-center justify-center">
+          <i class="fa fa-wave-square" style="color: orange;"></i>
+          <div class="text-light gray-1000 text-xs font-medium uppercase tracking-wider">CURRENT</div>
+          <div id="total-current" class="font-semibold text-white-1500"></div>
+        </div>
+
+        <!-- 6. POWER -->
+        <div class="space-y-1 bg-white/5 p-2 rounded-lg flex flex-col items-center justify-center">
+          <i class="fa fa-plug" style="color: red;"></i>
+          <div class="text-light gray-1000 text-xs font-medium uppercase tracking-wider">POWER</div>
+          <div id="total-power" class="font-semibold text-white-1500"></div>
         </div>
       </div>
+    </div>
+  </div>
     
     <div id="batteryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"><div id="card-1161843416-HUAWEI-214" class="battery-card rounded-xl shadow-sm p-5 cursor-pointer hover:shadow-md fade-in" data-logger-id="1161843416" data-addr="214" data-type-battery="HUAWEI">
         <div class="flex items-center justify-between mb-4">
