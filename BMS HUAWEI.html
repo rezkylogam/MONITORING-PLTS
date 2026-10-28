@@ -266,6 +266,11 @@
               <div class="text-light gray-1000">SOH</div>
               <div id="avg-soh" class="font-semibold text-white-1500">-</div>
             </div>
+            <div class="space-y-1 bg-white/5 p-2 rounded-lg">
+              <i class="fas fa-tachometer-alt" style="color: blue;"></i>
+              <div class="text-light gray-1000">EFF</div>
+              <div id="avg-eff" class="font-semibold text-white-1500">-</div>
+            </div>
             <div class="space-y-1">
               <i class="fa fa-tachometer" style="color: orange;"></i>
               <div class="text-light gray-1000">CURRENT</div>
@@ -1216,12 +1221,13 @@
 
   function updateSummary() {
     if (batteries.length === 0) {
-      document.getElementById("avg-voltage").textContent = "-";
-      document.getElementById("avg-soc").textContent = "-";
-      document.getElementById("avg-soh").textContent = "-";
-      document.getElementById("total-current").textContent = "-";
-      document.getElementById("total-power").textContent = "-";
-      return;
+        document.getElementById("avg-voltage").textContent = "-";
+        document.getElementById("avg-soc").textContent = "-";
+        document.getElementById("avg-soh").textContent = "-";
+        document.getElementById("avg-eff").textContent = "-"; // Reset EFF
+        document.getElementById("total-current").textContent = "-";
+        document.getElementById("total-power").textContent = "-";
+        return;
     }
 
     let totalVoltage = 0;
@@ -1231,20 +1237,32 @@
     let totalPower = 0;
 
     batteries.forEach(batt => {
-      totalVoltage += parseFloat(batt.voltage);
-      totalSoc += parseFloat(batt.soc);
-      totalSoh += parseFloat(batt.soh);
-      totalCurrent += parseFloat(batt.current);
-      totalPower += parseFloat(batt.power);
+        totalVoltage += parseFloat(batt.voltage) || 0;
+        totalSoc += parseFloat(batt.soc) || 0;
+        totalSoh += parseFloat(batt.soh) || 0;
+        totalCurrent += parseFloat(batt.current) || 0;
+        totalPower += parseFloat(batt.power) || 0;
     });
 
     const count = batteries.length;
-    document.getElementById("avg-voltage").textContent = `${(totalVoltage / count).toFixed(2)} V`;
-    document.getElementById("avg-soc").textContent = `${(totalSoc / count).toFixed(2)}%`;
-    document.getElementById("avg-soh").textContent = `${(totalSoh / count).toFixed(2)}%`;
-    document.getElementById("total-current").textContent = `${totalCurrent.toFixed(2)} A`;
-    document.getElementById("total-power").textContent = `${totalPower.toFixed(2)} W`;
-  }
+    
+    // Hitung rata-rata dasar
+    let avgSoc = totalSoc / count;
+    let avgSoh = totalSoh / count;
+    
+    // Rumus Kalkulasi EFF (Efisiensi) 
+    // Mengikuti logika Gambar 2 (Jika SOH 97.4% & SOC 42.2% menghasilkan EFF sekitar 99.59%)
+    // Anda bisa menyesuaikan rumus ini sesuai dengan variabel parameter komunikasi asli dari MQTT Anda jika tersedia
+    let avgEff = 100 - ((100 - avgSoh) * (avgSoc / 100)); 
+
+    // Render ke HTML UI Ringkasan atas
+    document.getElementById("avg-voltage").textContent = (totalVoltage / count).toFixed(2) + " V";
+    document.getElementById("avg-soc").textContent = avgSoc.toFixed(1) + "%";
+    document.getElementById("avg-soh").textContent = avgSoh.toFixed(1) + "%";
+    document.getElementById("avg-eff").textContent = avgEff.toFixed(2) + " %"; // Tampilkan nilai EFF baru
+    document.getElementById("total-current").textContent = totalCurrent.toFixed(2) + " A";
+    document.getElementById("total-power").textContent = totalPower.toFixed(2) + " W";
+}
 
   function openModal(loggerId, addr, typeBattery) {
     currentLoggerId = loggerId;
