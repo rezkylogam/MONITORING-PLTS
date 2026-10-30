@@ -1088,20 +1088,13 @@ function updateModal() {
             } else {
                 id_logger = userInput.trim();
                 localStorage.setItem("saved_id_logger", id_logger);
+                speakWelcome();
                 startMQTT();
-                updateConnectionCount();
-                
+                updateConnectionCount();  
             }
           }
         }
       };
-    document.body.addEventListener('click', function() {
-      speakWelcome();
-  }, { once: true });
-
-   document.body.addEventListener('touchstart', function() {
-      speakWelcome();
-   }, { once: true });
     </script>
 
 <script>
