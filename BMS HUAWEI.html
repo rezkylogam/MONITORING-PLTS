@@ -1163,21 +1163,9 @@ function updateModal() {
     if (jarvisVoice) mainUtterance.voice = jarvisVoice;
     mainUtterance.pitch = 0.82; // Dibuat lebih nge-bass dan berat
     mainUtterance.rate = 0.92;  // Kecepatan bicara yang tenang khas AI pintar
-    
-    // --- GELOMBANG SUARA KEDUA (Efek Gema Robotik/Baju Besi) ---
-    const echoUtterance = new SpeechSynthesisUtterance(text);
-    if (jarvisVoice) echoUtterance.voice = jarvisVoice;
-    echoUtterance.pitch = 0.75; // Lebih berat dari suara utama
-    echoUtterance.rate = 0.92;
-    echoUtterance.volume = 0.25; // Volume gema lebih pelan di latar belakang
 
     // Eksekusi suara utama
     window.speechSynthesis.speak(mainUtterance);
-    
-    // Beri jeda 40 milidetik lalu jalankan suara kedua untuk menciptakan efek gema Jarvis
-    setTimeout(() => {
-      window.speechSynthesis.speak(echoUtterance);
-    }, 40);
   }
 }
 
