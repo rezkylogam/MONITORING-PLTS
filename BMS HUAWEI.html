@@ -1088,7 +1088,6 @@ function updateModal() {
             } else {
                 id_logger = userInput.trim();
                 localStorage.setItem("saved_id_logger", id_logger);
-                speakWelcome();
                 startMQTT();
                 updateConnectionCount();  
             }
@@ -1156,13 +1155,22 @@ function updateModal() {
         // Pengaturan ala Jarvis / Robotik
         utterance.lang = 'en-US';  // Menggunakan bahasa Inggris agar pelafalan nama aplikasi terdengar pas
         utterance.pitch = 0.8;     // Diturunkan sedikit agar suara lebih nge-bass/cool seperti Jarvis
-        utterance.rate = 1.0;      // Kecepatan bicara normal
+        utterance.rate = 0.7;      // Kecepatan bicara normal
 
         // Eksekusi suara
         window.speechSynthesis.speak(utterance);
     }
 }
 
+// Pemicu suara setelah interaksi pertama pengguna
+function triggerVoiceAutoplay() {
+  speakWelcome();
+  document.removeEventListener('click', triggerVoiceAutoplay);
+  document.removeEventListener('touchstart', triggerVoiceAutoplay);
+  }
+  document.addEventListener('click', triggerVoiceAutoplay);
+  document.addEventListener('touchstart', triggerVoiceAutoplay);
+  
   function setTheme(theme) {
     body.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
