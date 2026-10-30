@@ -1155,15 +1155,20 @@ function updateModal() {
   const header = document.getElementById('mainHeader');
 
   function speakWelcome() {
+    // Mengecek apakah browser mendukung fitur Text-to-Speech
     if ('speechSynthesis' in window) {
         const text = "System online. Welcome to Huawei B M S Monitoring, by Rezky Logam";
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US';
         
-        // Menghapus baris pitch dan rate agar menggunakan setelan asli bawaan HP
+        // Pengaturan ala Jarvis / Robotik
+        utterance.lang = 'en-US';  // Menggunakan bahasa Inggris agar pelafalan nama aplikasi terdengar pas
+        utterance.pitch = 0.8;     // Diturunkan sedikit agar suara lebih nge-bass/cool seperti Jarvis
+        utterance.rate = 1.0;      // Kecepatan bicara normal
+
+        // Eksekusi suara
         window.speechSynthesis.speak(utterance);
     }
-  }
+}
 
   function setTheme(theme) {
     body.setAttribute('data-theme', theme);
