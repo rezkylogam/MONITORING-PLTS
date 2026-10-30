@@ -1149,13 +1149,13 @@ function updateModal() {
   function speakWelcome() {
     // Mengecek apakah browser mendukung fitur Text-to-Speech
     if ('speechSynthesis' in window) {
-        const text = "System online. Welcome to Huawei B M S Monitoring, by Rezky Logam";
+        const text = "Welcome, B M S Huawei Monitoring, by Rezky Logam";
         const utterance = new SpeechSynthesisUtterance(text);
         
         // Pengaturan ala Jarvis / Robotik
         utterance.lang = 'en-US';  // Menggunakan bahasa Inggris agar pelafalan nama aplikasi terdengar pas
         utterance.pitch = 0.8;     // Diturunkan sedikit agar suara lebih nge-bass/cool seperti Jarvis
-        utterance.rate = 0.7;      // Kecepatan bicara normal
+        utterance.rate = 0.5;      // Kecepatan bicara normal
 
         // Eksekusi suara
         window.speechSynthesis.speak(utterance);
