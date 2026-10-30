@@ -1166,17 +1166,7 @@ function triggerVoiceAutoplay() {
 
 document.addEventListener('click', triggerVoiceAutoplay);
 document.addEventListener('touchstart', triggerVoiceAutoplay);
-}
 
-// Pemicu suara setelah interaksi pertama pengguna
-function triggerVoiceAutoplay() {
-  speakWelcome();
-  document.removeEventListener('click', triggerVoiceAutoplay);
-  document.removeEventListener('touchstart', triggerVoiceAutoplay);
-  }
-  document.addEventListener('click', triggerVoiceAutoplay);
-  document.addEventListener('touchstart', triggerVoiceAutoplay);
-  
   function setTheme(theme) {
     body.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
