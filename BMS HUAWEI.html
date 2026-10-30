@@ -1070,7 +1070,7 @@ function updateModal() {
         localStorage.setItem("saved_id_logger", id_logger);
         startMQTT();
         updateConnectionCount();
-        speakWelcome(); // <--- TAMBAHKAN DI SINI
+      
     } else {
         // 2. Jika tidak ada di URL, cek memori HP
         let savedID = localStorage.getItem("saved_id_logger");
@@ -1079,7 +1079,7 @@ function updateModal() {
             id_logger = savedID;
             startMQTT();
             updateConnectionCount();
-            speakWelcome(); // <--- TAMBAHKAN DI SINI
+            
         } else {
             // 3. Jika benar-benar kosong, munculkan prompt
             let userInput = prompt("Masukkan ID Logger:");
@@ -1090,11 +1090,18 @@ function updateModal() {
                 localStorage.setItem("saved_id_logger", id_logger);
                 startMQTT();
                 updateConnectionCount();
-                speakWelcome(); // <--- TAMBAHKAN DI SINI
+                
             }
           }
         }
       };
+    document.body.addEventListener('click', function() {
+      speakWelcome();
+  }, { once: true });
+
+   document.body.addEventListener('touchstart', function() {
+      speakWelcome();
+   }, { once: true });
     </script>
 
 <script>
