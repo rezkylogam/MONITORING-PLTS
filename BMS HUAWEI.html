@@ -1058,39 +1058,39 @@ function updateModal() {
   window.onload = function() {
     const params = new URLSearchParams(window.location.search);
     let queryData = {};
-    
+
     for (const [key, value] of params.entries()) {
         queryData[key] = value;
     }
-    
+
     id_logger = queryData.id;
-    
+
     // 1. Cek apakah ada ID Logger dari URL Parameter
     if (id_logger !== undefined && id_logger.trim() !== "") {
-        // Simpan ke localStorage agar sesi berikutnya tersimpan
         localStorage.setItem("saved_id_logger", id_logger);
         startMQTT();
         updateConnectionCount();
+        speakWelcome(); // <--- TAMBAHKAN DI SINI
     } else {
-        // 2. Jika tidak ada di URL, cek apakah ada ID yang tersimpan di memori HP (localStorage)
-        let savedId = localStorage.getItem("saved_id_logger");
-        
-        if (savedId && savedId.trim() !== "") {
-            // Jika ada, langsung gunakan ID tersebut tanpa memunculkan prompt
-            id_logger = savedId;
+        // 2. Jika tidak ada di URL, cek memori HP
+        let savedID = localStorage.getItem("saved_id_logger");
+
+        if (savedID && savedID.trim() !== "") {
+            id_logger = savedID;
             startMQTT();
             updateConnectionCount();
+            speakWelcome(); // <--- TAMBAHKAN DI SINI
         } else {
-            // 3. Jika benar-benar kosong (baru pertama kali instal/buka), baru munculkan prompt
+            // 3. Jika benar-benar kosong, munculkan prompt
             let userInput = prompt("Masukkan ID Logger:");
             if (userInput === null || userInput.trim() === "") {
                 alert("Error: Please reload and input a value!");
             } else {
                 id_logger = userInput.trim();
-                // Simpan hasil input pertama kali ke memori HP
                 localStorage.setItem("saved_id_logger", id_logger);
                 startMQTT();
                 updateConnectionCount();
+                speakWelcome(); // <--- TAMBAHKAN DI SINI
             }
           }
         }
@@ -1146,6 +1146,22 @@ function updateModal() {
   const themeToggleLink = document.getElementById('themeToggleLink');
   const body = document.body;
   const header = document.getElementById('mainHeader');
+
+  function speakWelcome() {
+    // Mengecek apakah browser mendukung fitur Text-to-Speech
+    if ('speechSynthesis' in window) {
+        const text = "WELCOME HUAWEI B M S MONITORING By Rezky Logam";
+        const utterance = new SpeechSynthesisUtterance(text);
+        
+        // Pengaturan ala Jarvis / Robotik
+        utterance.lang = 'en-US';  // Menggunakan bahasa Inggris agar pelafalan nama aplikasi terdengar pas
+        utterance.pitch = 0.8;     // Diturunkan sedikit agar suara lebih nge-bass/cool seperti Jarvis
+        utterance.rate = 1.0;      // Kecepatan bicara normal
+
+        // Eksekusi suara
+        window.speechSynthesis.speak(utterance);
+     }
+ }
 
   function setTheme(theme) {
     body.setAttribute('data-theme', theme);
