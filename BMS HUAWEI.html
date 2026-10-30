@@ -1156,17 +1156,14 @@ function updateModal() {
 
   function speakWelcome() {
     if ('speechSynthesis' in window) {
-        // UBAH KALIMAT DI BAWAH INI SESUAI KEINGINAN ANDA
-        const text = "System online. Welcome to Huawei B M S Monitoring, by Rezky Logam.";
-        
+        const text = "System online. Welcome to Huawei B M S Monitoring, by Rezky Logam";
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US';  // Tetap gunakan en-US agar logat Jarvis-nya pas
-        utterance.pitch = 0.85;    // Atur kerendahan suara (0.5 - 2). Semakin rendah semakin nge-bass
-        utterance.rate = 0.95;     // Atur kecepatan bicara (0.1 - 10). Sedikit diperlambat agar lebih dramatis
+        utterance.lang = 'en-US';
         
+        // Menghapus baris pitch dan rate agar menggunakan setelan asli bawaan HP
         window.speechSynthesis.speak(utterance);
     }
- }
+  }
 
   function setTheme(theme) {
     body.setAttribute('data-theme', theme);
