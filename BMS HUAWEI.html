@@ -759,6 +759,7 @@
       cell_vdif: cell_vdiff.toFixed(0),
       time: getCurrentTimeHHMMSS(),
       power: (data.bat_voltage * data.bat_current).toFixed(2)
+      temperature: data.temp !== undefined ? data.temp : '--'
     };
   }
 
@@ -839,7 +840,7 @@
 
     const tempElem = document.getElementById(`temp-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
     if (tempElem) {
-    tempElem.textContent = batt.temp !== undefined ? batt.temp : '--';
+    tempElem.textContent = batt.temperature !== undefined ? batt.temperature : '--';
     }
 
     const led = document.getElementById(`led-card-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
