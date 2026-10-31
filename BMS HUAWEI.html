@@ -695,6 +695,7 @@
       try {
         const raw = JSON.parse(message.toString());
         const batt = normalizeFromMqtt(raw, topic);
+        console.log("ISI DATA MQTT:", raw);
 
         const idx = batteries.findIndex(b => b.loggerId === batt.loggerId && b.addr === batt.addr && b.typeBattery === batt.typeBattery);
         if (idx >= 0) { 
