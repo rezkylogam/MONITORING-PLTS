@@ -194,7 +194,7 @@
             <i class="fas fa-car-battery text-5xl"></i>
         </div>
         <h1 class="text-xl font-bold mb-2">BMS MONITORING</h1>
-        <p class="text-sm text-gray-400 mb-6">Sistem siap digunakan. Ketuk tombol di bawah untuk mengaktifkan pemantauan dan audio Jarvis.</p>
+        <p class="text-sm text-white-400 mb-6">Sistem siap digunakan. Ketuk tombol di bawah untuk mengaktifkan pemantauan dan audio Jarvis.</p>
         
         <button id="btnStartApp" class="w-full bg-[#0455d1] hover:bg-[#2563eb] text-white font-semibold py-3 px-6 rounded-xl shadow-lg transform active:scale-95 transition-all duration-200 flex items-center justify-center gap-2">
             <i class="fas fa-play"></i> Buka Aplikasi
@@ -258,10 +258,6 @@
       <div class="flex items-center gap-4">
         <div class="text-lg text-white-1300">
           <span id="total-batteries">6</span> Baterai Terkoneksi
-        </div>
-        <div class="sort-indicator" id="sortIndicator">
-          <span>Sorted by: Type &amp; Address</span>
-          <i class="fas fa-sort-alpha-down"></i>
         </div>
       </div>
     </div>
@@ -1073,9 +1069,33 @@ function updateModal() {
     }, 250);
   }
 
+  function startRealTimeClock() {
+    function updateClock() {
+        const now = new Date();
+        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        const dayName = days[now.getDay()];
+        const date = now.getDate().toString().padStart(2, '0');
+        const monthName = months[now.getMonth()];
+        const year = now.getFullYear();
+
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+
+        const formattedTime = `${dayName}, ${date} ${monthName} ${year} - ${hours}:${minutes}:${seconds}`;
+        const clockEl = document.getElementById('realtime-clock');
+        if (clockEl) clockEl.textContent = formattedTime;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+    }
+
   window.onload = function() {
     const params = new URLSearchParams(window.location.search);
     let queryData = {};
+    startRealTimeClock();
 
     for (const [key, value] of params.entries()) {
         queryData[key] = value;
