@@ -758,7 +758,7 @@
       cell_vmin: cell_vmin.toFixed(3),
       cell_vdif: cell_vdiff.toFixed(0),
       time: getCurrentTimeHHMMSS(),
-      power: (data.bat_voltage * data.bat_current).toFixed(2)
+      power: (data.bat_voltage * data.bat_current).toFixed(2),
       temperature: data.temp !== undefined ? data.temp : '--'
     };
   }
