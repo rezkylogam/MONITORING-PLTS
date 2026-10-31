@@ -576,8 +576,11 @@
         </div>
         <div class="mt-4 pt-3 border-t border-gray-100 text-gray-500 flex justify-between items-center w-full">
           <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Cycles: ${batt.cycles}</span>
-          <span class="last-update text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center"><i class="far fa-clock mr-1"></i>${batt.time}</span>
-        </div>
+          <span class="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1">
+              <i class="fas fa-thermometer-half text-orange-500 mr-1"></i>
+              <span id="temp-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">--</span> °C
+          </span>
+      </div>
       `;
       card.onclick = () => openModal(batt.loggerId, batt.addr, batt.typeBattery);
       grid.appendChild(card);
@@ -834,7 +837,10 @@
     else if (batt.soc > 30) socBar.className = 'progress-fill bg-yellow-500';
     else socBar.className = 'progress-fill bg-red-500';
 
-    card.querySelector(".last-update").innerHTML = `<i class="far fa-clock mr-1"></i>${batt.time}`;
+    const tempElem = document.getElementById(`temp-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
+    if (tempElem) {
+    tempElem.textContent = batt.temp !== undefined ? batt.temp : '--';
+    }
 
     const led = document.getElementById(`led-card-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
     led.classList.add("active");
