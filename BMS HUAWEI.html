@@ -838,12 +838,16 @@
 if (statusElem) {
     statusElem.textContent = batt.status;
     
+    // Memaksa pewarnaan teks secara mutlak menggunakan inline styles
     if (batt.status === 'Charging') {
-        statusElem.className = "text-green-500 font-bold";
+        statusElem.style.color = '#22c55e'; // Warna Hijau Terang (Green-500)
+        statusElem.style.fontWeight = 'bold';
     } else if (batt.status === 'Discharging') {
-        statusElem.className = "text-orange-500 font-bold";
+        statusElem.style.color = '#f97316'; // Warna Oranye Terang (Orange-500)
+        statusElem.style.fontWeight = 'bold';
     } else {
-        statusElem.className = "text-gray-400 font-medium";
+        statusElem.style.color = '#9ca3af'; // Warna Abu-abu Standby (Gray-400)
+        statusElem.style.fontWeight = 'normal';
     }
 }
 
