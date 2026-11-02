@@ -155,6 +155,58 @@
     <!-- DASHBOARD PANELS -->
     <div class="dashboard space-y-6">
       
+      <!-- KONTANER MONITORING STYLE LCD FISIK -->
+<div class="mb-6 flex justify-center">
+  <div class="w-full max-w-md bg-[#161B22] p-4 rounded-xl border border-[#30363D] shadow-lg flex flex-col items-center">
+    <!-- Frame Dalam LCD (Warna Biru Khas LCD Gambar 5) -->
+    <div class="w-full bg-[#00FFFF] bg-opacity-20 border-4 border-[#00FFFF] rounded p-3 font-mono text-[#00FFFF] shadow-[0_0_15px_rgba(0,255,255,0.3)]">
+      
+      <!-- Baris 1: Waktu & Status Volt/Baterai -->
+      <div class="flex justify-between text-xs border-b border-[#00FFFF] border-opacity-30 pb-1 mb-2">
+        <span id="lcd-datetime">2026-11-03 00:00:00</span>
+        <div class="flex gap-2">
+          <span>PV: <span id="lcd-vpv">0</span>V</span>
+          <span>BAT: <span id="lcd-vbat">0</span>V</span>
+        </div>
+      </div>
+
+      <!-- Baris 2: Skema Ilustrasi Simpel / Status Utama -->
+      <div class="flex justify-around items-center py-2 my-1 border-b border-[#00FFFF] border-opacity-30">
+        <div class="text-center bg-[#161B22] bg-opacity-60 px-2 py-1 rounded border border-[#00FFFF] border-opacity-40">
+          <p class="text-[10px] text-gray-400">PANEL PV</p>
+          <p class="text-sm font-bold" id="lcd-volt-pv">0.00 V</p>
+        </div>
+        <div class="text-center font-bold text-lg animate-pulse">
+          ⚡ [ MPPT ] ⚡
+        </div>
+        <div class="text-center bg-[#161B22] bg-opacity-60 px-2 py-1 rounded border border-[#00FFFF] border-opacity-40">
+          <p class="text-[10px] text-gray-400">BATERAI</p>
+          <p class="text-sm font-bold" id="lcd-status-bat">NOTFULL</p>
+        </div>
+      </div>
+
+      <!-- Baris 3: Informasi Kunci (Arus, Code, Akumulasi Daya) -->
+      <div class="grid grid-cols-2 gap-2 text-xs pt-1">
+        <div>
+          <p>I: <span id="lcd-current" class="font-bold">0.00</span> A</p>
+          <p>STATUS: <span id="lcd-status-code" class="font-bold">0x00</span></p>
+        </div>
+        <div class="text-right">
+          <p>LOAD: <span id="lcd-cut-status" class="font-bold">OFF</span></p>
+          <p>DAY.E: <span id="lcd-day-e" class="font-bold">0.00</span> kWh</p>
+        </div>
+      </div>
+
+    </div>
+    <!-- Label Indikator LED Fisik di luar layar -->
+    <div class="flex justify-around w-full mt-3 text-[10px] text-gray-400 font-semibold">
+      <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-600 inline-block"></span> ALARM</span>
+      <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500 inline-block animate-ping"></span> CHARGE</span>
+      <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-gray-600 inline-block"></span> LOAD</span>
+    </div>
+  </div>
+</div>
+      
       <!-- REAL-TIME DATA PANEL (Paling atas, menonjolkan ringkasan data) -->
       <div class="data-panel bg-dark-bg p-6 rounded-xl shadow-lg border-t-4 border-accent-main">
         <div class="panel-title flex justify-between items-center pb-4 mb-4 border-b border-border-color">
@@ -546,7 +598,19 @@
         if (originalCard) {
             originalCard.remove();
         }
-        
+
+        if (sensorName.toLowerCase().includes('volt')) {
+          if(sensorName.toLowerCase().includes('pv')) document.getElementById('lcd-volt-pv').innerText = formattedPayload;
+          if(sensorName.toLowerCase().includes('bat')) document.getElementById('lcd-vbat').innerText = parseFloat(payload).toFixed(1) + " V";
+       }
+        if (sensorName.toLowerCase().includes('current')) document.getElementById('lcd-current').innerText = parseFloat(payload).toFixed(2);
+         if (sensorName.toLowerCase().includes('status_code')) document.getElementById('lcd-status-code').innerText = "0x" + parseInt(payload).toString(16).toUpperCase();
+         if (sensorName.toLowerCase().includes('day_e')) document.getElementById('lcd-day-e').innerText = parseFloat(payload).toFixed(2);
+         if (sensorName.toLowerCase().includes('vpv')) document.getElementById('lcd-vpv').innerText = parseFloat(payload).toFixed(1);
+         if (sensorName.toLowerCase().includes('bat_status')) document.getElementById('lcd-status-bat').innerText = payload.trim().toUpperCase();
+         if (sensorName.toLowerCase().includes('cut_status')) document.getElementById('lcd-cut-status').innerText = payload.trim().toUpperCase();
+         // =========================================
+
         return; // Hentikan fungsi updateData agar tidak membuat card "status" asli
       }
 
@@ -656,10 +720,18 @@
 
     // Update time
     function updateTime() {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString();
-      document.getElementById('update-time').textContent = timeString;
-    }
+    const now = new Date();
+    const timeString = now.toLocaleTimeString();
+    
+    // Memperbarui update time utama dasbor bawaan Anda
+    document.getElementById('update-time').textContent = timeString;
+    
+    // Memperbarui tanggal & jam bergaya LCD fisik (Format: YYYY-MM-DD HH:MM:SS)
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const date = String(now.getDate()).padStart(2, '0');
+    document.getElementById('lcd-datetime').innerText = `${year}-${month}-${date} ${timeString}`;
+   }
     
     // Update time every second
     setInterval(updateTime, 1000);
