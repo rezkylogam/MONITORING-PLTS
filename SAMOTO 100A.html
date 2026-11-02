@@ -6,7 +6,7 @@
     <title>MPPT SOLAR MONITORING - DASHBOARD</title>
     
     <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://tailwindcss.com"></script>
     
     <!-- Tailwind Configuration -->
     <script>
@@ -14,13 +14,13 @@
             theme: {
                 extend: {
                     colors: {
-                        'dark-bg': '#000000',      // Sangat Gelap (Sangat Hitam)
-                        'card-bg': '#161B22',      // Abu-abu Gelap (Untuk Panel)
-                        'accent-main': '#FF7F00',   // Cyan Terang (Primary Accent - Menonjol)
-                        'accent-secondary': '#FF0000', // Biru Langit (Secondary Accent)
-                        'text-light': '#FFFFFF',    // Teks Putih Penuh
-                        'success-green': '#00FF00', // Hijau Emerald (Status OK)
-                        'border-color': '#30363D',  // Border Abu-abu Sedang
+                        'dark-bg': '#000000',      
+                        'card-bg': '#161B22',      
+                        'accent-main': '#FF7F00',   
+                        'accent-secondary': '#FF0000', 
+                        'text-light': '#FFFFFF',    
+                        'success-green': '#00FF00', 
+                        'border-color': '#30363D',  
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -41,72 +41,23 @@
     <script src="https://cloudflare.com"></script>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Styling Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #161B22;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #30363D;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
-        }
-        /* Custom style for Flatpickr */
-        .flatpickr-input {
-            color: #FFFFFF;
-            background-color: #0D1117;
-            border: 1px solid #30363D;
-            transition: all 0.2s;
-        }
-        .flatpickr-input:focus {
-            border-color: #00FFFF;
-            box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
-        }
-        /* Loader Spinner */
-        .loader-spinner {
-            width: 60px;
-            height: 60px;
-            border: 8px solid #30363D;
-            border-top: 8px solid #00FFFF;
-            border-radius: 50%;
-            animation: spin 1.5s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .custom-alert-modal-content {
-            max-width: 400px;
-            width: 90%;
-            background-color: #161B22;
-            color: #FFFFFF;
-        }
-        .flatpickr-calendar {
-            background-color: #161B22 !important;
-            border-color: #30363D !important;
-        }
-        
-        /* Gaya Khusus Replika Layar LCD */
-        .lcd-glow-text {
-            font-family: 'VT323', monospace;
-            color: #00FFFF;
-            text-shadow: 0 0 6px rgba(0, 255, 255, 0.7);
-        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #161B22; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #30363D; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        .flatpickr-input { color: #FFFFFF; background-color: #0D1117; border: 1px solid #30363D; transition: all 0.2s; }
+        .flatpickr-input:focus { border-color: #00FFFF; box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3); }
+        .loader-spinner { width: 60px; height: 60px; border: 8px solid #30363D; border-top: 8px solid #00FFFF; border-radius: 50%; animation: spin 1.5s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .custom-alert-modal-content { max-width: 400px; width: 90%; background-color: #161B22; color: #FFFFFF; }
+        .flatpickr-calendar { background-color: #161B22 !important; border-color: #30363D !important; }
+        .lcd-glow-text { font-family: 'VT323', monospace; color: #00FFFF; text-shadow: 0 0 6px rgba(0, 255, 255, 0.7); }
     </style>
 </head>
 
-<body class="bg-dark-bg min-h-screen p-4 md:p-8 text-text-light antialiased flex justify-center items-center">
+<body class="bg-dark-bg min-h-screen p-4 md:p-8 text-text-light antialiased flex flex-col items-center justify-start gap-6">
 
     <!-- Custom Alert Modal -->
     <div id="custom-alert-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center hidden">
@@ -131,10 +82,9 @@
                 </h2>
             </div>
             
-            <!-- MQTT Status & Last Update -->
             <div class="flex justify-between items-center p-3 rounded-lg bg-dark-bg border border-border-color shadow-inner mt-4">
                 <div class="flex items-center gap-2">
-                    <div id="mqtt-indicator" class="status-indicator w-3 h-3 rounded-full bg-red-500 shadow-lg shadow-red-700/30"></div>
+                    <div id="mqtt-indicator" class="w-3 h-3 rounded-full bg-red-500 shadow-lg shadow-red-700/30"></div>
                     <span id="mqtt-status-text" class="text-white font-semibold text-sm">Connecting to Server...</span>
                 </div>
                 <div class="text-accent-secondary text-sm">
@@ -143,9 +93,8 @@
             </div>
         </header>
 
-        <!-- AREA MONITOR LCD UTAMA (SAMA PERSIS DENGAN FISIK) -->
+        <!-- AREA MONITOR LCD UTAMA REPLIKA FISIK SAMOTO -->
         <div class="w-full max-w-2xl mx-auto p-4 bg-[#141923] border-4 border-[#0b111e] rounded-xl shadow-2xl">
-            <!-- Bingkai Layar LCD Biru -->
             <div class="relative bg-[#0033cc] border-[14px] border-[#0a0f1d] p-6 shadow-[inset_0_0_25px_rgba(0,0,0,0.9)] select-none lcd-glow-text">
                 
                 <!-- Baris 1: Tanggal & Waktu Real-time Internal LCD -->
@@ -156,14 +105,13 @@
 
                 <!-- Baris 2: Voltase PV & Voltase Baterai -->
                 <div class="flex justify-between text-4xl mt-3 px-6">
-                    <div><span id="lcd-vpv" class="text-5xl font-bold">171</span>U</div>
-                    <div><span id="lcd-vbat" class="text-5xl font-bold">50.0</span>U</div>
+                    <div><span id="lcd-vpv" class="text-5xl font-bold">0</span>U</div>
+                    <div><span id="lcd-vbat" class="text-5xl font-bold">0.0</span>U</div>
                 </div>
 
                 <!-- Baris 3: DIAGRAM GRAFIS ALUR DAYA -->
                 <div class="relative flex justify-between items-center my-6 h-28 px-4">
-                    
-                    <!-- Ikon Panel Surya (Kiri) -->
+                    <!-- Ikon Panel Surya -->
                     <div class="flex flex-col justify-between h-20 w-14 border-2 border-[#00FFFF] p-1 bg-[#0033cc]">
                         <div class="border border-[#00FFFF] h-4 bg-[#00FFFF]/20"></div>
                         <div class="border border-[#00FFFF] h-4 bg-[#00FFFF]/20"></div>
@@ -185,19 +133,15 @@
 
                     <!-- Jalur Arus Listrik: MPPT ke Baterai -->
                     <div class="absolute right-[70px] top-[40%] w-16 h-0.5 border-t-2 border-[#00FFFF]"></div>
-                    
-                    <!-- Jalur Arus Listrik: MPPT ke Beban Lampu -->
                     <div class="absolute right-[46%] bottom-0 w-0.5 h-6 border-l-2 border-[#00FFFF]"></div>
 
-                    <!-- Ikon Baterai (Kanan Atas) -->
+                    <!-- Ikon Baterai -->
                     <div class="relative w-14 h-12 border-2 border-[#00FFFF] rounded-sm p-0.5 flex flex-col justify-end -mt-10">
-                        <!-- Kepala Terminal Baterai -->
                         <div class="absolute -top-1.5 left-1/2 -translate-x-1/2 w-4 h-1 bg-[#00FFFF]"></div>
-                        <!-- Bar Level Pengisian Baterai -->
-                        <div id="lcd-bat-bar" class="w-full bg-[#00FFFF] transition-all duration-500" style="height: 85%;"></div>
+                        <div id="lcd-bat-bar" class="w-full bg-[#00FFFF] transition-all duration-500" style="height: 0%;"></div>
                     </div>
 
-                    <!-- Ikon Beban Lampu Bulat (Kanan Bawah) -->
+                    <!-- Ikon Beban Lampu -->
                     <div class="absolute bottom-[-15px] left-[49%] -translate-x-1/2 flex items-center justify-center w-12 h-12 border-2 border-[#00FFFF] rounded-full bg-[#0033cc]">
                         <span class="text-2xl mt-[-2px]">💡</span>
                     </div>
@@ -206,3 +150,21 @@
                 <!-- Baris 4: Parameter Listrik Bagian Bawah -->
                 <div class="grid grid-cols-2 text-3xl tracking-wide border-t border-dashed border-[#00FFFF]/30 pt-3 px-2">
                     <div class="flex flex-col gap-1">
+                        <div>I$ <span id="lcd-current" class="text-4xl">0.0</span>A</div>
+                        <div class="text-2xl">D$<span id="lcd-daye" class="text-3xl">000.000</span>kWh</div>
+                    </div>
+                    <div class="text-right flex flex-col justify-between">
+                        <div><span id="lcd-statuscode" class="text-4xl">0x00</span></div>
+                        <div class="text-lg opacity-40 tracking-normal font-sans">SAMOTO MONITOR</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- AREA GRAFIK HISTORIS & FILTER -->
+        <div class="bg-dark-bg border border-border-color rounded-xl p-4 space-y-4 relative">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border-color pb-3">
+                <h3 class="text-xl font-semibold text-white">Grafik Kinerja Seiring Waktu</h3>
+                <div class="flex items-center gap-4 mt-2 md:mt-0 text-xs text-gray-400">
+                    <span>Tips: Scroll Wheel / Shift + Drag untuk Zoom/Pan</span>
