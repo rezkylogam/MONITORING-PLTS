@@ -157,7 +157,7 @@
       
       <!-- KONTANER MONITORING STYLE LCD FISIK -->
 <div class="mb-6 flex justify-center">
-  <div class="w-full max-w-md bg-[#161B22] p-4 rounded-xl border border-[#30363D] shadow-lg flex flex-col items-center">
+  <div class="w-full bg-[#161B22] p-4 rounded-xl border border-[#30363D] shadow-lg flex flex-col items-center">
     <!-- Frame Dalam LCD (Warna Biru Khas LCD Gambar 5) -->
     <div class="w-full bg-[#00FFFF] bg-opacity-20 border-4 border-[#00FFFF] rounded p-3 font-mono text-[#00FFFF] shadow-[0_0_15px_rgba(0,255,255,0.3)]">
       
@@ -226,62 +226,6 @@
             </div>
         </div>
       </div>
-      
-      <!-- CHART CONTAINER (Tepat di bawah Data Real-time) -->
-      <div class="chart-wrapper flex flex-col space-y-6">
-        <div class="chart-container relative bg-dark-bg rounded-2xl p-6 shadow-2xl border border-border-color flex-grow">
-          <div class="chart-header flex flex-col md:flex-row justify-between items-start md:items-center mb-4 pb-4 border-b border-border-color">
-            <div class="chart-title text-2xl font-semibold text-white mb-2 md:mb-0">Grafik Kinerja Seiring Waktu</div>
-            
-            <!-- Elemen ini diubah untuk menempatkan tips di samping tombol -->
-            <div class="flex flex-col md:flex-row items-start md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                 <p class="zoom-instructions text-xs text-gray-400 text-center md:text-left">
-                    Tips: Scroll Wheel / Shift + Drag untuk Zoom/Pan
-                </p>
-                <button onclick="chart.resetZoom()" class="text-sm px-4 py-1.5 bg-card-bg text-accent-secondary rounded-full hover:bg-border-color transition-colors font-bold border border-border-color">Reset Zoom</button>
-            </div>
-            
-          </div>
-          
-          <div id="loader" class="absolute inset-0 flex flex-col justify-center items-center bg-dark-bg/90 rounded-2xl z-10 hidden">
-            <div class="loader-spinner"></div>
-            <p class="mt-4 text-accent-main font-semibold text-lg">Memuat Data...</p>
-          </div>
-          
-          <canvas id="lineChart"></canvas>
-          
-        </div>
-      </div>
-      
-      <!-- HISTORY CONTROL PANEL (Panel Kontrol Gabungan di Paling Bawah) -->
-      <div class="data-panel bg-dark-bg p-6 rounded-xl shadow-lg border border-border-color">
-        <h3 class="text-2xl font-semibold text-accent-main mb-4 border-b border-border-color pb-2">Kontrol Data Historis & Filter</h3>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          <!-- Kolom 1: Pengambilan Data -->
-          <div class="flex flex-col space-y-3">
-            <label for="datePicker" class="block text-sm font-medium text-gray-400">Pilih Tanggal Log:</label>
-            <input type="text" id="datePicker" placeholder="Pilih Tanggal Log" class="flatpickr-input w-full p-3 rounded-lg text-base">
-            
-            <button id="requestButton" class="btn p-3 rounded-lg font-bold text-lg bg-accent-main text-dark-bg hover:bg-cyan-400 transition-colors shadow-lg shadow-cyan-500/30">
-              GET DATA
-            </button>
-            <button id="exportButton" class="btn p-3 rounded-lg font-bold text-lg bg-accent-secondary text-dark-bg hover:bg-sky-400 transition-colors shadow-lg shadow-sky-500/30">
-              EXPORT CSV
-            </button>
-          </div>
-
-          <!-- Kolom 2 & 3 (Gabungan di Desktop) -->
-          <div class="lg:col-span-2">
-            <h4 class="text-lg font-semibold text-accent-secondary mb-3 border-b border-border-color pb-2">Filter Sensor Grafik:</h4>
-            <div class="sensors grid grid-cols-2 md:grid-cols-3 gap-3 p-2 bg-card-bg rounded-xl shadow-inner border border-border-color" id="checkboxContainer">
-              <p class="text-sm text-gray-400 col-span-full">Checkboxes akan muncul setelah data log dimuat...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     
     <!-- FOOTER -->
     <div class="system-info text-center pt-4 border-t border-border-color text-sm text-gray-400">
@@ -293,27 +237,6 @@
 
     let idalat = "14751036";
     let topic_alat = "14751036/mpptlogger";
-    
-    // Inisialisasi Flatpickr
-    const datePicker = flatpickr("#datePicker", {
-      defaultDate: new Date(),
-      dateFormat: "Y/m/d",
-      // Theme customization for dark mode
-       onReady: function(selectedDates, dateStr, instance) {
-        instance.calendarContainer.classList.add('bg-card-bg', 'text-text-light', 'border-border-color');
-        instance.calendarContainer.querySelectorAll('.flatpickr-day').forEach(day => {
-            day.style.color = '#FFFFFF';
-        });
-        instance.calendarContainer.querySelectorAll('.flatpickr-day.selected').forEach(day => {
-            day.style.backgroundColor = '#00FFFF'; // accent-main (Cyan)
-            day.style.borderColor = '#00FFFF';
-            day.style.color = '#0D1117'; // Dark text on accent
-        });
-        instance.calendarContainer.querySelectorAll('.flatpickr-day.today').forEach(day => {
-            day.style.borderColor = '#00FFFF';
-        });
-      }
-    });
 
     // Register the zoom plugin
     Chart.register(ChartZoom);
@@ -417,105 +340,6 @@
         chart.destroy();
       }
       
-      chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: datasets
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          // PENAMBAHAN: Tambahkan padding di bagian bawah untuk memberi ruang pada label sumbu-X
-          layout: {
-             padding: {
-                bottom: 15 // Menambah 15px padding di bagian bawah grafik
-             }
-          },
-          plugins: {
-            legend: {
-              display: false 
-            },
-            tooltip: {
-                backgroundColor: 'rgba(22, 27, 34, 0.9)', // card-bg
-                titleColor: '#00FFFF', // accent-main
-                bodyColor: '#FFFFFF',
-                borderColor: '#30363D',
-                borderWidth: 1,
-            },
-            zoom: {
-              pan: {
-                enabled: true,
-                mode: 'x',
-                modifierKey: 'shift',
-              },
-              zoom: {
-                wheel: {
-                  enabled: true,
-                  speed: 0.1,
-                },
-                pinch: {
-                  enabled: true
-                },
-                mode: 'x',
-              },
-              limits: {
-                x: { min: 'original', max: 'original' },
-              }
-            }
-          },
-          scales: {
-            x: {
-              type: 'category',
-              title: {
-                display: true,
-                text: 'Time (Hour:Minute)', 
-                color: '#00FFFF',
-                font: {
-                  weight: 'bold',
-                  size: 14
-                }
-              },
-              grid: {
-                color: 'rgba(48, 54, 61, 0.4)' 
-              },
-              ticks: {
-                color: '#94a3b8', // Gray for ticks
-                maxRotation: 0,
-                autoSkip: true,
-                maxTicksLimit: 12
-              }
-            },
-            y: {
-              title: {
-                display: true,
-                text: 'Value',
-                color: '#00FFFF',
-                font: {
-                  weight: 'bold',
-                  size: 14
-                }
-              },
-              grid: {
-                color: 'rgba(48, 54, 61, 0.4)'
-              },
-              ticks: {
-                color: '#94a3b8',
-              }
-            }
-          },
-          interaction: {
-            mode: 'nearest',
-            axis: 'x',
-            intersect: false
-          },
-          animation: {
-            duration: 0
-          }
-        }
-      });
-    }
-
     // Function to update data in the grid
     function updateData(topic, payload) {
       const sensorName = topic.substring(20);
