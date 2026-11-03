@@ -530,15 +530,30 @@
       document.getElementById('lcd-ichg').textContent = (!isNaN(numericPayload) ? numericPayload.toFixed(1) : payload) + 'A';
       } 
       else if (cleanName.includes('status')) {
-          // Memastikan data status diubah dengan benar ke format HEX
-          let intVal = parseInt(numericPayload);
-          if (!isNaN(intVal)) {
-              // Jika nilai yang masuk adalah 32 desimal, dia akan otomatis menjadi 0x20
-              let hexVal = '0x' + intVal.toString(16).toUpperCase();
-              document.getElementById('lcd-hex').textContent = hexVal;
+          // Jika status berupa string teks gabungan dari MPPT Samoto
+          let statusText = payload.toUpperCase();
+          let hexVal = '0x00'; // Nilai default jika tidak ada yang cocok
+
+          // Pemetaan status berdasarkan standar LCD MPPT Samoto 100A
+          if (statusText.includes('STB') && statusText.includes('OUT-OFF')) {
+              hexVal = '0x20'; // Standby / Discharging Off
+          } else if (statusText.includes('CHG-ON') && statusText.includes('BULK')) {
+              hexVal = '0x10'; // Bulk Charging
+          } else if (statusText.includes('CHG-ON') && statusText.includes('FLOAT')) {
+              hexVal = '0x11'; // Float Charging
+          } else if (statusText.includes('CHG-ON') && statusText.includes('ALIVE')) {
+              hexVal = '0x14'; // Active Charging
           } else {
-              document.getElementById('lcd-hex').textContent = payload;
+              // Jika yang masuk ternyata sudah berupa angka desimal dari awal
+              let intVal = parseInt(numericPayload);
+              if (!isNaN(intVal)) {
+                  hexVal = '0x' + intVal.toString(16).toUpperCase();
+              } else {
+                  hexVal = payload; // Tampilkan apa adanya jika format lain
+              }
           }
+          
+          document.getElementById('lcd-hex').textContent = hexVal;
       }
       else if (cleanName.includes('day') || cleanName.includes('kwh') || cleanName.includes('energy') || cleanName.includes('e_day')) {
           // Memformat kWh harian agar memiliki 3 angka di belakang desimal dan zero padding di depan
