@@ -518,6 +518,8 @@
       const cleanName = sensorName.toLowerCase();
       const numericPayload = parseFloat(payload);
 
+      console.log("Sensor:", cleanName, "| Payload asli:", payload, "| Hasil angka:", numericPayload);
+
       if (cleanName.includes('vpv') || cleanName.includes('voltpv')) {
       document.getElementById('lcd-vpv').textContent = (!isNaN(numericPayload) ? numericPayload.toFixed(0) : payload) + 'V';
       } 
