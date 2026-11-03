@@ -123,7 +123,6 @@
     </div>
   </div>
 
-
   <div class="container w-full max-w-7xl bg-card-bg rounded-2xl shadow-2xl space-y-8 p-6 md:p-10 border border-border-color">
     
     <!-- HEADER & STATUS BAR BARU -->
@@ -175,48 +174,49 @@
         </div>
 
         <!-- Baris 2 & 3: Voltase Ringkas (Kiri: PV, Tengah: Ikon/Status, Kanan: Baterai) -->
-        <div class="grid grid-cols-3 items-center text-center py-4 my-2 border-b border-blue-400">
-            <!-- Kolom Kiri: PV Volt -->
-            <div class="flex flex-col items-center">
-                <span class="text-xs text-blue-200 tracking-wider">VOLT PV</span>
-                <span id="lcd-vpv" class="text-3xl sm:text-5xl font-black">0V</span>
-            </div>
-            
-            <!-- Kolom Tengah: Kotak Status MPPT Utama -->
-            <div class="flex flex-col items-center border-2 border-dashed border-blue-300 rounded p-2 mx-2 bg-[#0018c8]">
-                <span class="text-lg font-extrabold border-b border-white px-3 mb-1 tracking-widest">MPPT</span>
-                <span id="lcd-mppt-status" class="text-xs font-bold text-green-300">ACTIVE</span>
-            </div>
-            
-            <!-- Kolom Kanan: Baterai Volt -->
-            <div class="flex flex-col items-center">
-                <span class="text-xs text-blue-200 tracking-wider">VOLT BAT</span>
-                <span id="lcd-vbat" class="text-3xl sm:text-5xl font-black">0.0V</span>
-            </div>
-        </div>
+        <div class="w-full max-w-xl mx-auto my-4 p-5 rounded border-4 border-gray-700 font-mono font-bold shadow-inner" style="background-color: #00f0ff; color: #002c33;">
+              
+              <!-- Baris Atas LCD: Tanggal dan Waktu Realtime -->
+              <div class="flex justify-between items-center text-sm md:text-base border-b border-dashed border-cyan-800 pb-1 mb-3">
+                  <span id="lcd-date">2026-11-03</span>
+                  <span id="lcd-time">15:28:13</span>
+              </div>
 
-        <!-- Baris 4: Informasi Arus, Kode Status Hex, dan Akumulasi KWh Harian -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 text-xl sm:text-2xl font-bold">
-            <!-- Arus Pengisian -->
-            <div class="flex items-center justify-center sm:justify-start space-x-2">
-                <span class="text-blue-200 font-normal">I$:</span>
-                <span id="lcd-ichg" class="tracking-tight text-yellow-200">0.0A</span>
-            </div>
-            <!-- Kode Status Ringkas -->
-            <div class="flex items-center justify-center space-x-2">
-                <span class="text-blue-200 font-normal">Status:</span>
-                <span id="lcd-hex" class="font-extrabold text-cyan-200">0x00</span>
-            </div>
-            <!-- Energi Hari Ini (KWh) -->
-            <div class="flex items-center justify-center sm:justify-end space-x-1">
-                <span class="text-blue-200 font-normal">D$:</span>
-                <span id="lcd-kwh" class="tracking-tighter text-emerald-200">000.000KWh</span>
-            </div>
-        </div>
-        
-    </div>
-</div>
+              <!-- Baris Tengah LCD: Volt PV, Judul MPPT, & Volt Baterai -->
+              <div class="grid grid-cols-3 items-center text-center my-3">
+                  <!-- Kiri: Volt PV -->
+                  <div class="flex flex-col items-center">
+                      <span class="text-2xl md:text-4xl" id="lcd-vpv">0V</span>
+                      <span class="text-xs uppercase opacity-75">PV VOLT</span>
+                  </div>
+                  
+                  <!-- Tengah: Kotak Frame MPPT Sesuai Fisik -->
+                  <div class="flex flex-col items-center">
+                      <div class="border-2 border-cyan-900 px-3 py-1 text-base md:text-xl tracking-widest font-extrabold">
+                          MPPT
+                      </div>
+                      <!-- Garis penghubung kecil visual ala LCD -->
+                      <div class="text-xs tracking-tighter opacity-60">▤▤-▤▤</div>
+                  </div>
+                  
+                  <!-- Kanan: Volt Baterai -->
+                  <div class="flex flex-col items-center">
+                      <span class="text-2xl md:text-4xl" id="lcd-vbat">0.0V</span>
+                      <span class="text-xs uppercase opacity-75">BAT VOLT</span>
+                  </div>
+              </div>
 
+              <!-- Baris Bawah LCD: Arus, Kode Status, Akumulasi kWh & Ikon Beban -->
+              <div class="flex justify-between items-end border-t border-dashed border-cyan-800 pt-3 mt-2">
+                  <div class="flex flex-col text-left space-y-1 text-base md:text-xl">
+                      <div>I$: <span id="lcd-ichg" class="font-extrabold">0.0A</span> &nbsp;&nbsp; Status: <span id="lcd-hex" class="font-extrabold">0x00</span></div>
+                      <div>D$: <span id="lcd-kwh" class="font-extrabold">000.000kWh</span></div>
+                  </div>
+                  <!-- Simbol Bulat Lampu Beban di Kanan Bawah LCD Fisik -->
+                  <div class="border-2 border-cyan-900 rounded-full w-10 h-10 md:w-12 md:w-12 flex items-center justify-center text-xl shadow">
+                      💡
+                  </div>
+              </div>
 <!-- Container Data Asli (Tetap dipertahankan di bawahnya jika ingin card detail otomatis muncul) -->
 <div id="data-container" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 p-1 hidden">
     <!-- Card detail otomatis dinamis masuk di sini oleh JS bawaan -->
