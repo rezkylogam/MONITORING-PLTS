@@ -164,53 +164,53 @@
           </div>
         </div>
         
-        <!-- Tampilan Layar LCD Fisik Replika -->
-<div class="flex justify-center mb-6 w-full">
-    <div class="w-full max-w-2xl bg-[#001ff8] border-4 border-[#30363d] rounded-lg p-6 font-mono text-[#ffffff] shadow-2xl relative select-none">
+        <!-- Tampilan Layar LCD Fisik Replika Teroptimasi -->
+<div class="w-full flex justify-center mb-6 px-2">
+    <div class="w-full max-w-xl bg-blue-700 border-4 border-gray-700 rounded-lg p-4 font-mono text-white shadow-2xl select-none">
         
         <!-- Baris 1: Tanggal & Waktu Terkini -->
-        <div class="flex justify-between items-center border-b border-blue-400 pb-2 mb-4 text-xl sm:text-2xl font-bold tracking-wide">
+        <div class="flex justify-between items-center border-b border-blue-400 pb-2 mb-3 text-lg sm:text-2xl font-bold tracking-wide">
             <span id="lcd-date">2026-11-03</span>
-            <span id="lcd-time">08:15:58</span>
+            <span id="lcd-time">09:52:24</span>
         </div>
 
         <!-- Baris 2 & 3: Voltase Ringkas (Kiri: PV, Tengah: Status, Kanan: Baterai) -->
-        <div class="grid grid-cols-3 items-center text-center py-4 my-2 border-b border-blue-400">
+        <div class="grid grid-cols-3 items-center text-center py-3 my-1 border-b border-blue-400 gap-1">
             <!-- Kolom Kiri: PV Volt -->
             <div class="flex flex-col items-center">
-                <span class="text-xs text-blue-200 tracking-wider">VOLT PV</span>
-                <span id="lcd-vpv" class="text-3xl sm:text-5xl font-black">0V</span>
+                <span class="text-[10px] text-blue-200 tracking-wider uppercase block">Volt PV</span>
+                <span id="lcd-vpv" class="text-2xl sm:text-4xl font-black block mt-1">156V</span>
             </div>
             
             <!-- Kolom Tengah: Kotak Status MPPT Utama -->
-            <div class="flex flex-col items-center border-2 border-dashed border-blue-300 rounded p-2 mx-2 bg-[#0018c8]">
-                <span class="text-lg font-extrabold border-b border-white px-3 mb-1 tracking-widest">MPPT</span>
-                <span id="lcd-mppt-status" class="text-xs font-bold text-green-300">ACTIVE</span>
+            <div class="flex flex-col items-center border border-dashed border-blue-300 rounded py-1 px-2 bg-blue-800 my-auto">
+                <span class="text-xs sm:text-sm font-extrabold border-b border-white px-2 mb-0.5 tracking-wider">MPPT</span>
+                <span id="lcd-mppt-status" class="text-[9px] sm:text-xs font-bold text-green-300 tracking-tight uppercase">ACTIVE</span>
             </div>
             
             <!-- Kolom Kanan: Baterai Volt -->
             <div class="flex flex-col items-center">
-                <span class="text-xs text-blue-200 tracking-wider">VOLT BAT</span>
-                <span id="lcd-vbat" class="text-3xl sm:text-5xl font-black">0.0V</span>
+                <span class="text-[10px] text-blue-200 tracking-wider uppercase block">Volt Bat</span>
+                <span id="lcd-vbat" class="text-2xl sm:text-4xl font-black block mt-1">50.4V</span>
             </div>
         </div>
 
         <!-- Baris 4: Informasi Arus, Kode Status Hex, dan Akumulasi KWh Harian -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 text-xl sm:text-2xl font-bold">
+        <div class="grid grid-cols-3 text-center pt-3 text-xs sm:text-base font-bold gap-1">
             <!-- Arus Pengisian -->
-            <div class="flex items-center justify-center sm:justify-start space-x-2">
+            <div class="flex items-center justify-center space-x-1">
                 <span class="text-blue-200 font-normal">I$:</span>
-                <span id="lcd-ichg" class="tracking-tight text-yellow-200">0.0A</span>
+                <span id="lcd-ichg" class="text-yellow-300">5.0A</span>
             </div>
             <!-- Kode Status Ringkas -->
-            <div class="flex items-center justify-center space-x-2">
+            <div class="flex items-center justify-center space-x-1">
                 <span class="text-blue-200 font-normal">Status:</span>
-                <span id="lcd-hex" class="font-extrabold text-cyan-200">0x00</span>
+                <span id="lcd-hex" class="text-cyan-200">0x14</span>
             </div>
             <!-- Energi Hari Ini (KWh) -->
-            <div class="flex items-center justify-center sm:justify-end space-x-1">
+            <div class="flex items-center justify-center space-x-0.5">
                 <span class="text-blue-200 font-normal">D$:</span>
-                <span id="lcd-kwh" class="tracking-tighter text-emerald-200">000.000KWh</span>
+                <span id="lcd-kwh" class="text-emerald-300 tracking-tighter">000.000KWh</span>
             </div>
         </div>
         
