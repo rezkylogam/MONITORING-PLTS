@@ -529,20 +529,26 @@
       else if (cleanName.includes('ichg') || cleanName.includes('current')) {
       document.getElementById('lcd-ichg').textContent = (!isNaN(numericPayload) ? numericPayload.toFixed(1) : payload) + 'A';
       } 
-      else if (cleanName.includes('status_code') || cleanName.includes('statuscode')) {
-    // Jika data yang dikirim berbentuk angka desimal, ubah ke format HEX (seperti 0x20)
-      let hexVal = !isNaN(numericPayload) ? '0x' + parseInt(numericPayload).toString(16).toUpperCase() : payload;
-      document.getElementById('lcd-hex').textContent = hexVal;
-      } 
-      else if (cleanName.includes('day_e') || cleanName.includes('kwh') || cleanName.includes('total_e')) {
-    // Memformat KWh harian agar memiliki 3 angka di belakang desimal dan zero padding di depan
-      if (!isNaN(numericPayload)) {
-        let formattedKwh = numericPayload.toFixed(3).padStart(7, '0');
-        document.getElementById('lcd-kwh').textContent = formattedKwh + 'KWh';
-      } else {
-        document.getElementById('lcd-kwh').textContent = payload + 'KWh';
+      else if (cleanName.includes('status')) {
+          // Memastikan data status diubah dengan benar ke format HEX
+          let intVal = parseInt(numericPayload);
+          if (!isNaN(intVal)) {
+              // Jika nilai yang masuk adalah 32 desimal, dia akan otomatis menjadi 0x20
+              let hexVal = '0x' + intVal.toString(16).toUpperCase();
+              document.getElementById('lcd-hex').textContent = hexVal;
+          } else {
+              document.getElementById('lcd-hex').textContent = payload;
+          }
       }
-  }
+      else if (cleanName.includes('day') || cleanName.includes('kwh') || cleanName.includes('energy') || cleanName.includes('e_day')) {
+          // Memformat kWh harian agar memiliki 3 angka di belakang desimal dan zero padding di depan
+          if (!isNaN(numericPayload)) {
+              let formattedKwh = numericPayload.toFixed(3).padStart(7, '0');
+              document.getElementById('lcd-kwh').textContent = formattedKwh + 'kWh';
+          } else {
+              document.getElementById('lcd-kwh').textContent = payload + 'kWh';
+          }
+      }
       
       // Logic for dynamic display name and color based on sensor type
       let displayName = sensorName.replace(/([A-Z])/g, ' $1').trim().toUpperCase();
