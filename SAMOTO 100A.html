@@ -164,16 +164,61 @@
           </div>
         </div>
         
-        <!-- Grid Data Real-time - Kepadatan 3/4/5/6 kolom (Simple & Penuh) -->
-        <div id="data-container" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 p-1">
-          <!-- Data cards will be inserted here by MQTT -->
-          <!-- Contoh Card Awal -->
-            <div class="data-card bg-card-bg rounded-lg p-3 shadow-md border-l-4 border-accent-secondary transition-transform duration-300 hover:scale-[1.03] hover:bg-card-bg/80">
-              <h4 class="text-xs font-semibold uppercase text-gray-400 mb-0.5">Volt PV</h4>
-              <div class="data-value text-xl font-extrabold text-accent-secondary">0.00 V</div>
+        <!-- Tampilan Layar LCD Fisik Replika -->
+<div class="flex justify-center mb-6 w-full">
+    <div class="w-full max-w-2xl bg-[#001ff8] border-4 border-[#30363d] rounded-lg p-6 font-mono text-[#ffffff] shadow-2xl relative select-none">
+        
+        <!-- Baris 1: Tanggal & Waktu Terkini -->
+        <div class="flex justify-between items-center border-b border-blue-400 pb-2 mb-4 text-xl sm:text-2xl font-bold tracking-wide">
+            <span id="lcd-date">2026-11-03</span>
+            <span id="lcd-time">08:15:58</span>
+        </div>
+
+        <!-- Baris 2 & 3: Voltase Ringkas (Kiri: PV, Tengah: Status, Kanan: Baterai) -->
+        <div class="grid grid-cols-3 items-center text-center py-4 my-2 border-b border-blue-400">
+            <!-- Kolom Kiri: PV Volt -->
+            <div class="flex flex-col items-center">
+                <span class="text-xs text-blue-200 tracking-wider">VOLT PV</span>
+                <span id="lcd-vpv" class="text-3xl sm:text-5xl font-black">0V</span>
+            </div>
+            
+            <!-- Kolom Tengah: Kotak Status MPPT Utama -->
+            <div class="flex flex-col items-center border-2 border-dashed border-blue-300 rounded p-2 mx-2 bg-[#0018c8]">
+                <span class="text-lg font-extrabold border-b border-white px-3 mb-1 tracking-widest">MPPT</span>
+                <span id="lcd-mppt-status" class="text-xs font-bold text-green-300">ACTIVE</span>
+            </div>
+            
+            <!-- Kolom Kanan: Baterai Volt -->
+            <div class="flex flex-col items-center">
+                <span class="text-xs text-blue-200 tracking-wider">VOLT BAT</span>
+                <span id="lcd-vbat" class="text-3xl sm:text-5xl font-black">0.0V</span>
             </div>
         </div>
-      </div>
+
+        <!-- Baris 4: Informasi Arus, Kode Status Hex, dan Akumulasi KWh Harian -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 text-xl sm:text-2xl font-bold">
+            <!-- Arus Pengisian -->
+            <div class="flex items-center justify-center sm:justify-start space-x-2">
+                <span class="text-blue-200 font-normal">I$:</span>
+                <span id="lcd-ichg" class="tracking-tight text-yellow-200">0.0A</span>
+            </div>
+            <!-- Kode Status Ringkas -->
+            <div class="flex items-center justify-center space-x-2">
+                <span class="text-blue-200 font-normal">Status:</span>
+                <span id="lcd-hex" class="font-extrabold text-cyan-200">0x00</span>
+            </div>
+            <!-- Energi Hari Ini (KWh) -->
+            <div class="flex items-center justify-center sm:justify-end space-x-1">
+                <span class="text-blue-200 font-normal">D$:</span>
+                <span id="lcd-kwh" class="tracking-tighter text-emerald-200">000.000KWh</span>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<!-- Container Data Asli (Disembunyikan dengan class 'hidden' agar card bawaan tidak merusak layout baru) -->
+<div id="data-container" class="hidden"></div>
       
       <!-- CHART CONTAINER (Tepat di bawah Data Real-time) -->
       <div class="chart-wrapper flex flex-col space-y-6">
@@ -467,6 +512,33 @@
     // Function to update data in the grid
     function updateData(topic, payload) {
       const sensorName = topic.substring(20);
+    // Tambahan pemetaan khusus langsung ke replika panel LCD Samoto
+      const cleanName = sensorName.toLowerCase();
+      const numericPayload = parseFloat(payload);
+
+      if (cleanName.includes('vpv') || cleanName.includes('voltpv')) {
+      document.getElementById('lcd-vpv').textContent = (!isNaN(numericPayload) ? numericPayload.toFixed(0) : payload) + 'V';
+      } 
+      else if (cleanName.includes('vbat') || cleanName.includes('voltbat')) {
+      document.getElementById('lcd-vbat').textContent = (!isNaN(numericPayload) ? numericPayload.toFixed(1) : payload) + 'V';
+      } 
+      else if (cleanName.includes('ichg') || cleanName.includes('current')) {
+      document.getElementById('lcd-ichg').textContent = (!isNaN(numericPayload) ? numericPayload.toFixed(1) : payload) + 'A';
+      } 
+      else if (cleanName.includes('status_code') || cleanName.includes('statuscode')) {
+    // Jika data yang dikirim berbentuk angka desimal, ubah ke format HEX (seperti 0x20)
+      let hexVal = !isNaN(numericPayload) ? '0x' + parseInt(numericPayload).toString(16).toUpperCase() : payload;
+      document.getElementById('lcd-hex').textContent = hexVal;
+      } 
+      else if (cleanName.includes('day_e') || cleanName.includes('kwh') || cleanName.includes('total_e')) {
+    // Memformat KWh harian agar memiliki 3 angka di belakang desimal dan zero padding di depan
+      if (!isNaN(numericPayload)) {
+        let formattedKwh = numericPayload.toFixed(3).padStart(7, '0');
+        document.getElementById('lcd-kwh').textContent = formattedKwh + 'KWh';
+      } else {
+        document.getElementById('lcd-kwh').textContent = payload + 'KWh';
+      }
+  }
       
       // Logic for dynamic display name and color based on sensor type
       let displayName = sensorName.replace(/([A-Z])/g, ' $1').trim().toUpperCase();
@@ -546,6 +618,35 @@
         if (originalCard) {
             originalCard.remove();
         }
+
+        // ==========================================
+    // LOGIKA BARU: Pemetaan ke Layar LCD Replika
+    // ==========================================
+    const cleanName = sensorName.toLowerCase();
+    const numericPayload = parseFloat(payload);
+
+    if (cleanName.includes('vpv') || cleanName.includes('voltpv')) {
+        document.getElementById('lcd-vpv').textContent = (!isNaN(numericPayload) ? numericPayload.toFixed(0) : payload) + 'V';
+    } 
+    else if (cleanName.includes('vbat') || cleanName.includes('voltbat')) {
+        document.getElementById('lcd-vbat').textContent = (!isNaN(numericPayload) ? numericPayload.toFixed(1) : payload) + 'V';
+    } 
+    else if (cleanName.includes('ichg') || cleanName.includes('current')) {
+        document.getElementById('lcd-ichg').textContent = (!isNaN(numericPayload) ? numericPayload.toFixed(1) : payload) + 'A';
+    } 
+    else if (cleanName.includes('status_code') || cleanName.includes('statuscode')) {
+        let hexVal = !isNaN(numericPayload) ? '0x' + parseInt(numericPayload).toString(16).toUpperCase() : payload;
+        document.getElementById('lcd-hex').textContent = hexVal;
+    } 
+    else if (cleanName.includes('day_e') || cleanName.includes('kwh') || cleanName.includes('total_e')) {
+        if (!isNaN(numericPayload)) {
+            let formattedKwh = numericPayload.toFixed(3).padStart(7, '0');
+            document.getElementById('lcd-kwh').textContent = formattedKwh + 'KWh';
+        } else {
+            document.getElementById('lcd-kwh').textContent = payload + 'KWh';
+        }
+    }
+    // ==========================================
         
         return; // Hentikan fungsi updateData agar tidak membuat card "status" asli
       }
@@ -656,10 +757,27 @@
 
     // Update time
     function updateTime() {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString();
-      document.getElementById('update-time').textContent = timeString;
+    const now = new Date();
+    
+    // Format tanggal LCD YYYY-MM-DD
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    
+    // Format waktu LCD HH:MM:SS
+    const timeString = now.toLocaleTimeString('en-GB'); // menghasilkan format 24 jam berbasis lokal
+    
+    // Perbarui elemen halaman web asli dan replika LCD
+    if(document.getElementById('update-time')) {
+        document.getElementById('update-time').textContent = timeString;
     }
+    if(document.getElementById('lcd-date')) {
+        document.getElementById('lcd-date').textContent = `${yyyy}-${mm}-${dd}`;
+    }
+    if(document.getElementById('lcd-time')) {
+        document.getElementById('lcd-time').textContent = timeString;
+    }
+}
     
     // Update time every second
     setInterval(updateTime, 1000);
