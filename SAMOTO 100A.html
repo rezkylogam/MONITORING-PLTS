@@ -710,15 +710,16 @@
             dataValue.className = `data-value text-xl font-extrabold ${statusColor}`;
             dataValue.textContent = displayValue;
           }
-        });
+        }
         
         // Hapus card "STATUS" yang asli (jika ada) setelah memecah datanya
-        let originalCard = document.querySelector(`.data-card[data-sensor="status"]`);
+        let originalCard = document.querySelector('.data-card[data-sensor="status"]');
         if (originalCard) {
             originalCard.remove();
         }
+      }
 
-        // ==========================================
+  // ==========================================
   // LOGIKA BARU: Pemetaan ke Layar LCD Replika
   // ==========================================
   const cleanName = sensorName.toLowerCase();
