@@ -200,11 +200,14 @@
         </div>
 
         <!-- Baris 2 & 3: Voltase Ringkas (Kiri: PV, Tengah: Ikon/Status, Kanan: Baterai) -->
-        <div class="grid grid-cols-3 items-end py-2 my-2 border-b border-blue-400">
-            <!-- Kolom Kiri: PV Volt (Tanpa Label, Rata Kiri) -->
-            <div class="flex flex-col items-start pl-2">
-            <span id="lcd-vpv" class="text-2xl sm:text-3xl font-black">0V</span>
+        div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end border-b border-white/20 pb-2">
+        <!-- Panel Kiri: Volt PV (Tanpa Label, Rata Kiri di bawah Tanggal) -->
+        <div class="flex flex-col justify-end sm:items-start items-center pl-0 sm:pl-2">
+            <div class="flex items-baseline space-x-0.5">
+            <span id="lcd-vpv" class="text-2xl sm:text-3xl font-bold tracking-tight text-white">0</span>
+            <span class="text-xl font-bold text-white">V</span>
         </div>
+    </div>
             
             <!-- Kolom Tengah: Kotak Status MPPT Utama -->
             <div class="flex flex-col items-center border-2 border-dashed border-blue-300 rounded p-2 mx-2 bg-[#0018c8]">
