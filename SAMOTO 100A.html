@@ -665,13 +665,54 @@
         const container = document.getElementById('data-container');
         
         statusSegments.forEach((segment, index) => {
-          if (!segment.trim()) return; // Skip empty segments
-          
-          const parts = segment.split('-'); // e.g., ["OUT", "OFF"]
-          if (parts.length < 2) return;
-          
-          const primaryName = parts[0].trim().toUpperCase(); // OUT, CHG, BAT
-          const primaryValue = parts.slice(1).join('-').trim().toUpperCase(); // OFF, NOTFULL
+    if (!segment.trim()) return;
+
+    const parts = segment.split('-');
+    if (parts.length < 2) return;
+
+    // Perbaikan di sini: Ambil indeks 0 baru di-trim
+    const primaryName = parts[0].trim().toUpperCase(); // OUT, CHG, BAT, ALARM, CHARGE, LOAD
+    const primaryValue = parts.slice(1).join('-').trim().toUpperCase(); // OFF, ON, BULK, FLOAT, dll.
+
+    // ==========================================
+    // LOGIKA UNTUK MENYALAKAN INDIKATOR REPLIKA
+    // ==========================================
+    
+    // 1. Lampu ALARM
+    if (primaryName === 'ALARM') {
+        const ledAlarm = document.getElementById('led-alarm');
+        if (ledAlarm) {
+            if (primaryValue === 'ON' || primaryValue !== 'OFF') {
+                ledAlarm.className = "w-8 h-4 bg-red-500 rounded-sm shadow-[0_0_12px_rgba(220,38,38,0.8)] border border-red-500 animate-pulse";
+            } else {
+                ledAlarm.className = "w-8 h-4 bg-red-950/40 rounded-sm border border-red-900/60 transition-all duration-300";
+            }
+        }
+    }
+
+    // 2. Lampu CHARGE
+    if (primaryName === 'CHARGE' || primaryName === 'CHG') {
+        const ledCharge = document.getElementById('led-charge');
+        if (ledCharge) {
+            if (primaryValue !== 'OFF' && primaryValue !== 'NOT') {
+                ledCharge.className = "w-8 h-4 bg-green-500 rounded-sm shadow-[0_0_12px_rgba(34,197,94,0.8)] border border-green-400 transition-all duration-300";
+            } else {
+                ledCharge.className = "w-8 h-4 bg-green-950/40 rounded-sm border border-green-900/60 transition-all duration-300";
+            }
+        }
+    }
+
+    // 3. Lampu LOAD
+    if (primaryName === 'LOAD' || primaryName === 'OUT') {
+        const ledLoad = document.getElementById('led-load');
+        if (ledLoad) {
+            if (primaryValue === 'ON' || primaryValue === 'ACTIVE') {
+                ledLoad.className = "w-8 h-4 bg-amber-500 rounded-sm shadow-[0_0_12px_rgba(245,158,11,0.8)] border border-amber-400 transition-all duration-300";
+            } else {
+                ledLoad.className = "w-8 h-4 bg-amber-950/40 rounded-sm border border-amber-900/60 transition-all duration-300";
+            }
+        }
+    }
           
           // Generate a unique key for the sub-status
           const subSensorKey = `status-${primaryName}`;
