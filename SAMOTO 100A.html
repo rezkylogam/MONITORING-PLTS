@@ -221,23 +221,30 @@
         </div>
 
         <!-- Baris 4: Informasi Arus, Kode Status Hex, dan Akumulasi KWh Harian -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 text-xl sm:text-2xl font-bold">
-            <!-- Arus Pengisian -->
-            <div class="flex items-center justify-center sm:justify-start space-x-2">
-                <span class="text-blue-200 font-normal">I$:</span>
-                <span id="lcd-ichg" class="tracking-tight text-yellow-200">0.0A</span>
-            </div>
-            <!-- Kode Status Ringkas -->
-            <div class="flex items-center justify-center space-x-2">
-                <span class="text-blue-200 font-normal">Status:</span>
-                <span id="lcd-hex" class="font-extrabold text-cyan-200">0x00</span>
-            </div>
-            <!-- Energi Hari Ini (KWh) -->
-            <div class="flex items-center justify-center sm:justify-end space-x-1">
-                <span class="text-blue-200 font-normal">D$:</span>
-                <span id="lcd-kwh" class="tracking-tighter text-emerald-200">000.000KWh</span>
-            </div>
-        </div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 text-xl sm:text-2x1 font-bold">
+  <!-- Kolom Kiri: Arus Pengisian (I$) dan Energi Harian (D$) -->
+  <div class="flex flex-col justify-center sm:items-start items-center space-y-2">
+    <!-- Arus Pengisian -->
+    <div class="flex items-center space-x-2">
+      <span class="text-blue-200 font-normal">I$:</span>
+      <span id="lcd-ichg" class="tracking-tight text-yellow-200">0.0A</span>
+    </div>
+    <!-- Energi Hari Ini (KWh) -->
+    <div class="flex items-center space-x-1">
+      <span class="text-blue-200 font-normal">D$:</span>
+      <span id="lcd-kwh" class="tracking-tight text-emerald-200">000.000kWh</span>
+    </div>
+  </div>
+
+  <!-- Kolom Tengah: Kode Status Ringkas -->
+  <div class="flex items-center justify-center space-x-2">
+    <span class="text-blue-200 font-normal">Status:</span>
+    <span id="lcd-hex" class="font-extrabold text-cyan-200">0x00</span>
+  </div>
+
+  <!-- Kolom Kanan: Dikosongkan agar layout grid 3 kolom tetap seimbang -->
+  <div></div>
+</div>
         
     </div>
 </div>
