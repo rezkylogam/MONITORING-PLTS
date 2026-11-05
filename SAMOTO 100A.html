@@ -208,17 +208,54 @@
     </div>
   </div>
 
-  <!-- Baris 2 & 3: Komponen Status Tengah -->
+  <!-- Baris 2 & 3: Komponen Status Tengah (Panel Surya -> MPPT -> Baterai) -->
   <div class="grid grid-cols-3 items-center text-center py-2 mb-4">
-    <!-- Kiri kosong agar kotak MPPT tetap presisi di tengah -->
-    <div></div>
     
-    <!-- Tengah: Kotak Status MPPT Utama -->
-    <div class="flex flex-col items-center justify-center border border-dashed border-blue-300 rounded p-2 mx-2 bg-[#0018c8]">
-      <span class="text-lg font-extrabold text-white tracking-widest">MPPT</span>
-      <span id="lcd-mppt-status" class="text-xs font-bold text-green-300">ACTIVE</span>
+    <!-- KOLOM KIRI: Ikon Panel Surya (3 baris panel + garis penghubung) -->
+    <div class="flex items-center justify-end pr-2 text-blue-200">
+      <div class="flex flex-col gap-1 mr-1">
+        <div class="grid grid-cols-3 gap-0.5 w-12 bg-blue-300/20 p-0.5 border border-blue-400 rounded-sm">
+          <div class="h-2 bg-blue-200 rounded-xs"></div><div class="h-2 bg-blue-200 rounded-xs"></div><div class="h-2 bg-blue-200 rounded-xs"></div>
+        </div>
+        <div class="grid grid-cols-3 gap-0.5 w-12 bg-blue-300/20 p-0.5 border border-blue-400 rounded-sm">
+          <div class="h-2 bg-blue-200 rounded-xs"></div><div class="h-2 bg-blue-200 rounded-xs"></div><div class="h-2 bg-blue-200 rounded-xs"></div>
+        </div>
+        <div class="grid grid-cols-3 gap-0.5 w-12 bg-blue-300/20 p-0.5 border border-blue-400 rounded-sm">
+          <div class="h-2 bg-blue-200 rounded-xs"></div><div class="h-2 bg-blue-200 rounded-xs"></div><div class="h-2 bg-blue-200 rounded-xs"></div>
+        </div>
+      </div>
+      <!-- Garis hubung ke MPPT -->
+      <div class="h-0.5 w-6 bg-blue-300 border-t border-b border-blue-400"></div>
     </div>
-</div>
+    
+    <!-- KOLOM TENGAH: Kotak Status MPPT Utama -->
+    <div class="flex flex-col items-center justify-center border border-blue-300 rounded p-1.5 mx-1 bg-[#0018c8] relative z-10">
+      <span class="text-base font-black text-white tracking-widest leading-none">MPPT</span>
+      <!-- Detail garis bawah kecil menyerupai LCD asli -->
+      <div class="w-full flex justify-center gap-0.5 mt-1 opacity-80">
+        <div class="w-2 h-1 bg-blue-300"></div>
+        <div class="w-2 h-1 bg-blue-300"></div>
+        <div class="w-2 h-1 bg-blue-300"></div>
+      </div>
+      <span id="lcd-mppt-status" class="text-[10px] font-bold text-green-300 mt-0.5">ACTIVE</span>
+    </div>
+    
+    <!-- KOLOM KANAN: Ikon Baterai (Kotak dengan garis-garis cell di dalamnya) -->
+    <div class="flex items-center justify-start pl-2 text-blue-200">
+      <!-- Garis hubung dari MPPT -->
+      <div class="h-0.5 w-6 bg-blue-300 border-t border-b border-blue-400"></div>
+      <!-- Badan Baterai -->
+      <div class="flex items-center ml-1">
+        <div class="w-8 h-10 border-2 border-blue-400 rounded-xs p-0.5 flex flex-col justify-between bg-blue-300/10">
+          <div class="h-1 bg-blue-200 w-full rounded-xs"></div>
+          <div class="h-1 bg-blue-200 w-full rounded-xs"></div>
+          <div class="h-1 bg-blue-200 w-full rounded-xs"></div>
+          <div class="h-1 bg-blue-200 w-full rounded-xs"></div>
+        </div>
+        <!-- Kepala Baterai -->
+        <div class="w-1 h-3 bg-blue-400 rounded-r-xs"></div>
+      </div>
+    </div>
 
         <!-- Baris 4: Informasi Arus, Kode Status Hex, dan Akumulasi KWh Harian -->
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 text-xl sm:text-2x1 font-bold">
