@@ -246,16 +246,18 @@
       <!-- Garis hubung dinamis yang memanjang otomatis dari MPPT ke kanan -->
       <div class="h-0.5 flex-1 bg-blue-300 border-t border-b border-blue-400 mr-2"></div>
       <!-- Badan Baterai (Tetap di ujung kanan) -->
-      <div class="flex items-center shrink-0">
-        <div class="w-12 h-14 border-2 border-blue-400 rounded-xs p-0.5 flex flex-col justify-between bg-blue-300/10">
-          <div class="h-2 bg-blue-200 w-full rounded-xs"></div>
-          <div class="h-2 bg-blue-200 w-full rounded-xs"></div>
-          <div class="h-2 bg-blue-200 w-full rounded-xs"></div>
-          <div class="h-2 bg-blue-200 w-full rounded-xs"></div>
-        </div>
-        <!-- Kepala Baterai -->
-        <div class="w-1 h-3 bg-blue-400 rounded-r-xs"></div>
-      </div>
+      <!-- Kepala Baterai di bagian ATAS -->
+<div class="flex flex-col items-center shrink-0">
+  <div class="w-4 h-1 bg-blue-400 rounded-t-xs mb-[-1px]"></div>
+  
+  <!-- Badan Baterai -->
+  <div class="w-12 h-14 border-2 border-blue-400 rounded-xs p-0.5 flex flex-col justify-between bg-blue-300/10">
+    <div class="h-2 bg-blue-200 w-full rounded-xs"></div>
+    <div class="h-2 bg-blue-200 w-full rounded-xs"></div>
+    <div class="h-2 bg-blue-200 w-full rounded-xs"></div>
+    <div class="h-2 bg-blue-200 w-full rounded-xs"></div>
+  </div>
+</div>
     </div>
 </div>
         <!-- Baris 4: Informasi Arus, Kode Status Hex, dan Akumulasi KWh Harian -->
