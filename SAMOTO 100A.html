@@ -211,9 +211,10 @@
   <!-- Baris 2 & 3: Komponen Status Tengah (Panel Surya -> MPPT -> Baterai) -->
   <div class="grid grid-cols-3 items-center text-center py-2 mb-4">
     
-    <!-- KOLOM KIRI: Ikon Panel Surya (3 baris panel + garis penghubung) -->
-    <div class="flex items-center justify-end pr-2 text-blue-200">
-      <div class="flex flex-col gap-1 mr-1">
+    <!-- KOLOM KIRI: Ikon Panel Surya di ujung kiri + Garis Penghubung Panjang -->
+    <div class="flex items-center justify-between pl-4 text-blue-200 w-full">
+      <!-- Struktur Panel Surya (Tetap di ujung kiri) -->
+      <div class="flex flex-col gap-1 mr-1 shrink-0">
         <div class="grid grid-cols-3 gap-0.5 w-12 bg-blue-300/20 p-0.5 border border-blue-400 rounded-sm">
           <div class="h-2 bg-blue-200 rounded-xs"></div><div class="h-2 bg-blue-200 rounded-xs"></div><div class="h-2 bg-blue-200 rounded-xs"></div>
         </div>
@@ -224,8 +225,8 @@
           <div class="h-2 bg-blue-200 rounded-xs"></div><div class="h-2 bg-blue-200 rounded-xs"></div><div class="h-2 bg-blue-200 rounded-xs"></div>
         </div>
       </div>
-      <!-- Garis hubung ke MPPT -->
-      <div class="h-0.5 w-6 bg-blue-300 border-t border-b border-blue-400"></div>
+      <!-- Garis hubung dinamis yang memanjang otomatis ke kanan menuju MPPT -->
+      <div class="h-0.5 flex-1 bg-blue-300 border-t border-b border-blue-400 ml-2"></div>
     </div>
     
     <!-- KOLOM TENGAH: Kotak Status MPPT Utama -->
@@ -240,12 +241,12 @@
       <span id="lcd-mppt-status" class="text-[10px] font-bold text-green-300 mt-0.5">ACTIVE</span>
     </div>
     
-    <!-- KOLOM KANAN: Ikon Baterai (Kotak dengan garis-garis cell di dalamnya) -->
-    <div class="flex items-center justify-start pl-2 text-blue-200">
-      <!-- Garis hubung dari MPPT -->
-      <div class="h-0.5 w-6 bg-blue-300 border-t border-b border-blue-400"></div>
-      <!-- Badan Baterai -->
-      <div class="flex items-center ml-1">
+    <!-- KOLOM KANAN: Garis Penghubung Panjang + Ikon Baterai di ujung kanan -->
+    <div class="flex items-center justify-between pr-4 text-blue-200 w-full">
+      <!-- Garis hubung dinamis yang memanjang otomatis dari MPPT ke kanan -->
+      <div class="h-0.5 flex-1 bg-blue-300 border-t border-b border-blue-400 mr-2"></div>
+      <!-- Badan Baterai (Tetap di ujung kanan) -->
+      <div class="flex items-center shrink-0">
         <div class="w-8 h-10 border-2 border-blue-400 rounded-xs p-0.5 flex flex-col justify-between bg-blue-300/10">
           <div class="h-1 bg-blue-200 w-full rounded-xs"></div>
           <div class="h-1 bg-blue-200 w-full rounded-xs"></div>
