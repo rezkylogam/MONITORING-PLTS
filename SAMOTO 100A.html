@@ -193,32 +193,32 @@
     <!-- BOX LAYAR LCD BIRU -->
     <div class="w-full bg-[#001ff8] border-4 border-[#30363d] rounded-lg p-10 font-mono text-[#ffffff] shadow-2xl relative">
         
-        <!-- Baris 1: Tanggal & Waktu Terkini -->
-        <div class="flex justify-between items-center border-b border-blue-400 pb-2 mb-4 text-xl sm:text-2xl font-bold tracking-wide">
-            <span id="lcd-date">2026-11-03</span>
-            <span id="lcd-time">08:15:58</span>
-        </div>
+        <!-- Baris 1: Tanggal & Waktu Terkini (Layout Presisi LCD Fisik) -->
+  <div class="flex justify-between items-start border-b border-blue-400 pb-2 mb-4 text-xl sm:text-2xl font-bold tracking-wide">
+    <!-- Kolom Kiri: Tanggal di atas, Volt PV tepat di bawahnya -->
+    <div class="flex flex-col items-start">
+      <span id="lcd-date">2026-11-03</span>
+      <span id="lcd-vpv" class="text-2xl sm:text-3xl font-black text-blue-200 mt-1">0V</span>
+    </div>
+    
+    <!-- Kolom Kanan: Waktu di atas, Volt BAT tepat di bawahnya -->
+    <div class="flex flex-col items-end">
+      <span id="lcd-time">08:15:58</span>
+      <span id="lcd-vbat" class="text-2xl sm:text-3xl font-black text-blue-200 mt-1">0.0V</span>
+    </div>
+  </div>
 
-        <!-- Baris 2 & 3: Voltase Ringkas (Kiri: PV, Tengah: Ikon/Status, Kanan: Baterai) -->
-        <div class="grid grid-cols-3 items-center text-center py-4 my-2 border-b border-blue-400">
-            <!-- Kolom Kiri: PV Volt -->
-            <div class="flex flex-col items-center">
-                <span class="text-xs text-blue-200 tracking-wider">VOLT PV</span>
-                <span id="lcd-vpv" class="text-3xl sm:text-5xl font-black">0V</span>
-            </div>
-            
-            <!-- Kolom Tengah: Kotak Status MPPT Utama -->
-            <div class="flex flex-col items-center border-2 border-dashed border-blue-300 rounded p-2 mx-2 bg-[#0018c8]">
-                <span class="text-lg font-extrabold border-b border-white px-3 mb-1 tracking-widest">MPPT</span>
-                <span id="lcd-mppt-status" class="text-xs font-bold text-green-300">ACTIVE</span>
-            </div>
-            
-            <!-- Kolom Kanan: Baterai Volt -->
-            <div class="flex flex-col items-center">
-                <span class="text-xs text-blue-200 tracking-wider">VOLT BAT</span>
-                <span id="lcd-vbat" class="text-3xl sm:text-5xl font-black">0.0V</span>
-            </div>
-        </div>
+  <!-- Baris 2 & 3: Komponen Status Tengah -->
+  <div class="grid grid-cols-3 items-center text-center py-2 mb-4">
+    <!-- Kiri kosong agar kotak MPPT tetap presisi di tengah -->
+    <div></div>
+    
+    <!-- Tengah: Kotak Status MPPT Utama -->
+    <div class="flex flex-col items-center justify-center border border-dashed border-blue-300 rounded p-2 mx-2 bg-[#0018c8]">
+      <span class="text-lg font-extrabold text-white tracking-widest">MPPT</span>
+      <span id="lcd-mppt-status" class="text-xs font-bold text-green-300">ACTIVE</span>
+    </div>
+</div>
 
         <!-- Baris 4: Informasi Arus, Kode Status Hex, dan Akumulasi KWh Harian -->
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 text-xl sm:text-2x1 font-bold">
