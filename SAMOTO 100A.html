@@ -1091,21 +1091,23 @@ function kirimPerintahMppt(kodeTombol) {
 document.addEventListener("DOMContentLoaded", () => {
     
     document.getElementById('btn-esc')?.addEventListener('click', () => {
-        kirimPerintahMppt("ESC");
+        kirimPerintahMppt(1); // Mengirim angka 1 untuk ESC
     });
 
     document.getElementById('btn-up')?.addEventListener('click', () => {
-        kirimPerintahMppt("UP");
+        kirimPerintahMppt(2); // Mengirim angka 2 untuk UP
     });
 
     document.getElementById('btn-down')?.addEventListener('click', () => {
-        kirimPerintahMppt("DOWN");
+        kirimPerintahMppt(3); // Mengirim angka 3 untuk DOWN
     });
 
     document.getElementById('btn-function')?.addEventListener('click', () => {
-        kirimPerintahMppt("FUNCTION");
+        kirimPerintahMppt(4); // Mengirim angka 4 untuk FUNCTION
     });
+  
 });
+    
     // Initialize an empty chart
     initChart([], []);
   </script>
