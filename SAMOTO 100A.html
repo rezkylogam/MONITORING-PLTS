@@ -1075,14 +1075,23 @@
 // ==========================================
 function kirimPerintahMppt(kodeTombol) {
     if (client && client.isConnected()) {
-        // SASARAN UTAMA: Arahkan langsung ke topik newdatacmd hardware ESP
-        const topikCmd = "14751036/mpptlogger/newdatacmd"; 
+        // Gunakan topik log utama yang didengarkan bersama oleh ESP dan Web
+        const topikCmd = "14751036/mpptlogger/log"; 
         
-        const pesan = new Paho.MQTT.Message(kodeTombol);
+        // Buat payload dalam format JSON untuk memaksa nilai newdatacmd berubah
+        const dataJson = {
+            newdatacmd: parseInt(kodeTombol), // Mengubah string "1" menjadi angka 1 murni
+            newdatapy: 0
+        };
+        
+        // Konversi objek JavaScript menjadi teks JSON String
+        const payloadString = JSON.stringify(dataJson);
+        
+        const pesan = new Paho.MQTT.Message(payloadString);
         pesan.destinationName = topikCmd;
         
         client.send(pesan);
-        console.log("Mengirim kode perintah ke MQTT: " + kodeTombol);
+        console.log("Berhasil mengirim perintah JSON: " + payloadString);
     } else {
         alert("Koneksi MQTT terputus!");
     }
