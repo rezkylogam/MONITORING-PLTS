@@ -1077,15 +1077,22 @@ function kirimPerintahMppt(kodeTombol) {
     if (client && client.isConnected()) {
         const topikCmd = "14751036/mpptlogger/cmd";
         
-        // Mengirimkan teks tombol asli (Bisa diubah ke huruf kecil .toLowerCase() jika hardware memintanya)
-        const pesan = new Paho.MQTT.Message(kodeTombol);
+        // Memastikan payload dirubah menjadi string murni
+        const payloadString = String(kodeTombol); 
+        
+        const pesan = new Paho.MQTT.Message(payloadString);
         pesan.destinationName = topikCmd;
+        
+        // Tambahkan QoS 1 atau 0 secara eksplisit jika diperlukan oleh broker
+        pesan.qos = 1; 
+        
         client.send(pesan);
-        console.log("Berhasil mengirim perintah ke MQTT: " + kodeTombol);
+        console.log("Berhasil mengirim perintah ke MQTT: " + payloadString);
     } else {
         alert("Gagal Mengirim! MQTT belum terhubung atau koneksi putus.");
     }
 }
+
 
   // Baris 1090: Pastikan elemen sudah ada di DOM sebelum memasang event listener
 document.addEventListener("DOMContentLoaded", () => {
