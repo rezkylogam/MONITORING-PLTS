@@ -1076,7 +1076,7 @@
 function kirimPerintahMppt(kodeTombol) {
     if (client && client.isConnected()) {
         // UBAH BARIS INI: Ganti ke topik perintah ESP Anda
-        const topikCmd = "14751036/mpptlogger/command"; 
+        const topikCmd = "14751036/mpptlogger/control"; 
         
         // JIKA ESP Anda menggunakan sub-topik terpisah, coba ganti menjadi salah satu dari ini:
         // const topikCmd = "14751036/mpptcontrol/cmd";
