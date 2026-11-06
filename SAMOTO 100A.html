@@ -1091,19 +1091,19 @@ function kirimPerintahMppt(kodeTombol) {
 document.addEventListener("DOMContentLoaded", () => {
     
     document.getElementById('btn-esc')?.addEventListener('click', () => {
-        kirimPerintahMppt(1); // Mengirim angka 1 untuk ESC
+        kirimPerintahMppt("esc");
     });
 
     document.getElementById('btn-up')?.addEventListener('click', () => {
-        kirimPerintahMppt(2); // Mengirim angka 2 untuk UP
+        kirimPerintahMppt("up");
     });
 
     document.getElementById('btn-down')?.addEventListener('click', () => {
-        kirimPerintahMppt(3); // Mengirim angka 3 untuk DOWN
+        kirimPerintahMppt("down");
     });
 
     document.getElementById('btn-function')?.addEventListener('click', () => {
-        kirimPerintahMppt(4); // Mengirim angka 4 untuk FUNCTION
+        kirimPerintahMppt("function");
     });
   
 });
