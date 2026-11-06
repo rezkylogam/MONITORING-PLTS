@@ -1087,19 +1087,11 @@ function kirimPerintahMppt(kodeTombol) {
     }
 }
 
-// Menangkap semua elemen button di halaman web Anda
-document.querySelectorAll('button').forEach(tombol => {
-    const teksInternal = tombol.textContent || tombol.innerText;
-    
-    // Cari tombol yang mengandung teks menu fisik MPPT
-    if (teksInternal.includes("ESC")) {
-        tombol.addEventListener('click', () => kirimPerintahMppt("ESC"));
-    } else if (teksInternal.includes("UP")) {
-        tombol.addEventListener('click', () => kirimPerintahMppt("UP"));
-    } else if (teksInternal.includes("DOWN")) {
-        tombol.addEventListener('click', () => kirimPerintahMppt("DOWN"));
-    } else if (teksInternal.includes("FUNCTION")) {
-        tombol.addEventListener('click', () => kirimPerintahMppt("FUNCTION"));
+ // Langsung pasang event listener ke masing-masing ID tombol
+      document.getElementById('btn-esc')?.addEventListener('click', () => kirimPerintahMppt("ESC"));
+      document.getElementById('btn-up')?.addEventListener('click', () => kirimPerintahMppt("UP"));
+      document.getElementById('btn-down')?.addEventListener('click', () => kirimPerintahMppt("DOWN"));
+      document.getElementById('btn-function')?.addEventListener('click', () => kirimPerintahMppt("FUNCTION"));
     }
 });
     // Initialize an empty chart
