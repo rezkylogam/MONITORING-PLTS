@@ -1070,6 +1070,63 @@
       URL.revokeObjectURL(url);
     });
 
+    // --- LOGIKA UNTUK MENGAKTIFKAN REPLIKA TOMBOL FISIK ---
+
+// 1. Daftarkan elemen tombol berdasarkan struktur kelas/ID HTML Anda
+// (Sesuaikan selektor jika Anda menambahkan ID spesifik pada HTML tombolnya)
+const btnEsc = document.querySelector('button:has(span:contains("ESC"))') || document.querySelectorAll('.dashboard button')[0]; // Contoh jika tanpa ID
+const btnUp = document.querySelector('button:has(span:contains("UP"))') || document.querySelectorAll('.dashboard button')[1];
+const btnDown = document.querySelector('button:has(span:contains("DOWN"))') || document.querySelectorAll('.dashboard button')[2];
+const btnFunction = document.querySelector('button:has(span:contains("FUNCTION"))') || document.querySelectorAll('.dashboard button')[3];
+
+// Catatan: Agar lebih aman dan mudah, disarankan menambahkan id="btn-esc", id="btn-up", dll 
+// pada elemen <button> di baris 323, 334, 345, 356 di file HTML Anda.
+// Jika sudah diberi ID, kodenya menjadi lebih sederhana seperti di bawah ini:
+// const btnEsc = document.getElementById('btn-esc');
+
+// 2. Fungsi untuk mengirim perintah ke MPPT via MQTT
+function sendMpptCommand(commandText) {
+    if (client && client.isConnected()) {
+        // Menggunakan topik perintah yang sama seperti tombol GET DATA
+        const topic = "14751036/mpptlogger/cmd"; 
+        
+        // Buat payload pesan (sesuaikan formatnya dengan firmware mikrokontroler/MPPT Anda)
+        // Contoh di bawah ini mengirimkan string mentah seperti "ESC", "UP", "DOWN", "FUNC"
+        const message = new Paho.MQTT.Message(commandText);
+        message.destinationName = topic;
+        
+        client.send(message);
+        console.log(`Perintah dikirim ke MPPT: ${commandText}`);
+    } else {
+        showCustomAlert("Kesalahan", "Gagal mengirim perintah. Koneksi MQTT terputus!");
+    }
+}
+
+// 3. Pasangkan fungsi klik ke masing-masing tombol
+// *PENTING: Ganti parameter string ('ESC', 'UP', dll) sesuai dengan karakter kode yang dikenali oleh program hardware/MPPT Anda.*
+if(btnEsc) {
+    btnEsc.addEventListener('click', function() {
+        sendMpptCommand('ESC'); 
+    });
+}
+
+if(btnUp) {
+    btnUp.addEventListener('click', function() {
+        sendMpptCommand('UP');
+    });
+}
+
+if(btnDown) {
+    btnDown.addEventListener('click', function() {
+        sendMpptCommand('DOWN');
+    });
+}
+
+if(btnFunction) {
+    btnFunction.addEventListener('click', function() {
+        sendMpptCommand('FUNCTION');
+    });
+}
     // Initialize an empty chart
     initChart([], []);
   </script>
