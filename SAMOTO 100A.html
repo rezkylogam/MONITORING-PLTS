@@ -1075,42 +1075,36 @@
 // ==========================================
 function kirimPerintahMppt(kodeTombol) {
     if (client && client.isConnected()) {
-        const topikCmd = "14751036/mpptlogger/cmd";
+        // Pastikan topik ini adalah topik yang didengarkan oleh ESP untuk perintah tombol
+        const topikCmd = "14751036/mpptlogger/cmd"; 
         
-        // Memastikan payload dirubah menjadi string murni
-        const payloadString = String(kodeTombol); 
-        
-        const pesan = new Paho.MQTT.Message(payloadString);
+        const pesan = new Paho.MQTT.Message(kodeTombol);
         pesan.destinationName = topikCmd;
         
-        // Tambahkan QoS 1 atau 0 secara eksplisit jika diperlukan oleh broker
-        pesan.qos = 1; 
-        
         client.send(pesan);
-        console.log("Berhasil mengirim perintah ke MQTT: " + payloadString);
+        console.log("Mengirim kode perintah ke MQTT: " + kodeTombol);
     } else {
-        alert("Gagal Mengirim! MQTT belum terhubung atau koneksi putus.");
+        alert("Koneksi MQTT terputus!");
     }
 }
-
 
   // Baris 1090: Pastikan elemen sudah ada di DOM sebelum memasang event listener
 document.addEventListener("DOMContentLoaded", () => {
     
     document.getElementById('btn-esc')?.addEventListener('click', () => {
-        kirimPerintahMppt("esc");
+        kirimPerintahMppt("1");
     });
 
     document.getElementById('btn-up')?.addEventListener('click', () => {
-        kirimPerintahMppt("up");
+        kirimPerintahMppt("2");
     });
 
     document.getElementById('btn-down')?.addEventListener('click', () => {
-        kirimPerintahMppt("down");
+        kirimPerintahMppt("3");
     });
 
     document.getElementById('btn-function')?.addEventListener('click', () => {
-        kirimPerintahMppt("function");
+        kirimPerintahMppt("4");
     });
   
 });
