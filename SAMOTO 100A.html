@@ -1071,32 +1071,36 @@
     });
 
     // ==========================================
-// KODE LOGIKA REPLIKA TOMBOL FISIK MPPT
+// KODE ANTI-GAGAL LOGIKA TOMBOL FISIK MPPT
 // ==========================================
-const tombolMppt = document.querySelectorAll('button.flex-col');
-
 function kirimPerintahMppt(kodeTombol) {
     if (client && client.isConnected()) {
         const topikCmd = "14751036/mpptlogger/cmd";
+        
+        // Mengirimkan teks tombol asli (Bisa diubah ke huruf kecil .toLowerCase() jika hardware memintanya)
         const pesan = new Paho.MQTT.Message(kodeTombol);
         pesan.destinationName = topikCmd;
         client.send(pesan);
-        console.log("Perintah terkirim ke MQTT: " + kodeTombol);
+        console.log("Berhasil mengirim perintah ke MQTT: " + kodeTombol);
     } else {
-        showCustomAlert("Koneksi Putus", "Gagal mengirim perintah. Silakan hubungkan kembali MQTT Anda.");
+        alert("Gagal Mengirim! MQTT belum terhubung atau koneksi putus.");
     }
 }
 
-tombolMppt.forEach(tombol => {
-    tombol.addEventListener('click', function() {
-        const spanTeks = this.querySelector('span.tracking-wider');
-        if (!spanTeks) return;
-        
-        const teksTombol = spanTeks.innerText.trim();
-        if (["ESC", "UP", "DOWN", "FUNCTION"].includes(teksTombol)) {
-            kirimPerintahMppt(teksTombol);
-        }
-    });
+// Menangkap semua elemen button di halaman web Anda
+document.querySelectorAll('button').forEach(tombol => {
+    const teksInternal = tombol.textContent || tombol.innerText;
+    
+    // Cari tombol yang mengandung teks menu fisik MPPT
+    if (teksInternal.includes("ESC")) {
+        tombol.addEventListener('click', () => kirimPerintahMppt("ESC"));
+    } else if (teksInternal.includes("UP")) {
+        tombol.addEventListener('click', () => kirimPerintahMppt("UP"));
+    } else if (teksInternal.includes("DOWN")) {
+        tombol.addEventListener('click', () => kirimPerintahMppt("DOWN"));
+    } else if (teksInternal.includes("FUNCTION")) {
+        tombol.addEventListener('click', () => kirimPerintahMppt("FUNCTION"));
+    }
 });
     // Initialize an empty chart
     initChart([], []);
