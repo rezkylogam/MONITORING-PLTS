@@ -1075,16 +1075,18 @@
 // ==========================================
 function kirimPerintahMppt(kodeTombol) {
     if (client && client.isConnected()) {
-        // Pastikan topik ini adalah topik yang didengarkan oleh ESP untuk perintah tombol
+        // UBAH BARIS INI: Ganti ke topik perintah ESP Anda
         const topikCmd = "14751036/mpptlogger/cmd"; 
+        
+        // JIKA ESP Anda menggunakan sub-topik terpisah, coba ganti menjadi salah satu dari ini:
+        // const topikCmd = "14751036/mpptcontrol/cmd";
+        // const topikCmd = "14751036/mpptlogger/control";
         
         const pesan = new Paho.MQTT.Message(kodeTombol);
         pesan.destinationName = topikCmd;
         
         client.send(pesan);
         console.log("Mengirim kode perintah ke MQTT: " + kodeTombol);
-    } else {
-        alert("Koneksi MQTT terputus!");
     }
 }
 
