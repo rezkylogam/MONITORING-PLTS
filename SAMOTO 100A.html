@@ -663,7 +663,7 @@
       const sensorName = topic.substring(20);
     // Tambahan pemetaan khusus langsung ke replika panel LCD Samoto
       const cleanName = sensorName.toLowerCase();
-      const numericPayload = parseFloat(payload);
+      const numericPayload = isNaN(parseFloat(payload)) ? 0 : parseFloat(payload);
 
       console.log("Sensor:", cleanName, "| Payload asli:", payload, "| Hasil angka:", numericPayload);
 
@@ -1074,26 +1074,13 @@
 // KODE ANTI-GAGAL LOGIKA TOMBOL FISIK MPPT
 // ==========================================
 function kirimPerintahMppt(kodeTombol) {
+    console.log("Tombol diklik, mencoba mengirim kode: " + kodeTombol);
+    console.log("Status Koneksi MQTT saat ini: " + (client ? client.isConnected() : "Belum diinisialisasi"));
+
     if (client && client.isConnected()) {
-        // Gunakan topik log utama yang didengarkan bersama oleh ESP dan Web
-        const topikCmd = "14751036/mpptlogger/log"; 
-        
-        // Buat payload dalam format JSON untuk memaksa nilai newdatacmd berubah
-        const dataJson = {
-            newdatacmd: parseInt(kodeTombol), // Mengubah string "1" menjadi angka 1 murni
-            newdatapy: 0
-        };
-        
-        // Konversi objek JavaScript menjadi teks JSON String
-        const payloadString = JSON.stringify(dataJson);
-        
-        const pesan = new Paho.MQTT.Message(payloadString);
-        pesan.destinationName = topikCmd;
-        
-        client.send(pesan);
-        console.log("Berhasil mengirim perintah JSON: " + payloadString);
+        // ... kode kirim JSON Anda ...
     } else {
-        alert("Koneksi MQTT terputus!");
+        console.error("Gagal mengirim! MQTT tidak terhubung.");
     }
 }
 
