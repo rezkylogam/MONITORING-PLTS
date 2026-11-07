@@ -462,8 +462,7 @@
     
     // MQTT broker details
     // Ganti baris koneksi lama Anda dengan broker publik HiveMQ khusus WebSockets ini
-// --- SALIN DARI SINI ---
-const broker = 'wss://public:public@broker.shiftr.io'; 
+const broker = 'wss://broker.shiftr.io'; 
 const clientId = 'web-mppt-' + Math.random().toString(16).substr(2, 8);
 const client = new Paho.MQTT.Client(broker, clientId);
 
