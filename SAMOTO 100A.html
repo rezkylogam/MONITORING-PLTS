@@ -462,40 +462,42 @@
     
     // MQTT broker details
     // Ganti baris koneksi lama Anda dengan broker publik HiveMQ khusus WebSockets ini
-const broker = 'wss://://hivemq.com'; 
+// --- SALIN DARI SINI ---
+const broker = 'wss://public:public@broker.shiftr.io'; 
 const clientId = 'web-mppt-' + Math.random().toString(16).substr(2, 8);
 const client = new Paho.MQTT.Client(broker, clientId);
 
 client.connect({
-    userName: "username_broker_anda",
-    password: "password_broker_anda",
+    userName: "public",
+    password: "public",
     useSSL: true,
     onSuccess: onConnect,
     onFailure: onFailure
 });
 
-    function onConnect() {
-      console.log('Connected to broker');
-      document.getElementById('mqtt-status-text').textContent = 'Terhubung';
-      document.getElementById('mqtt-indicator').className = 'status-indicator w-3 h-3 rounded-full bg-success-green shadow-lg shadow-success-green/30';
-      client.subscribe('14751036/#');
-    }
+function onConnect() {
+    console.log('Connected to broker');
+    document.getElementById('mqtt-status-text').textContent = 'Terhubung';
+    document.getElementById('mqtt-indicator').className = 'status-indicator w-3 h-3 rounded-full bg-success-green shadow-lg shadow-success-green/';
+    client.subscribe('14751036/#');
+}
 
-    function onFailure(error) {
-      console.error('Connection failed: ', error);
-      document.getElementById('mqtt-status-text').textContent = 'Koneksi gagal';
-      document.getElementById('mqtt-indicator').className = 'status-indicator w-3 h-3 rounded-full bg-red-500 shadow-lg shadow-red-700/30';
-      
-      // Retry connection after 5 seconds
-      setTimeout(() => {
+function onFailure(error) {
+    console.error('Connection failed: ', error);
+    document.getElementById('mqtt-status-text').textContent = 'Koneksi gagal';
+    document.getElementById('mqtt-indicator').className = 'status-indicator w-3 h-3 rounded-full bg-red-500 shadow-lg shadow-red-700/30';
+    
+    // Retry connection after 5 seconds
+    setTimeout(() => {
         client.connect({
-          userName: "public",
-          password: "public",
-          onSuccess: onConnect,
-          onFailure: onFailure
+            userName: "public",
+            password: "public",
+            useSSL: true,
+            onSuccess: onConnect,
+            onFailure: onFailure
         });
-      }, 5000);
-    }
+    }, 5000);
+}
 
     // Handle incoming messages
     client.onMessageArrived = function(message) {
