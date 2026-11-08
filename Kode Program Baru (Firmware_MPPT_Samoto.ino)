@@ -1,0 +1,150 @@
+#include <WiFi.h>
+#include <PubSubClient.h>
+#include <ModbusMaster.h>
+
+// ================= KONFIGURASI WIFI & MQTT =================
+const char* ssid         = "NAMA_WIFI_ANDA";       // Ganti dengan Nama Wi-Fi Anda
+const char* password     = "PASSWORD_WIFI_ANDA";   // Ganti dengan Password Wi-Fi Anda
+const char* mqtt_server  = "://hivemq.com";    // Sesuaikan jika Anda menggunakan broker lain
+const int   mqtt_port    = 1883;
+
+// Topik MQTT disesuaikan dengan sistem Anda sebelumnya
+const char* topic_publish = "14751036/mpptlogger/data"; 
+const char* topic_control = "14751036/mpptlogger/cmd"; 
+
+// ================= KONFIGURASI HARDWARE (RS485) =================
+#define RX2_PIN 16     // Terhubung ke RO modul MAX485
+#define TX2_PIN 17     // Terhubung ke DI modul MAX485
+#define DE_RE_PIN 4    // Terhubung ke pin gabungan DE & RE modul MAX485
+
+ModbusMaster mppt;
+WiFiClient espClient;
+PubSubClient mqttClient(espClient);
+
+unsigned long lastMillis = 0;
+const long intervalRead = 2000; // Membaca data sensor setiap 2 detik
+
+// Fungsi Kontrol Arah Aliran Modbus (MAX485 Standar)
+void preTransmission() {
+  digitalWrite(DE_RE_PIN, HIGH); // Mode Mengirim (Transmit)
+}
+
+void postTransmission() {
+  digitalWrite(DE_RE_PIN, LOW);  // Mode Mendengarkan (Receive)
+}
+
+// ================= LOGIKA MENERIMA TOMBOL DARI WEB =================
+void callback(char* topic, byte* payload, unsigned int length) {
+  String message = "";
+  for (unsigned int i = 0; i < length; i++) {
+    message += (char)payload[i];
+  }
+  
+  Serial.print("Perintah Tombol Masuk dari Web: ");
+  Serial.println(message);
+
+  // Alamat Register Kontrol Tombol MPPT Samoto (Standar Modbus MPPT: 0x000A)
+  // Anda bisa mengubah alamat 0x000A ini jika memiliki tabel register Samoto yang berbeda
+  const uint16_t REG_TOMBOL = 0x000A; 
+  uint8_t result = 0;
+
+  if (message == "1") {
+    Serial.println("Mengeksekusi Tombol: ESC via RS485...");
+    result = mppt.writeSingleRegister(REG_TOMBOL, 1);
+  } 
+  else if (message == "2") {
+    Serial.println("Mengeksekusi Tombol: UP via RS485...");
+    result = mppt.writeSingleRegister(REG_TOMBOL, 2);
+  } 
+  else if (message == "3") {
+    Serial.println("Mengeksekusi Tombol: DOWN via RS485...");
+    result = mppt.writeSingleRegister(REG_TOMBOL, 3);
+  } 
+  else if (message == "4") {
+    Serial.println("Mengeksekusi Tombol: FUNCTION via RS485...");
+    result = mppt.writeSingleRegister(REG_TOMBOL, 4);
+  }
+
+  // Respon Status Pengiriman Modbus ke Serial Monitor
+  if (result == mppt.ku8MBSuccess) {
+    Serial.println("-> Modbus Write Sukses! Perintah terkirim ke MPPT.");
+  } else {
+    Serial.print("-> Modbus Write Gagal. Kode Error: ");
+    Serial.println(result, HEX);
+  }
+}
+
+// ================= KONEKSI ULANG JARINGAN =================
+void reconnect() {
+  while (!mqttClient.connected()) {
+    Serial.print("Menghubungkan ke MQTT Broker...");
+    if (mqttClient.connect("ESP32_MPPT_Logger_Client")) {
+      Serial.println("Terhubung!");
+      mqttClient.subscribe(topic_control); // Berlangganan ke topik tombol web
+    } else {
+      Serial.print("Gagal, status=");
+      Serial.print(mqttClient.state());
+      Serial.println(" Mencoba lagi dalam 5 detik...");
+      delay(5000);
+    }
+  }
+}
+
+void setup() {
+  Serial.begin(115200);
+  
+  // Atur pin kontrol arah data MAX485
+  pinMode(DE_RE_PIN, OUTPUT);
+  digitalWrite(DE_RE_PIN, LOW); // Awal mode mendengarkan
+
+  // Setup Serial2 untuk komunikasi RS485 (9600 bps adalah standar Modbus MPPT)
+  Serial2.begin(9600, SERIAL_8N1, RX2_PIN, TX2_PIN);
+
+  // Inisialisasi Modbus Master (Slave ID MPPT biasanya 1)
+  mppt.begin(1, Serial2);
+  mppt.preTransmission(preTransmission);
+  mppt.postTransmission(postTransmission);
+
+  // Hubungkan ke Wi-Fi
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nWi-Fi Terhubung!");
+
+  mqttClient.setServer(mqtt_server, mqtt_port);
+  mqttClient.setCallback(callback);
+}
+
+void loop() {
+  if (!mqttClient.connected()) {
+    reconnect();
+  }
+  mqttClient.loop();
+
+  // Membaca Data Sensor MPPT secara berkala (Setiap 2 detik)
+  unsigned long currentMillis = millis();
+  if (currentMillis - lastMillis >= intervalRead) {
+    lastMillis = currentMillis;
+
+    uint8_t result;
+    // Contoh membaca 6 register data sensor dimulai dari alamat 0x3100 (Standar EPEVER/Samoto)
+    result = mppt.readInputRegisters(0x3100, 6);
+    
+    if (result == mppt.ku8MBSuccess) {
+      float vpv = mppt.getResponseBuffer(0x00) / 100.0;
+      float vbat = mppt.getResponseBuffer(0x02) / 100.0;
+      float current = mppt.getResponseBuffer(0x01) / 100.0;
+
+      // Susun data menjadi format string / JSON untuk dikirim ke aplikasi web Anda
+      String payloadData = "{\"vpv\":" + String(vpv) + ",\"vbat\":" + String(vbat) + ",\"current\":" + String(current) + "}";
+      
+      mqttClient.publish(topic_publish, payloadData.c_str());
+      Serial.println("Data sensor berhasil dikirim ke Web: " + payloadData);
+    } else {
+      Serial.print("Gagal membaca data sensor MPPT. Kode Error: ");
+      Serial.println(result, HEX);
+    }
+  }
+}
