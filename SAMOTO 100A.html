@@ -1040,20 +1040,27 @@
 
     // Fungsi untuk menangani klik tombol replika fisik MPPT
 function sendButtonCommand(buttonName) {
-    // PERBAIKAN UTAMA: Mengarahkan langsung ke topik utama cmd
+    // Tetap gunakan topik utama yang sudah terbukti terhubung ke logger Anda
     const topic = "14751036/mpptlogger/cmd";
 
-    // Menggunakan string parameter gabungan agar dikenali oleh modul serial
-    let payload = "newdataCmd=0";
+    // Tentukan nilai angka perintah tombol fisik
+    let cmdValue = 0;
     if (buttonName === "ESC") {
-        payload = "newdataCmd=1";
+        cmdValue = 1;
     } else if (buttonName === "UP") {
-        payload = "newdataCmd=2";
+        cmdValue = 2;
     } else if (buttonName === "DOWN") {
-        payload = "newdataCmd=3";
+        cmdValue = 3;
     } else if (buttonName === "FUNCTION") {
-        payload = "newdataCmd=4";
+        cmdValue = 4;
     }
+
+    // FORMAT KUNCI: Membungkus nilai angka ke dalam objek JSON string
+    // Menggunakan key "newdatacmd" sesuai dengan alokasi nama variabel di firmware biner Anda
+    const payloadObj = {
+        "newdatacmd": cmdValue
+    };
+    const payload = JSON.stringify(payloadObj);
 
     console.log(`[AKSI] Mengirim Perintah Tombol -> Topik: ${topic} -> Payload: ${payload}`);
 
