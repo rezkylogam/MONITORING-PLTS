@@ -1040,26 +1040,22 @@
 
     // Fungsi kendali 4 tombol MPPT via MQTT & Modbus RS485
 function sendButtonCommand(commandValue) {
-    // Menggunakan topik kontrol bawaan sistem mpptlogger Anda
     const topicControl = "14751036/mpptlogger/cmd"; 
     
     if (typeof client !== 'undefined') {
         let btnCode = "";
-
-        // Terjemahkan perintah tombol menjadi angka index yang dikenali firmware
         if (commandValue === "ESC") btnCode = "1";
         if (commandValue === "UP") btnCode = "2";
         if (commandValue === "DOWN") btnCode = "3";
         if (commandValue === "FUNCTION") btnCode = "4";
 
-        // Gabungkan dengan prefix kontrol "2#$" agar ESP32 tahu ini perintah tombol
-        let formattedCommand = "2#$" + btnCode;
+        // Tambahkan karakter pemisah penutup \r\n (Carriage Return & Line Feed)
+        let formattedCommand = "2#$" + btnCode + "\r\n";
 
-        // Mengirimkan pesan ke broker MQTT menggunakan fungsi Paho MQTT Client bawaan web Anda
         client.send(topicControl, formattedCommand);
-        console.log(`[Kontrol MPPT] Berhasil mengirim perintah ke MQTT: ${formattedCommand}`);
+        console.log(`Perintah dikirim ke MQTT: ${formattedCommand}`);
     } else {
-        console.error("[Kontrol MPPT] Gagal mengirim: Koneksi MQTT ke server terputus.");
+        console.error("Gagal mengirim perintah: Koneksi MQTT terputus.");
     }
 }
     
