@@ -1038,33 +1038,36 @@
       document.getElementById('loader').classList.add('hidden');
     }
 
-    // Fungsi untuk menangani klik tombol replika fisik MPPT
-function sendButtonCommand(buttonName) {
-    // KUNCI UTAMA: Kembali ke topik tunggal yang didengar oleh mikrokontroler
-    const topic = "14751036/mpptlogger/cmd";
+    // 1. Definisikan fungsi untuk mempublikasikan perintah ke Broker MQTT
+function kirimPerintahMPPT(commandValue) {
+    // Sesuaikan topik MQTT kontrol dengan yang di-subscribe oleh ESP32 Anda
+    const topicControl = "rezkylogam/samoto100a/control"; 
     
-    let cmdValue = "0";
-    if (buttonName === "ESC") {
-        cmdValue = "1";
-    } else if (buttonName === "UP") {
-        cmdValue = "2";
-    } else if (buttonName === "DOWN") {
-        cmdValue = "3";
-    } else if (buttonName === "FUNCTION") {
-        cmdValue = "4";
-    }
-
-    // FORMAT PARSING ASLI FIRMWARE: Variabel + Koma + Nilai Tombol
-    const payload = "newcmdmqttpost," + cmdValue;
-
-    console.log(`[AKSI] Mengirim Perintah Tombol -> Topik: ${topic} -> Payload: ${payload}`);
-
-    if (client && client.isConnected()) {
-        const message = new Paho.MQTT.Message(payload);
-        message.destinationName = topic;
-        client.send(message);
+    // Kirim pesan teks biasa (atau bisa diubah ke format JSON sesuai kebutuhan firmware)
+    if (typeof client !== 'undefined' && client.connected) {
+        client.publish(topicControl, commandValue, { qos: 1 });
+        console.log(`Perintah dikirim ke MQTT: ${commandValue}`);
     } else {
-        showCustomAlert("Kesalahan", "Gagal mengirim perintah. Koneksi MQTT terputus!");
+        console.error("Gagal mengirim perintah: Koneksi MQTT terputus.");
+    }
+}
+
+// 2. Hubungkan fungsi ke masing-masing elemen tombol di Web UI
+document.getElementById("btn-esc").addEventListener("click", function() {
+    kirimPerintahMPPT("ESC");
+});
+
+document.getElementById("btn-up").addEventListener("click", function() {
+    kirimPerintahMPPT("UP");
+});
+
+document.getElementById("btn-down").addEventListener("click", function() {
+    kirimPerintahMPPT("DOWN");
+});
+
+document.getElementById("btn-function").addEventListener("click", function() {
+    kirimPerintahMPPT("FUNCTION");
+});
     }
 }
     
