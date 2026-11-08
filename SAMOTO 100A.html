@@ -1049,8 +1049,8 @@ function sendButtonCommand(commandValue) {
         if (commandValue === "DOWN") btnCode = "3";
         if (commandValue === "FUNCTION") btnCode = "4";
 
-        // Tambahkan karakter pemisah penutup \r\n (Carriage Return & Line Feed)
-        let formattedCommand = "2#$" + btnCode + "\r\n";
+        // Tambahkan tanda pagar di bagian akhir perintah sebagai pembatas penutup
+        let formattedCommand = "2#$" + btnCode + "#";
 
         client.send(topicControl, formattedCommand);
         console.log(`Perintah dikirim ke MQTT: ${formattedCommand}`);
