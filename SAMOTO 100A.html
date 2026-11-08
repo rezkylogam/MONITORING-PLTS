@@ -1038,17 +1038,21 @@
       document.getElementById('loader').classList.add('hidden');
     }
 
-    // Fungsi kendali 4 tombol MPPT via MQTT & Modbus RS485
+    // Fungsi kendali 4 tombol MPPT - Format Angka Mentah untuk newdatacmd
 function sendButtonCommand(commandValue) {
     const topicControl = "14751036/mpptlogger/cmd"; 
+    
     if (typeof client !== 'undefined') {
         let btnCode = "";
+
+        // Ubah nama tombol langsung menjadi string angka mentah sesuai target firmware
         if (commandValue === "ESC") btnCode = "1";
         if (commandValue === "UP") btnCode = "2";
         if (commandValue === "DOWN") btnCode = "3";
         if (commandValue === "FUNCTION") btnCode = "4";
 
-        let formattedCommand = "2#$" + btnCode; // Format murni paling stabil
+        // Kirim hanya angka mentah saja agar dibaca sempurna oleh newdatacmd
+        let formattedCommand = btnCode; 
 
         client.send(topicControl, formattedCommand);
         console.log(`Perintah dikirim ke MQTT: ${formattedCommand}`);
