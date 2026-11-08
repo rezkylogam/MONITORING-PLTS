@@ -1047,14 +1047,14 @@ function sendButtonCommand(buttonName) {
     // 2. Tentukan payload perintah berdasarkan tombol yang diklik
     // CATATAN: Sesuaikan isi string perintah ini ('#ESC', '#UP', dll) dengan format yang diterima oleh firmware hardware monitoring Anda!
     let payload = "";
-    if (buttonName === "ESC") {
-        payload = "#ESC"; 
+           if (buttonName === "ESC") {
+        payload = "1"; // atau coba "0" 
     } else if (buttonName === "UP") {
-        payload = "#UP";
+        payload = "2"; // atau coba "1"
     } else if (buttonName === "DOWN") {
-        payload = "#DOWN";
+        payload = "3"; // atau coba "2"
     } else if (buttonName === "FUNCTION") {
-        payload = "#FUNCTION";
+        payload = "4"; // atau coba "3"
     }
 
     console.log(`Mengirim perintah tombol fisik: ${buttonName} -> Payload: ${payload}`);
