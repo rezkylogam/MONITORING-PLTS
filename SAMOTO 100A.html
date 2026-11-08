@@ -1040,10 +1040,8 @@
 
     // Fungsi untuk menangani klik tombol replika fisik MPPT
 function sendButtonCommand(buttonName) {
-    // PERBAIKAN UTAMA: Mengarahkan langsung ke variabel sub-topic perintah mikrokontroler Anda
     const topic = "14751036/mpptlogger/newdataCmd";
     
-    // FORMAT ASLI: Mengirimkan angka mentah murni (tanpa teks, tanpa JSON, tanpa tanda baca)
     let payload = "0";
     if (buttonName === "ESC") {
         payload = "1";
@@ -1057,11 +1055,20 @@ function sendButtonCommand(buttonName) {
 
     console.log(`[AKSI FINAL] Mengirim Perintah Tombol -> Topik: ${topic} -> Payload: ${payload}`);
 
-    // Mengirimkan pesan lewat Paho MQTT
     if (client && client.isConnected()) {
-        const message = new Paho.MQTT.Message(payload);
-        message.destinationName = topic;
-        client.send(message);
+        // 1. Kirim status tombol DITEKAN
+        const messagePress = new Paho.MQTT.Message(payload);
+        messagePress.destinationName = topic;
+        client.send(messagePress);
+
+        // 2. Kirim status tombol DILEPAS (Kembali ke angka 0) setelah 200 milidetik
+        setTimeout(function() {
+            console.log(`[AKSI FINAL] Melepas Tombol -> Topik: ${topic} -> Payload: 0`);
+            const messageRelease = new Paho.MQTT.Message("0");
+            messageRelease.destinationName = topic;
+            client.send(messageRelease);
+        }, 200); // Jeda waktu klik 0.2 detik biasa yang pas untuk hardware
+
     } else {
         showCustomAlert("Kesalahan", "Gagal mengirim perintah. Koneksi MQTT terputus!");
     }
