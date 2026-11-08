@@ -1056,7 +1056,7 @@ function sendButtonCommand(buttonName) {
     }
 
     // Menggabungkan nama variabel biner dengan nilai tombolnya
-    const payload = "newcmdmqttpost:" + cmdValue;
+    const payload = "newcmdmqttpost#" + cmdValue;
 
     console.log(`[AKSI] Mengirim perintah tombol fisik: ${buttonName} -> Payload: ${payload}`);
 
