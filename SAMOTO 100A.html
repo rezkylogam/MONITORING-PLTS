@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MPPT SOLAR MONITORING - DASHBOARD</title>
+  
+  <!-- Load Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind Configuration for custom color/font (Dark Blue / Cyan Theme) -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark-bg': '#000000',      // Sangat Gelap (Sangat Hitam)
+            'card-bg': '#161B22',      // Abu-abu Gelap (Untuk Panel)
+            'accent-main': '#FF7F00',  // Cyan Terang (Primary Accent - Menonjol)
+            'accent-secondary': '#FF0000', // Biru Langit (Secondary Accent)
+            'text-light': '#FFFFFF',   // Teks Putih Penuh
+            'success-green': '#00FF00', // Hijau Emerald (Status OK)
+            'border-color': '#30363D', // Border Abu-abu Sedang
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <!-- Inter Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+  
+  <!-- External Libraries -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+  
+  <style>
+    /* Mengganti CSS internal lama dengan Tailwind untuk body dan container */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Styling Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #161B22; /* card-bg */
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #30363D; /* border-color */
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569; 
+    }
+
+    /* Custom style for Flatpickr input to match the dark theme */
+    .flatpickr-input {
+      color: #FFFFFF;
+      background-color: #0D1117; /* dark-bg */
+      border: 1px solid #30363D;
+      transition: all 0.2s;
+    }
+
+    .flatpickr-input:focus {
+      border-color: #00FFFF; /* accent-main */
+      box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
+    }
+    
+    /* Style for the loader spinner */
+    .loader-spinner {
+      width: 60px;
+      height: 60px;
+      border: 8px solid #30363D;
+      border-top: 8px solid #00FFFF; 
+      border-radius: 50%;
+      animation: spin 1.5s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Tambahan untuk menyesuaikan Chart.js di tema gelap */
+    .chart-container {
+      /* Tinggi yang sudah memadai */
+      height: 450px; 
+    }
+
+    /* Custom Alert Modal Styling */
+    .custom-alert-modal-content {
+        max-width: 400px;
+        width: 90%;
+        background-color: #161B22;
+        color: #FFFFFF;
+    }
+
+    /* Override Flatpickr Dark Theme */
+    .flatpickr-calendar {
+        background-color: #161B22 !important;
+        border-color: #30363D !important;
+    }
+  </style>
+</head>
+<body class="bg-dark-bg min-h-screen p-4 md:p-8 text-text-light antialiased flex justify-center items-center">
+  
+  <!-- Custom Alert Modal (Ganti fungsi alert() asli) -->
+  <div id="custom-alert-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center hidden">
+    <div class="custom-alert-modal-content p-6 rounded-xl shadow-2xl border border-accent-main">
+        <h4 class="text-2xl font-bold text-accent-main mb-3" id="alert-title"></h4>
+        <p class="text-text-light mb-5" id="alert-message"></p>
+        <button class="w-full p-3 rounded-lg bg-accent-main text-dark-bg font-semibold hover:bg-cyan-400 transition-colors" id="alert-ok-btn">OK</button>
+    </div>
+  </div>
+
+
+  <div class="container w-full max-w-7xl bg-card-bg rounded-2xl shadow-2xl space-y-8 p-6 md:p-10 border border-border-color">
+    
+    <!-- HEADER & STATUS BAR BARU -->
+    <header class="hidden">
+      <!-- Row 1: Title -->
+      <div class="mb-2 hidden">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-wide">
+          MPPT SAMOTO 100A MONITORING
+        </h1>
+        <h2 class="text-md font-light text-accent-main hidden sm:block">
+          Pelacakan Kinerja Energi Surya Real-time By Rezky Logam
+        </h2>
+      </div>
+
+      <!-- Row 2: MQTT Status and Last Update (Diperkuat) -->
+      <div class="hidden flex justify-between items-center p-3 rounded-lg bg-dark-bg border border-border-color shadow-inner">
+        <!-- MQTT Status -->
+        <div class="mqtt-status flex items-center gap-2">
+          <div class="status-indicator w-3 h-3 rounded-full bg-red-500 shadow-lg shadow-red-700/30" id="mqtt-indicator"></div>
+          <span id="mqtt-status-text" class="text-white font-semibold text-sm">Connecting to Server...</span>
+        </div>
+        <!-- Last Update -->
+        <div class="last-update text-accent-secondary text-sm">
+            Last Update: <span id="update-time" class="font-mono text-text-light">Just now</span>
+        </div>
+      </div>
+    </header>
+    
+    <!-- DASHBOARD PANELS -->
+    <div class="dashboard space-y-6">
+      
+      <!-- REAL-TIME DATA PANEL (Paling atas, menonjolkan ringkasan data) -->
+      <div class="data-panel bg-dark-bg p-6 rounded-xl shadow-lg">
+        <div class="panel-title flex justify-between items-center pb-4 mb-4 border-b border-border-color">
+          <h3 class="text-2xl font-semibold text-white">Data Sensor Saat Ini</h3>
+          <div class="solar-status flex items-center space-x-2">
+            <span class="text-success-green font-bold text-sm">● ACTIVE</span>
+          </div>
+        </div>
+        
+        <!-- Tampilan Layar LCD Fisik Replika -->
+<div class="w-full max-w-4xl mx-auto flex flex-col items-center mb-6">
+    
+    <!-- 3 LAMPU INDIKATOR ATAS (ALARM, CHARGE, LOAD) -->
+    <div class="w-full flex justify-between items-center px-12 mb-6 font-mono select-none">
+        
+        <!-- INDIKATOR ALARM -->
+        <div class="flex flex-col items-center space-y-2">
+            <span class="text-gray-400 text-xs font-bold tracking-wider">ALARM</span>
+            <div id="led-alarm" class="w-8 h-4 bg-red-950/40 rounded-sm border border-red-900/60 transition-all duration-300"></div>
+        </div>
+
+        <!-- INDIKATOR CHARGE -->
+        <div class="flex flex-col items-center space-y-2">
+            <span class="text-gray-400 text-xs font-bold tracking-wider">CHARGE</span>
+            <div id="led-charge" class="w-8 h-4 bg-green-950/40 rounded-sm border border-green-900/60 transition-all duration-300"></div>
+        </div>
+
+        <!-- INDIKATOR LOAD -->
+        <div class="flex flex-col items-center space-y-2">
+            <span class="text-gray-400 text-xs font-bold tracking-wider">LOAD</span>
+            <div id="led-load" class="w-8 h-4 bg-amber-950/40 rounded-sm border border-amber-900/60 transition-all duration-300"></div>
+        </div>
+
+    </div>
+
+    <!-- BOX LAYAR LCD BIRU -->
+    <div class="w-full bg-[#001ff8] border-4 border-[#30363d] rounded-lg p-10 font-mono text-[#ffffff] shadow-2xl relative">
+        
+        <!-- Baris 1: Tanggal & Waktu Terkini (Tanpa Garis Pembatas Biru) -->
+  <div class="flex justify-between items-start pb-2 mb-4 text-xl sm:text-2xl font-bold tracking-wide">
+    <!-- Kolom Kiri: Tanggal di atas, Volt PV tepat di bawahnya -->
+    <div class="flex flex-col items-start">
+      <span id="lcd-date">2026-11-03</span>
+      <span id="lcd-vpv" class="text-2xl sm:text-3xl font-black text-blue-200 mt-1">0V</span>
+    </div>
+    
+    <!-- Kolom Kanan: Waktu di atas, Volt BAT tepat di bawahnya -->
+    <div class="flex flex-col items-end">
+      <span id="lcd-time">08:15:58</span>
+      <span id="lcd-vbat" class="text-2xl sm:text-3xl font-black text-blue-200 mt-1">0.0V</span>
+    </div>
+  </div>
+
+  <!-- Baris 2 & 3: Komponen Status Tengah (Panel Surya -> MPPT -> Baterai) -->
+  <div class="grid grid-cols-3 items-center text-center py-2 mb-4">
+    
+    <!-- KOLOM KIRI: Ikon Panel Surya di ujung kiri + Garis Penghubung Panjang -->
+    <div class="flex items-center justify-between pl-4 text-blue-200 w-full">
+      <!-- Struktur Panel Surya (Tetap di ujung kiri) -->
+      <div class="flex flex-col gap-1 mr-1 shrink-0">
+        <div class="grid grid-cols-3 gap-0.5 w-16 bg-blue-300/20 p-0.5 border border-blue-400 rounded-sm">
+          <div class="h-4 bg-blue-200 rounded-xs"></div><div class="h-2 bg-blue-200 rounded-xs"></div><div class="h-2 bg-blue-200 rounded-xs"></div>
+        </div>
+        <div class="grid grid-cols-3 gap-0.5 w-16 bg-blue-300/20 p-0.5 border border-blue-400 rounded-sm">
+          <div class="h-4 bg-blue-200 rounded-xs"></div><div class="h-2 bg-blue-200 rounded-xs"></div><div class="h-2 bg-blue-200 rounded-xs"></div>
+        </div>
+        <div class="grid grid-cols-3 gap-0.5 w-16 bg-blue-300/20 p-0.5 border border-blue-400 rounded-sm">
+          <div class="h-4 bg-blue-200 rounded-xs"></div><div class="h-2 bg-blue-200 rounded-xs"></div><div class="h-2 bg-blue-200 rounded-xs"></div>
+        </div>
+      </div>
+      <!-- Garis hubung dinamis yang memanjang otomatis ke kanan menuju MPPT -->
+      <div class="h-0.5 flex-1 bg-blue-300 border-t border-b border-blue-400 ml-2"></div>
+    </div>
+    
+    <!-- KOLOM TENGAH: Kotak Status MPPT Utama -->
+    <div class="flex flex-col items-center justify-center border border-blue-300 rounded py-4 px-1.5 mx-1 bg-[#0018c8] relative z-10">
+      <span class="text-base font-black text-white tracking-widest leading-none">MPPT</span>
+      <!-- Detail garis bawah kecil menyerupai LCD asli -->
+      <div class="w-full flex justify-center gap-0.5 mt-1 opacity-80">
+        <div class="w-2 h-2 bg-blue-300"></div>
+        <div class="w-2 h-2 bg-blue-300"></div>
+        <div class="w-2 h-2 bg-blue-300"></div>
+      </div>
+      <span id="lcd-mppt-status" class="text-[10px] font-bold text-green-300 mt-0.5">ACTIVE</span>
+    </div>
+    
+    <!-- KOLOM KANAN: Garis Penghubung Panjang + Ikon Baterai di ujung kanan -->
+    <div class="flex items-center justify-between pr-4 text-blue-200 w-full">
+      <!-- Garis hubung dinamis yang memanjang otomatis dari MPPT ke kanan -->
+      <div class="h-0.5 flex-1 bg-blue-300 border-t border-b border-blue-400 mr-2"></div>
+      <!-- Badan Baterai (Tetap di ujung kanan) -->
+      <!-- Kepala Baterai di bagian ATAS -->
+<div class="flex flex-col items-center shrink-0">
+  <div class="w-4 h-1 bg-blue-400 rounded-t-xs mb-[-1px]"></div>
+  
+  <!-- Badan Baterai -->
+  <div class="w-12 h-14 border-2 border-blue-400 rounded-xs p-0.5 flex flex-col justify-between bg-blue-300/10">
+    <div class="h-2 bg-blue-200 w-full rounded-xs"></div>
+    <div class="h-2 bg-blue-200 w-full rounded-xs"></div>
+    <div class="h-2 bg-blue-200 w-full rounded-xs"></div>
+    <div class="h-2 bg-blue-200 w-full rounded-xs"></div>
+  </div>
+</div>
+    </div>
+</div>
+        <!-- Baris 4: Informasi Arus, Kode Status Hex, dan Akumulasi KWh Harian -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 text-xl sm:text-2x1 font-bold">
+  <!-- Kolom Kiri: Arus Pengisian (I$) dan Energi Harian (D$) -->
+  <div class="flex flex-col justify-center sm:items-start items-center space-y-2">
+    <!-- Arus Pengisian -->
+    <div class="flex items-center space-x-2">
+      <span class="text-blue-200 font-normal">I$:</span>
+      <span id="lcd-ichg" class="tracking-tight text-yellow-200">0.0A</span>
+    </div>
+    <!-- Energi Hari Ini (KWh) -->
+    <div class="flex items-center space-x-1">
+      <span class="text-blue-200 font-normal">D$:</span>
+      <span id="lcd-kwh" class="tracking-tight text-emerald-200">000.000kWh</span>
+    </div>
+  </div>
+
+  <!-- Kolom Tengah & Kanan: Status Ringkas & Ikon Lampu Beban (Load) -->
+    <div class="flex items-center justify-between col-span-2 pl-4 text-blue-200 relative">
+    <!-- Jalur garis vertikal & horizontal penghubung beban dari atas -->
+    <div class="absolute -top-8 right-10 w-0.5 h-8 bg-blue-300 border-r border-blue-400"></div>
+
+    <!-- SISI KIRI: Status Hex (Tetap di posisinya) -->
+    <div class="flex items-center space-x-2">
+        <span class="text-blue-200 font-normal">Status:</span>
+        <span id="lcd-hex" class="font-extrabold text-cyan-200">0x20</span>
+    </div>
+
+    <!-- SISI KANAN: Ikon Lampu Beban (Load) dalam Kotak Bulat/Melingkar -->
+    <div class="flex items-center pr-4">
+        <!-- Garis horizontal pendek masuk ke kotak lampu -->
+        <div class="h-0.5 w-4 bg-blue-300 border-t border-b border-blue-400"></div>
+        <!-- Kotak Bingkai Lampu -->
+        <div class="w-12 h-12 border border-blue-400 rounded-sm flex items-center justify-center bg-blue-300/10">
+            <!-- Ikon Bola Lampu SVG murni menyerupai tampilan LCD fisik -->
+            <svg class="w-6 h-6 text-blue-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 14c2.-2.4-.4.6-.7C16.8 11.7 17 10 15.8 8.3c-1-1.3-2.5-2-4.3-1.8-2.2-4.1 2.2-4.3 4.5-.1 1.4.4 2.7 1.4 3.6.7.6 1.2 1.4 1."/>
+                <path d="M9 18h6"></path>
+                <path d="M10 22h4"></path></span>
+              </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+  </div> <!-- TUTUP TOTAL LAYAR BIRU DI SINI -->
+
+  <!-- REPLIKA TOMBOL FISIK MPPT (ESC, UP, DOWN, FUNCTION) -->
+  <div class="mt-8 pt-6 border-t border-[#30363d]/50 flex justify-between items-center w-full px-4 font-mono select-none">
+    
+    <!-- TOMBOL ESC -->
+    <div class="flex flex-col items-center space-y-3">
+        <span class="text-gray-400 text-sm font-semibold tracking-wider">ESC</span>
+        <button type="button" class="w-20 h-20 rounded-full bg-[#161b22] border-4 border-[#30363d] flex items-center justify-center text-gray-300 shadow-md active:scale-95 transition-transform duration-100 hover:border-gray-500">
+            <!-- Ikon Power/Return Lingkaran Putus -->
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- TOMBOL UP -->
+    <div class="flex flex-col items-center space-y-3">
+        <span class="text-gray-400 text-sm font-semibold tracking-wider">UP</span>
+        <button type="button" class="w-20 h-20 rounded-full bg-[#161b22] border-4 border-[#30363d] flex items-center justify-center text-gray-300 shadow-md active:scale-95 transition-transform duration-100 hover:border-gray-500">
+            <!-- Ikon Segitiga Atas -->
+            <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24">
+                <polygon points="12,5 4,15 20,15" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- TOMBOL DOWN -->
+    <div class="flex flex-col items-center space-y-3">
+        <span class="text-gray-400 text-sm font-semibold tracking-wider">DOWN</span>
+        <button type="button" class="w-20 h-20 rounded-full bg-[#161b22] border-4 border-[#30363d] flex items-center justify-center text-gray-300 shadow-md active:scale-95 transition-transform duration-100 hover:border-gray-500">
+            <!-- Ikon Segitiga Bawah -->
+            <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24">
+                <polygon points="12,19 4,9 20,9" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- TOMBOL FUNCTION -->
+    <div class="flex flex-col items-center space-y-3">
+        <span class="text-gray-400 text-sm font-semibold tracking-wider">FUNCTION</span>
+        <button type="button" class="w-20 h-20 rounded-full bg-[#161b22] border-4 border-[#30363d] flex items-center justify-center text-gray-300 shadow-md active:scale-95 transition-transform duration-100 hover:border-gray-500">
+            <!-- Ikon Siklus/Gigi Berputar -->
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-3.75 3.75 3.75 3.75m-15-7.5l3.75 3.75-3.75 3.75" />
+            </svg>
+        </button>
+    </div>
+
+</div>
+</div>
+<!-- Container Data Asli (Tetap dipertahankan di bawahnya jika ingin card detail otomatis muncul) -->
+<div id="data-container" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 p-1 hidden">
+    <!-- Card detail otomatis dinamis masuk di sini oleh JS bawaan -->
+</div>
+      
+      <!-- CHART CONTAINER (Tepat di bawah Data Real-time) -->
+      <div class="chart-wrapper flex flex-col space-y-6 hidden">
+        <div class="chart-container relative bg-dark-bg rounded-2xl p-6 shadow-2xl border border-border-color flex-grow">
+          <div class="chart-header flex flex-col md:flex-row justify-between items-start md:items-center mb-4 pb-4 border-b border-border-color">
+            <div class="chart-title text-2xl font-semibold text-white mb-2 md:mb-0">Grafik Kinerja Seiring Waktu</div>
+            
+            <!-- Elemen ini diubah untuk menempatkan tips di samping tombol -->
+            <div class="flex flex-col md:flex-row items-start md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                 <p class="zoom-instructions text-xs text-gray-400 text-center md:text-left">
+                    Tips: Scroll Wheel / Shift + Drag untuk Zoom/Pan
+                </p>
+                <button onclick="chart.resetZoom()" class="text-sm px-4 py-1.5 bg-card-bg text-accent-secondary rounded-full hover:bg-border-color transition-colors font-bold border border-border-color">Reset Zoom</button>
+            </div>
+            
+          </div>
+          
+          <div id="loader" class="absolute inset-0 flex flex-col justify-center items-center bg-dark-bg/90 rounded-2xl z-10 hidden">
+            <div class="loader-spinner"></div>
+            <p class="mt-4 text-accent-main font-semibold text-lg">Memuat Data...</p>
+          </div>
+          
+          <canvas id="lineChart"></canvas>
+          
+        </div>
+      </div>
+      
+      <!-- HISTORY CONTROL PANEL (Panel Kontrol Gabungan di Paling Bawah) -->
+      <div class="data-panel bg-dark-bg p-6 rounded-xl shadow-lg border border-border-color hidden">
+        <h3 class="text-2xl font-semibold text-accent-main mb-4 border-b border-border-color pb-2">Kontrol Data Historis & Filter</h3>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- Kolom 1: Pengambilan Data -->
+          <div class="flex flex-col space-y-3">
+            <label for="datePicker" class="block text-sm font-medium text-gray-400">Pilih Tanggal Log:</label>
+            <input type="text" id="datePicker" placeholder="Pilih Tanggal Log" class="flatpickr-input w-full p-3 rounded-lg text-base">
+            
+            <button id="requestButton" class="btn p-3 rounded-lg font-bold text-lg bg-accent-main text-dark-bg hover:bg-cyan-400 transition-colors shadow-lg shadow-cyan-500/30">
+              GET DATA
+            </button>
+            <button id="exportButton" class="btn p-3 rounded-lg font-bold text-lg bg-accent-secondary text-dark-bg hover:bg-sky-400 transition-colors shadow-lg shadow-sky-500/30">
+              EXPORT CSV
+            </button>
+          </div>
+
+          <!-- Kolom 2 & 3 (Gabungan di Desktop) -->
+          <div class="lg:col-span-2">
+            <h4 class="text-lg font-semibold text-accent-secondary mb-3 border-b border-border-color pb-2">Filter Sensor Grafik:</h4>
+            <div class="sensors grid grid-cols-2 md:grid-cols-3 gap-3 p-2 bg-card-bg rounded-xl shadow-inner border border-border-color" id="checkboxContainer">
+              <p class="text-sm text-gray-400 col-span-full">Checkboxes akan muncul setelah data log dimuat...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- FOOTER -->
+    <div class="system-info text-center pt-4 border-t border-border-color text-sm text-gray-400 hidden">
+      <p>@Product By <a href="https://web.facebook.com/muhammad.rezky.184/" class="text-accent-main hover:underline">Rezky Logam</a> | Kontak WA: <a href="https://wa.me/6285249402703" class="text-accent-main hover:underline">+6285249402703</a></p>
+    </div>
+  </div>
+
+  <script>
+
+    let idalat = "14751036";
+    let topic_alat = "14751036/mpptlogger";
+    
+    // Inisialisasi Flatpickr
+    const datePicker = flatpickr("#datePicker", {
+      defaultDate: new Date(),
+      dateFormat: "Y/m/d",
+      // Theme customization for dark mode
+       onReady: function(selectedDates, dateStr, instance) {
+        instance.calendarContainer.classList.add('bg-card-bg', 'text-text-light', 'border-border-color');
+        instance.calendarContainer.querySelectorAll('.flatpickr-day').forEach(day => {
+            day.style.color = '#FFFFFF';
+        });
+        instance.calendarContainer.querySelectorAll('.flatpickr-day.selected').forEach(day => {
+            day.style.backgroundColor = '#00FFFF'; // accent-main (Cyan)
+            day.style.borderColor = '#00FFFF';
+            day.style.color = '#0D1117'; // Dark text on accent
+        });
+        instance.calendarContainer.querySelectorAll('.flatpickr-day.today').forEach(day => {
+            day.style.borderColor = '#00FFFF';
+        });
+      }
+    });
+
+    // Register the zoom plugin
+    Chart.register(ChartZoom);
+    
+    // MQTT broker details
+    const broker = 'wss://public.cloud.shiftr.io:443/mqtt';
+    const clientId = 'clientId-' + Math.random().toString(16).substr(2, 8);
+    const client = new Paho.MQTT.Client(broker, clientId);
+    let is_request_log = false;
+    let csv_like_data = "";
+    let chart = null;
+    let datasets = [];
+    // Ganti palet warna agar sesuai dengan tema Dark Blue/Cyan
+    const colorPool = ['#00FFFF', '#38BDF8', '#10B981', '#FACC15', '#EF4444', '#6366F1', '#EC4899']; 
+
+    // Connect to the broker
+    client.connect({
+      userName: "public",
+      password: "public",
+      onSuccess: onConnect,
+      onFailure: onFailure
+    });
+
+    function onConnect() {
+      console.log('Connected to broker');
+      document.getElementById('mqtt-status-text').textContent = 'Terhubung';
+      document.getElementById('mqtt-indicator').className = 'status-indicator w-3 h-3 rounded-full bg-success-green shadow-lg shadow-success-green/30';
+      client.subscribe('14751036/#');
+    }
+
+    function onFailure(error) {
+      console.error('Connection failed: ', error);
+      document.getElementById('mqtt-status-text').textContent = 'Koneksi gagal';
+      document.getElementById('mqtt-indicator').className = 'status-indicator w-3 h-3 rounded-full bg-red-500 shadow-lg shadow-red-700/30';
+      
+      // Retry connection after 5 seconds
+      setTimeout(() => {
+        client.connect({
+          userName: "public",
+          password: "public",
+          onSuccess: onConnect,
+          onFailure: onFailure
+        });
+      }, 5000);
+    }
+
+    // Handle incoming messages
+    client.onMessageArrived = function(message) {
+      const topic = message.destinationName;
+      const payload = message.payloadString;
+      
+      // Update last update time
+      updateTime();
+     
+        if (topic == "14751036/mpptloggerlog") {
+          if(is_request_log == true){
+            if (payload.indexOf("Time") >= 0) {
+            console.log("start transfer logger");
+            csv_like_data = "";
+            csv_like_data = payload + '\n'
+          } else if (payload.indexOf("endOfFile") >= 0) {
+            console.log("End transfer logger -> update chart");
+            hideLoader();
+            parseCSVData(csv_like_data);
+            is_request_log=false;
+           
+          } else if (payload.indexOf("Fail") >= 0) {
+            console.log("Data Not available, or broken storage!");
+            
+            is_request_log=false;
+            // Mengganti alert() asli dengan custom modal
+            showCustomAlert("Peringatan", "Data tidak tersedia atau penyimpanan rusak!");
+          } else {
+            csv_like_data += payload + '\n'
+          }
+        }
+       
+         
+        } else{
+          updateData(topic, payload);
+        }
+    };
+    
+    // Custom Alert/Modal function (replacing default alert)
+    function showCustomAlert(title, message) {
+        let modal = document.getElementById('custom-alert-modal');
+        document.getElementById('alert-title').textContent = title;
+        document.getElementById('alert-message').textContent = message;
+        modal.classList.remove('hidden');
+
+        // Setup close handler once
+        document.getElementById('alert-ok-btn').onclick = function() {
+            modal.classList.add('hidden');
+        };
+    }
+
+    // Initialize chart
+    function initChart(labels, datasets) {
+      const ctx = document.getElementById('lineChart').getContext('2d');
+      if (chart) {
+        chart.destroy();
+      }
+      
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          // PENAMBAHAN: Tambahkan padding di bagian bawah untuk memberi ruang pada label sumbu-X
+          layout: {
+             padding: {
+                bottom: 15 // Menambah 15px padding di bagian bawah grafik
+             }
+          },
+          plugins: {
+            legend: {
+              display: false 
+            },
+            tooltip: {
+                backgroundColor: 'rgba(22, 27, 34, 0.9)', // card-bg
+                titleColor: '#00FFFF', // accent-main
+                bodyColor: '#FFFFFF',
+                borderColor: '#30363D',
+                borderWidth: 1,
+            },
+            zoom: {
+              pan: {
+                enabled: true,
+                mode: 'x',
+                modifierKey: 'shift',
+              },
+              zoom: {
+                wheel: {
+                  enabled: true,
+                  speed: 0.1,
+                },
+                pinch: {
+                  enabled: true
+                },
+                mode: 'x',
+              },
+              limits: {
+                x: { min: 'original', max: 'original' },
+              }
+            }
+          },
+          scales: {
+            x: {
+              type: 'category',
+              title: {
+                display: true,
+                text: 'Time (Hour:Minute)', 
+                color: '#00FFFF',
+                font: {
+                  weight: 'bold',
+                  size: 14
+                }
+              },
+              grid: {
+                color: 'rgba(48, 54, 61, 0.4)' 
+              },
+              ticks: {
+                color: '#94a3b8', // Gray for ticks
+                maxRotation: 0,
+                autoSkip: true,
+                maxTicksLimit: 12
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Value',
+                color: '#00FFFF',
+                font: {
+                  weight: 'bold',
+                  size: 14
+                }
+              },
+              grid: {
+                color: 'rgba(48, 54, 61, 0.4)'
+              },
+              ticks: {
+                color: '#94a3b8',
+              }
+            }
+          },
+          interaction: {
+            mode: 'nearest',
+            axis: 'x',
+            intersect: false
+          },
+          animation: {
+            duration: 0
+          }
+        }
+      });
+    }
+
+    // Function to update data in the grid
+    function updateData(topic, payload) {
+      const sensorName = topic.substring(20);
+    // Tambahan pemetaan khusus langsung ke replika panel LCD Samoto
+      const cleanName = sensorName.toLowerCase();
+      const numericPayload = parseFloat(payload);
+
+      console.log("Sensor:", cleanName, "| Payload asli:", payload, "| Hasil angka:", numericPayload);
+
+      if (cleanName.includes('vpv') || cleanName.includes('voltpv')) {
+      document.getElementById('lcd-vpv').textContent = (!isNaN(numericPayload) ? numericPayload.toFixed(0) : payload) + 'V';
+      } 
+      else if (cleanName.includes('vbat') || cleanName.includes('voltbat')) {
+      document.getElementById('lcd-vbat').textContent = (!isNaN(numericPayload) ? numericPayload.toFixed(1) : payload) + 'V';
+      } 
+      else if (cleanName.includes('ichg') || cleanName.includes('current')) {
+      document.getElementById('lcd-ichg').textContent = (!isNaN(numericPayload) ? numericPayload.toFixed(1) : payload) + 'A';
+      } 
+      else if (cleanName.includes('status')) {
+          // Jika status berupa string teks gabungan dari MPPT Samoto
+          let statusText = payload.toUpperCase();
+          let hexVal = '0x00'; // Nilai default jika tidak ada yang cocok
+
+          // Pemetaan status berdasarkan standar LCD MPPT Samoto 100A
+          if (statusText.includes('STB') && statusText.includes('OUT-OFF')) {
+              hexVal = '0x20'; // Standby / Discharging Off
+          } else if (statusText.includes('CHG-ON') && statusText.includes('BULK')) {
+              hexVal = '0x10'; // Bulk Charging
+          } else if (statusText.includes('CHG-ON') && statusText.includes('FLOAT')) {
+              hexVal = '0x11'; // Float Charging
+          } else if (statusText.includes('CHG-ON') && statusText.includes('ALIVE')) {
+              hexVal = '0x14'; // Active Charging
+          } else {
+              // Jika yang masuk ternyata sudah berupa angka desimal dari awal
+              let intVal = parseInt(numericPayload);
+              if (!isNaN(intVal)) {
+                  hexVal = '0x' + intVal.toString(16).toUpperCase();
+              } else {
+                  hexVal = payload; // Tampilkan apa adanya jika format lain
+              }
+          }
+          
+          document.getElementById('lcd-hex').textContent = hexVal;
+      }
+      else if (cleanName.includes('day') || cleanName.includes('kwh') || cleanName.includes('energy') || cleanName.includes('e_day')) {
+          // Memformat kWh harian agar memiliki 3 angka di belakang desimal dan zero padding di depan
+          if (!isNaN(numericPayload)) {
+              let formattedKwh = numericPayload.toFixed(3).padStart(7, '0');
+              document.getElementById('lcd-kwh').textContent = formattedKwh + 'kWh';
+          } else {
+              document.getElementById('lcd-kwh').textContent = payload + 'kWh';
+          }
+      }
+      
+      // Logic for dynamic display name and color based on sensor type
+      let displayName = sensorName.replace(/([A-Z])/g, ' $1').trim().toUpperCase();
+      let unit = '';
+      let valueColor = 'text-accent-main'; 
+
+      if (sensorName.toLowerCase().includes('volt')) {
+        unit = ' V';
+        valueColor = 'text-accent-secondary'; // Biru Langit
+      } else if (sensorName.toLowerCase().includes('amp')) {
+        unit = ' A';
+        valueColor = 'text-success-green'; // Hijau Emerald
+      } else if (sensorName.toLowerCase().includes('power') || sensorName.toLowerCase().includes('watt')) {
+        unit = ' W';
+        valueColor = 'text-red-400';
+      } else if (sensorName.toLowerCase().includes('temp')) {
+        unit = ' °C';
+        valueColor = 'text-pink-400';
+      }
+      
+      // LOGIKA BARU: Khusus untuk status yang digabung (misal: "status")
+      if (sensorName.toLowerCase() === 'status' && payload.includes(';') && payload.includes('-')) {
+        
+        const statusSegments = payload.split(';');
+        const container = document.getElementById('data-container');
+        
+        statusSegments.forEach((segment, index) => {
+    if (!segment.trim()) return;
+
+    const parts = segment.split('-');
+    if (parts.length < 2) return;
+
+    // Perbaikan di sini: Ambil indeks 0 baru di-trim
+    const primaryName = parts[0].trim().toUpperCase(); // OUT, CHG, BAT, ALARM, CHARGE, LOAD
+    const primaryValue = parts.slice(1).join('-').trim().toUpperCase(); // OFF, ON, BULK, FLOAT, dll.
+
+    // ==========================================
+    // LOGIKA UNTUK MENYALAKAN INDIKATOR REPLIKA
+    // ==========================================
+    
+    // 1. Lampu ALARM
+    if (primaryName === 'ALARM') {
+        const ledAlarm = document.getElementById('led-alarm');
+        if (ledAlarm) {
+            if (primaryValue === 'ON' || primaryValue !== 'OFF') {
+                ledAlarm.className = "w-8 h-4 bg-red-500 rounded-sm shadow-[0_0_12px_rgba(220,38,38,0.8)] border border-red-500 animate-pulse";
+            } else {
+                ledAlarm.className = "w-8 h-4 bg-red-950/40 rounded-sm border border-red-900/60 transition-all duration-300";
+            }
+        }
+    }
+
+    // 2. Lampu CHARGE
+    if (primaryName === 'CHARGE' || primaryName === 'CHG') {
+        const ledCharge = document.getElementById('led-charge');
+        if (ledCharge) {
+            if (primaryValue !== 'OFF' && primaryValue !== 'NOT') {
+                ledCharge.className = "w-8 h-4 bg-green-500 rounded-sm shadow-[0_0_12px_rgba(34,197,94,0.8)] border border-green-400 transition-all duration-300";
+            } else {
+                ledCharge.className = "w-8 h-4 bg-green-950/40 rounded-sm border border-green-900/60 transition-all duration-300";
+            }
+        }
+    }
+
+    // 3. Lampu LOAD
+    if (primaryName === 'LOAD' || primaryName === 'OUT') {
+        const ledLoad = document.getElementById('led-load');
+        if (ledLoad) {
+            if (primaryValue === 'ON' || primaryValue === 'ACTIVE') {
+                ledLoad.className = "w-8 h-4 bg-amber-500 rounded-sm shadow-[0_0_12px_rgba(245,158,11,0.8)] border border-amber-400 transition-all duration-300";
+            } else {
+                ledLoad.className = "w-8 h-4 bg-amber-950/40 rounded-sm border border-amber-900/60 transition-all duration-300";
+            }
+        }
+    }
+          
+          // Generate a unique key for the sub-status
+          const subSensorKey = `status-${primaryName}`;
+
+          // Define color based on status value
+          let statusColor;
+          let displayValue;
+
+          if (primaryValue === 'OFF' || primaryValue.includes('NOT')) {
+              statusColor = 'text-red-500'; // Merah untuk OFF/NOT
+              displayValue = primaryValue;
+          } else if (primaryValue === 'ON' || primaryValue === 'FULL' || primaryValue.includes('STB')) {
+              statusColor = 'text-success-green'; // Hijau untuk ON/FULL/STB
+              displayValue = primaryValue;
+          } else {
+              statusColor = 'text-accent-main';
+              displayValue = primaryValue;
+          }
+
+          let card = document.querySelector(`.data-card[data-sensor="${subSensorKey}"]`);
+          
+          if (!card) {
+            card = document.createElement('div');
+            card.className = 'data-card bg-card-bg rounded-lg p-3 shadow-md border-l-4 border-accent-secondary transition-transform duration-300 hover:scale-[1.03] hover:bg-card-bg/80';
+            card.dataset.sensor = subSensorKey;
+            card.innerHTML = `
+              <h4 class="text-xs font-semibold uppercase text-gray-400 mb-0.5">${primaryName} STATUS</h4>
+              <div class="data-value text-xl font-extrabold ${statusColor}">${displayValue}</div>
+            `;
+            // Sisipkan ke container
+            container.appendChild(card);
+          } else {
+            // Update the existing card
+            const dataValue = card.querySelector('.data-value');
+            card.querySelector('h4').textContent = `${primaryName} STATUS`;
+            dataValue.className = `data-value text-xl font-extrabold ${statusColor}`;
+            dataValue.textContent = displayValue;
+          }
+        });
+        
+        // Hapus card "STATUS" yang asli (jika ada) setelah memecah datanya
+        let originalCard = document.querySelector(`.data-card[data-sensor="status"]`);
+        if (originalCard) {
+            originalCard.remove();
+        }
+
+        // ==========================================
+    // LOGIKA BARU: Pemetaan ke Layar LCD Replika
+    // ==========================================
+    const cleanName = sensorName.toLowerCase();
+    const numericPayload = parseFloat(payload);
+
+    if (cleanName.includes('vpv') || cleanName.includes('voltpv')) {
+    document.getElementById('lcd-vpv').textContent = (!isNaN(numericPayload) ? numericPayload.toFixed(0) : payload) + ' V';
+    
+    // Logika Lampu CHARGE Otomatis
+    const ledCharge = document.getElementById('led-charge');
+    if (ledCharge) {
+        if (!isNaN(numericPayload) && numericPayload > 10) {
+            ledCharge.className = "w-8 h-4 bg-green-500 rounded-sm shadow-[0_0_12px_rgba(34,197,94,0.8)] border border-green-400 transition-all duration-300";
+        } else {
+            ledCharge.className = "w-8 h-4 bg-green-950/40 rounded-sm border border-green-900/60 transition-all duration-300";
+        }
+    }
+}
+    else if (cleanName.includes('vbat') || cleanName.includes('voltbat')) {
+        document.getElementById('lcd-vbat').textContent = (!isNaN(numericPayload) ? numericPayload.toFixed(1) : payload) + 'V';
+    } 
+    else if (cleanName.includes('ichg') || cleanName.includes('current')) {
+    document.getElementById('lcd-ichg').textContent = (!isNaN(numericPayload) ? numericPayload.toFixed(1) : payload) + ' A';
+    
+    // Logika Lampu LOAD Otomatis
+    const ledLoad = document.getElementById('led-load');
+    if (ledLoad) {
+        if (!isNaN(numericPayload) && numericPayload > 0.2) {
+            ledLoad.className = "w-8 h-4 bg-amber-500 rounded-sm shadow-[0_0_12px_rgba(245,158,11,0.8)] border border-amber-400 transition-all duration-300";
+        } else {
+            ledLoad.className = "w-8 h-4 bg-amber-950/40 rounded-sm border border-amber-900/60 transition-all duration-300";
+        }
+    }
+}
+    else if (cleanName.includes('status_code') || cleanName.includes('statuscode')) {
+    let hexVal = !isNaN(numericPayload) ? '0x' + parseInt(numericPayload).toString(16).toUpperCase() : payload;
+    document.getElementById('lcd-hex').textContent = hexVal;
+    
+    // Logika Lampu ALARM Otomatis
+    const ledAlarm = document.getElementById('led-alarm');
+    if (ledAlarm) {
+        // Menyala merah berkedip jika status bukan 0x20 atau bukan angka 32
+        if (hexVal !== '0x20' && numericPayload !== 32) {
+            ledAlarm.className = "w-8 h-4 bg-red-600 rounded-sm shadow-[0_0_12px_rgba(220,38,38,0.8)] border border-red-500 animate-pulse transition-all duration-300";
+        } else {
+            ledAlarm.className = "w-8 h-4 bg-red-950/40 rounded-sm border border-red-900/60 transition-all duration-300";
+        }
+    }
+}
+    else if (cleanName.includes('day_e') || cleanName.includes('kwh') || cleanName.includes('total_e')) {
+        if (!isNaN(numericPayload)) {
+            let formattedKwh = numericPayload.toFixed(3).padStart(7, '0');
+            document.getElementById('lcd-kwh').textContent = formattedKwh + 'KWh';
+        } else {
+            document.getElementById('lcd-kwh').textContent = payload + 'KWh';
+        }
+    }
+    // ==========================================
+        
+        return; // Hentikan fungsi updateData agar tidak membuat card "status" asli
+      }
+
+      // Lanjutan logika asli untuk data sensor tunggal (non-status)
+      const formattedPayload = isNaN(parseFloat(payload)) ? payload : (parseFloat(payload).toFixed(2) + unit);
+
+      // Find or create the data card for this sensor
+      let card = document.querySelector(`.data-card[data-sensor="${sensorName}"]`);
+      if (!card) {
+        card = document.createElement('div');
+        card.className = 'data-card bg-card-bg rounded-lg p-3 shadow-md border-l-4 border-accent-secondary transition-transform duration-300 hover:scale-[1.03] hover:bg-card-bg/80';
+        card.dataset.sensor = sensorName;
+        card.innerHTML = `
+          <h4 class="text-xs font-semibold uppercase text-gray-400 mb-0.5">${displayName}</h4>
+          <div class="data-value text-xl font-extrabold ${valueColor}">${formattedPayload}</div>
+        `;
+        document.getElementById('data-container').appendChild(card);
+      } else {
+        card.querySelector('h4').textContent = displayName;
+        const dataValue = card.querySelector('.data-value');
+        dataValue.className = `data-value text-xl font-extrabold ${valueColor}`;
+        dataValue.textContent = formattedPayload;
+      }
+    }
+
+    // Function to parse CSV data and update the chart
+    function parseCSVData(csvData) {
+      const lines = csvData.trim().split('\n');
+      const labels = [];
+      const dataSets = {};
+      
+      lines.forEach((line, index) => {
+        const columns = line.split(',');
+        if (index === 0) {
+          // First line is header
+          columns.slice(1).forEach(col => {
+            dataSets[col] = [];
+          });
+        } else {
+          // Time is first column
+          labels.push(columns[0].substring(0, 5)); // Only take first 5 chars (HH:MM)
+          columns.slice(1).forEach((value, i) => {
+            const colName = Object.keys(dataSets)[i];
+            dataSets[colName].push(parseFloat(value));
+          });
+        }
+      });
+      
+      let colorIndex = 0;
+      // Prepare datasets for chart
+      datasets = Object.keys(dataSets).map((name, i) => {
+        const color = colorPool[colorIndex % colorPool.length];
+        colorIndex++;
+
+        return {
+          label: name,
+          data: dataSets[name],
+          borderColor: color,
+          borderWidth: 2,
+          fill: false,
+          hidden: i >= 3, // Only show first three by default
+          pointRadius: 1,
+          pointHoverRadius: 5,
+          tension: 0.4
+        };
+      });
+      
+      // Update the chart
+      initChart(labels, datasets);
+      createCheckboxes();
+    }
+
+    // Function to create checkboxes for each dataset
+    function createCheckboxes() {
+      const container = document.getElementById('checkboxContainer');
+      container.innerHTML = '';
+      
+      datasets.forEach((dataset, index) => {
+        const div = document.createElement('div');
+        div.className = 'sensor-item flex items-center p-2 rounded-lg bg-dark-bg transition-colors duration-200 hover:bg-border-color cursor-pointer';
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = !dataset.hidden;
+        checkbox.id = `checkbox-${index}`;
+        checkbox.dataset.index = index;
+        checkbox.className = 'mr-2 h-4 w-4 rounded border-gray-700 checked:bg-accent-main checked:border-accent-main focus:ring-accent-main transition-colors duration-150';
+        checkbox.style.accentColor = dataset.borderColor; // Set accent color dynamically
+        
+        checkbox.addEventListener('change', function() {
+          const idx = parseInt(this.dataset.index);
+          datasets[idx].hidden = !this.checked;
+          chart.update();
+        });
+        
+        const label = document.createElement('label');
+        label.htmlFor = `checkbox-${index}`;
+        label.textContent = dataset.label;
+        label.className = 'font-medium select-none text-sm';
+        label.style.color = dataset.borderColor; // Use line color for label
+        
+        div.appendChild(checkbox);
+        div.appendChild(label);
+        container.appendChild(div);
+      });
+    }
+
+    // Update time
+    function updateTime() {
+    const now = new Date();
+    
+    // Format tanggal LCD YYYY-MM-DD
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    
+    // Format waktu LCD HH:MM:SS
+    const timeString = now.toLocaleTimeString('en-GB'); // menghasilkan format 24 jam berbasis lokal
+    
+    // Perbarui elemen halaman web asli dan replika LCD
+    if(document.getElementById('update-time')) {
+        document.getElementById('update-time').textContent = timeString;
+    }
+    if(document.getElementById('lcd-date')) {
+        document.getElementById('lcd-date').textContent = `${yyyy}-${mm}-${dd}`;
+    }
+    if(document.getElementById('lcd-time')) {
+        document.getElementById('lcd-time').textContent = timeString;
+    }
+}
+    
+    // Update time every second
+    setInterval(updateTime, 1000);
+    updateTime();
+    
+    // Show loader
+    function showLoader() {
+      document.getElementById('loader').classList.remove('hidden');
+    }
+    
+    // Hide loader
+    function hideLoader() {
+      document.getElementById('loader').classList.add('hidden');
+    }
+    
+    // Handle Get Data button click
+    document.getElementById('requestButton').addEventListener('click', function() {
+      const selectedDate = datePicker.input.value;
+      if (!selectedDate) {
+        showCustomAlert("Peringatan", "Silakan pilih tanggal terlebih dahulu.");
+        return;
+      }
+      const command = `1#${selectedDate}`;
+      console.log('Requesting data:', command);
+      client.send('14751036/mpptlogger/cmd', command);
+      is_request_log = true;
+      csv_like_data = "";
+      showLoader();
+    });
+    
+    // Export button handler
+    document.getElementById('exportButton').addEventListener('click', function() {
+      if (!csv_like_data) {
+        showCustomAlert('Peringatan', 'Tidak ada data log untuk diekspor. Silakan ambil data historis terlebih dahulu.');
+        return;
+      }
+      
+      const blob = new Blob([csv_like_data], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `mppt-data-${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // Initialize an empty chart
+    initChart([], []);
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
