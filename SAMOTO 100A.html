@@ -1040,11 +1040,11 @@
 
     // Ganti nama fungsi menjadi sendButtonCommand agar sesuai dengan HTML Anda
 function sendButtonCommand(commandValue) {
-    // Sesuaikan topik MQTT kontrol dengan yang di-subscribe oleh ESP32 Anda
-    const topicControl = "rezkylogam/samoto100a/control"; 
+    // SINKRONISASI: Gunakan topik kontrol bawaan sistem mpptlogger Anda
+    const topicControl = "14751036/mpptlogger/cmd"; 
     
-    // Gunakan fungsi client.send yang biasa digunakan di proyek Anda (melihat baris 1081 pada gambar 3)
     if (typeof client !== 'undefined') {
+        // Menggunakan client.send agar sama dengan fungsi ambil data di baris 1081
         client.send(topicControl, commandValue);
         console.log(`Perintah dikirim ke MQTT: ${commandValue}`);
     } else {
