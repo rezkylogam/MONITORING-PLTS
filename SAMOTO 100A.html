@@ -1040,19 +1040,19 @@
 
     // Fungsi untuk menangani klik tombol replika fisik MPPT
 function sendButtonCommand(buttonName) {
-    // PERBAIKAN UTAMA: Mengarahkan langsung ke variabel sub-topic perintah mikrokontroler Anda
-    const topic = "14751036/mpptlogger/newdataCmd";
-    
-    // Menggunakan nilai angka teks mentah sesuai alokasi register tombol fisik
-    let payload = "0";
+    // PERBAIKAN UTAMA: Mengarahkan langsung ke topik utama cmd
+    const topic = "14751036/mpptlogger/cmd";
+
+    // Menggunakan string parameter gabungan agar dikenali oleh modul serial
+    let payload = "newdataCmd=0";
     if (buttonName === "ESC") {
-        payload = "1";
+        payload = "newdataCmd=1";
     } else if (buttonName === "UP") {
-        payload = "2";
+        payload = "newdataCmd=2";
     } else if (buttonName === "DOWN") {
-        payload = "3";
+        payload = "newdataCmd=3";
     } else if (buttonName === "FUNCTION") {
-        payload = "4";
+        payload = "newdataCmd=4";
     }
 
     console.log(`[AKSI] Mengirim Perintah Tombol -> Topik: ${topic} -> Payload: ${payload}`);
