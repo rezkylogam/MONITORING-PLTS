@@ -1038,36 +1038,19 @@
       document.getElementById('loader').classList.add('hidden');
     }
 
-    // 1. Definisikan fungsi untuk mempublikasikan perintah ke Broker MQTT
-function kirimPerintahMPPT(commandValue) {
+    // Ganti nama fungsi menjadi sendButtonCommand agar sesuai dengan HTML Anda
+function sendButtonCommand(commandValue) {
     // Sesuaikan topik MQTT kontrol dengan yang di-subscribe oleh ESP32 Anda
     const topicControl = "rezkylogam/samoto100a/control"; 
     
-    // Kirim pesan teks biasa (atau bisa diubah ke format JSON sesuai kebutuhan firmware)
-    if (typeof client !== 'undefined' && client.connected) {
-        client.publish(topicControl, commandValue, { qos: 1 });
+    // Gunakan fungsi client.send yang biasa digunakan di proyek Anda (melihat baris 1081 pada gambar 3)
+    if (typeof client !== 'undefined') {
+        client.send(topicControl, commandValue);
         console.log(`Perintah dikirim ke MQTT: ${commandValue}`);
     } else {
         console.error("Gagal mengirim perintah: Koneksi MQTT terputus.");
     }
 }
-
-// 2. Hubungkan fungsi ke masing-masing elemen tombol di Web UI
-document.getElementById("btn-esc").addEventListener("click", function() {
-    kirimPerintahMPPT("ESC");
-});
-
-document.getElementById("btn-up").addEventListener("click", function() {
-    kirimPerintahMPPT("UP");
-});
-
-document.getElementById("btn-down").addEventListener("click", function() {
-    kirimPerintahMPPT("DOWN");
-});
-
-document.getElementById("btn-function").addEventListener("click", function() {
-    kirimPerintahMPPT("FUNCTION");
-});
     
     // Handle Get Data button click
     document.getElementById('requestButton').addEventListener('click', function() {
