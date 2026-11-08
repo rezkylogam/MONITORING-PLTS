@@ -1043,16 +1043,8 @@ function sendButtonCommand(commandValue) {
     const topicControl = "14751036/mpptlogger/cmd"; 
     
     if (typeof client !== 'undefined') {
-        let formattedCommand = commandValue;
-
-        // EKSPERIMEN: Ubah teks tombol menjadi kode atau angka yang dikenali firmware
-        if (commandValue === "ESC") formattedCommand = "1";
-        if (commandValue === "UP") formattedCommand = "2";
-        if (commandValue === "DOWN") formattedCommand = "3";
-        if (commandValue === "FUNCTION") formattedCommand = "4";
-
-        // JIKA format di atas masih gagal, Anda bisa mencoba format alternatif ini di lain waktu:
-        // if (commandValue === "UP") formattedCommand = "1#$UP"; 
+        // Menggabungkan dengan kode pemisah bawaan sistem Anda (1#$)
+        let formattedCommand = "1#$" + commandValue;
 
         client.send(topicControl, formattedCommand);
         console.log(`Perintah dikirim ke MQTT: ${formattedCommand}`);
