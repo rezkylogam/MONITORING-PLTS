@@ -1045,17 +1045,19 @@ function sendButtonCommand(commandValue) {
     if (typeof client !== 'undefined') {
         let btnCode = "";
 
-        // Ubah nama tombol langsung menjadi string angka mentah sesuai target firmware
+        // Mengonversi tombol ke nilai teks string murni yang dicari oleh firmware
         if (commandValue === "ESC") btnCode = "1";
         if (commandValue === "UP") btnCode = "2";
         if (commandValue === "DOWN") btnCode = "3";
         if (commandValue === "FUNCTION") btnCode = "4";
 
-        // Kirim hanya angka mentah saja agar dibaca sempurna oleh newdatacmd
-        let formattedCommand = btnCode; 
-
-        client.send(topicControl, formattedCommand);
-        console.log(`Perintah dikirim ke MQTT: ${formattedCommand}`);
+        // Mengirimkan payload menggunakan objek pesan MQTT resmi Paho agar terkirim utuh
+        var message = new MQTT.Message(btnCode);
+        message.destinationName = topicControl;
+        message.qos = 1;
+        
+        client.send(message);
+        console.log(`[Modbus Control] Perintah tombol ${commandValue} (Kode: ${btnCode}) terkirim melalui MQTT.`);
     } else {
         console.error("Gagal mengirim perintah: Koneksi MQTT terputus.");
     }
