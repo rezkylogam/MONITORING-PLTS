@@ -1041,7 +1041,6 @@
     // Fungsi kendali 4 tombol MPPT via MQTT & Modbus RS485
 function sendButtonCommand(commandValue) {
     const topicControl = "14751036/mpptlogger/cmd"; 
-    
     if (typeof client !== 'undefined') {
         let btnCode = "";
         if (commandValue === "ESC") btnCode = "1";
@@ -1049,8 +1048,7 @@ function sendButtonCommand(commandValue) {
         if (commandValue === "DOWN") btnCode = "3";
         if (commandValue === "FUNCTION") btnCode = "4";
 
-        // Tambahkan tanda pagar di bagian akhir perintah sebagai pembatas penutup
-        let formattedCommand = "2#$" + btnCode + "#";
+        let formattedCommand = "2#$" + btnCode; // Format murni paling stabil
 
         client.send(topicControl, formattedCommand);
         console.log(`Perintah dikirim ke MQTT: ${formattedCommand}`);
