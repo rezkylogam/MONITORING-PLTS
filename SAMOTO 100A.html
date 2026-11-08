@@ -1044,20 +1044,26 @@ function sendButtonCommand(buttonName) {
     const topic = "14751036/mpptlogger/cmd";
     
     // 2. Tentukan payload perintah berdasarkan tombol yang diklik
-    let payload = "";
-           if (buttonName === "ESC") {
-        payload = "esc"; 
+    let cmdValue = 0;
+    if (buttonName === "ESC") {
+        cmdValue = 1; 
     } else if (buttonName === "UP") {
-        payload = "up";
+        cmdValue = 2;
     } else if (buttonName === "DOWN") {
-        payload = "down";
+        cmdValue = 3;
     } else if (buttonName === "FUNCTION") {
-        payload = "function";
+        cmdValue = 4;
     }
 
-    console.log(`Mengirim perintah tombol fisik: ${buttonName} -> Payload: ${payload}`);
+    // Mengemas ke bentuk JSON string
+    // Kita uji coba menggunakan key yang sering dipakai: "cmd" atau "newdatacmd"
+    const payloadObj = {
+        "cmd": cmdValue
+    };
+    const payload = JSON.stringify(payloadObj);
 
-    // 3. Kirim data ke broker MQTT jika client terhubung
+    console.log(`Mengirim perintah JSON: ${buttonName} -> Payload: ${payload}`);
+
     if (client && client.isConnected()) {
         const message = new Paho.MQTT.Message(payload);
         message.destinationName = topic;
