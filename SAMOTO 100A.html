@@ -1040,13 +1040,22 @@
 
     // Ganti nama fungsi menjadi sendButtonCommand agar sesuai dengan HTML Anda
 function sendButtonCommand(commandValue) {
-    // SINKRONISASI: Gunakan topik kontrol bawaan sistem mpptlogger Anda
     const topicControl = "14751036/mpptlogger/cmd"; 
     
     if (typeof client !== 'undefined') {
-        // Menggunakan client.send agar sama dengan fungsi ambil data di baris 1081
-        client.send(topicControl, commandValue);
-        console.log(`Perintah dikirim ke MQTT: ${commandValue}`);
+        let formattedCommand = commandValue;
+
+        // EKSPERIMEN: Ubah teks tombol menjadi kode atau angka yang dikenali firmware
+        if (commandValue === "ESC") formattedCommand = "1";
+        if (commandValue === "UP") formattedCommand = "2";
+        if (commandValue === "DOWN") formattedCommand = "3";
+        if (commandValue === "FUNCTION") formattedCommand = "4";
+
+        // JIKA format di atas masih gagal, Anda bisa mencoba format alternatif ini di lain waktu:
+        // if (commandValue === "UP") formattedCommand = "1#$UP"; 
+
+        client.send(topicControl, formattedCommand);
+        console.log(`Perintah dikirim ke MQTT: ${formattedCommand}`);
     } else {
         console.error("Gagal mengirim perintah: Koneksi MQTT terputus.");
     }
