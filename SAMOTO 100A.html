@@ -1040,29 +1040,24 @@
 
     // Fungsi untuk menangani klik tombol replika fisik MPPT
 function sendButtonCommand(buttonName) {
-    // Topik kembali ke topik utama yang sudah terbukti terhubung ke logger
-    const topic = "14751036/mpptlogger/cmd";
+    // PERBAIKAN UTAMA: Mengarahkan langsung ke variabel sub-topic perintah mikrokontroler Anda
+    const topic = "14751036/mpptlogger/newdataCmd";
     
-    // Tentukan nilai angka untuk memicu tombol di mikrokontroler
-    let cmdValue = 0;
+    // Menggunakan nilai angka teks mentah sesuai alokasi register tombol fisik
+    let payload = "0";
     if (buttonName === "ESC") {
-        cmdValue = 1;
+        payload = "1";
     } else if (buttonName === "UP") {
-        cmdValue = 2;
+        payload = "2";
     } else if (buttonName === "DOWN") {
-        cmdValue = 3;
+        payload = "3";
     } else if (buttonName === "FUNCTION") {
-        cmdValue = 4;
+        payload = "4";
     }
 
-    // MEMPERBAIKI KEY JSON: Menggunakan key "newdatacmd" agar langsung dibaca oleh hardware
-    const payloadObj = {
-        "newdatacmd": cmdValue
-    };
-    const payload = JSON.stringify(payloadObj);
+    console.log(`[AKSI] Mengirim Perintah Tombol -> Topik: ${topic} -> Payload: ${payload}`);
 
-    console.log(`[AKSI] Mengirim perintah tombol: ${buttonName} -> Payload: ${payload}`);
-
+    // Mengirimkan pesan lewat Paho MQTT
     if (client && client.isConnected()) {
         const message = new Paho.MQTT.Message(payload);
         message.destinationName = topic;
