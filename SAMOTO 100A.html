@@ -1037,27 +1037,23 @@
     function hideLoader() {
       document.getElementById('loader').classList.add('hidden');
     }
-
-    // Fungsi kendali 4 tombol MPPT - Format Angka Mentah untuk newdatacmd
+    
+// Fungsi kendali 4 tombol MPPT - Format Integer murni
 function sendButtonCommand(commandValue) {
     const topicControl = "14751036/mpptlogger/cmd"; 
     
     if (typeof client !== 'undefined') {
-        let btnCode = "";
+        let btnCode = 0; // Menggunakan tipe data angka/integer awal
 
-        // Mengonversi tombol ke nilai teks string murni yang dicari oleh firmware
-        if (commandValue === "ESC") btnCode = "1";
-        if (commandValue === "UP") btnCode = "2";
-        if (commandValue === "DOWN") btnCode = "3";
-        if (commandValue === "FUNCTION") btnCode = "4";
+        // Mengonversi tombol langsung ke nilai angka bulat (tanpa tanda kutip)
+        if (commandValue === "ESC") btnCode = 1;
+        if (commandValue === "UP") btnCode = 2;
+        if (commandValue === "DOWN") btnCode = 3;
+        if (commandValue === "FUNCTION") btnCode = 4;
 
-        // Mengirimkan payload menggunakan objek pesan MQTT resmi Paho agar terkirim utuh
-        var message = new MQTT.Message(btnCode);
-        message.destinationName = topicControl;
-        message.qos = 1;
-        
-        client.send(message);
-        console.log(`[Modbus Control] Perintah tombol ${commandValue} (Kode: ${btnCode}) terkirim melalui MQTT.`);
+        // Mengirimkan kode angka murni langsung menggunakan objek client bawaan sistem Anda
+        client.send(topicControl, String(btnCode));
+        console.log(`[Modbus Control] Mengirim kode tombol ke MQTT: ${btnCode}`);
     } else {
         console.error("Gagal mengirim perintah: Koneksi MQTT terputus.");
     }
