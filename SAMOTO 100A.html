@@ -1040,10 +1040,10 @@
 
     // Fungsi untuk menangani klik tombol replika fisik MPPT
 function sendButtonCommand(buttonName) {
-    // LANGKAH PASTI: Menembak langsung ke topik sub-variabel perintah di mikrokontroler Anda
-    const topic = "14751036/mpptlogger/newdatacmd";
+    // PERBAIKAN UTAMA: Mengarahkan langsung ke variabel sub-topic perintah mikrokontroler Anda
+    const topic = "14751036/mpptlogger/newdataCmd";
     
-    // Kirim angka mentah saja (tanpa teks, tanpa JSON, tanpa tanda baca)
+    // FORMAT ASLI: Mengirimkan angka mentah murni (tanpa teks, tanpa JSON, tanpa tanda baca)
     let payload = "0";
     if (buttonName === "ESC") {
         payload = "1";
