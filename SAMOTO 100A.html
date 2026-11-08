@@ -1067,7 +1067,7 @@ function sendButtonCommand(buttonName) {
             const messageRelease = new Paho.MQTT.Message("0");
             messageRelease.destinationName = topic;
             client.send(messageRelease);
-        }, 200); // Jeda waktu klik 0.2 detik biasa yang pas untuk hardware
+        }, 1500); // Jeda waktu klik 0.2 detik biasa yang pas untuk hardware
 
     } else {
         showCustomAlert("Kesalahan", "Gagal mengirim perintah. Koneksi MQTT terputus!");
