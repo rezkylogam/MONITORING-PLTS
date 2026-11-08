@@ -1041,20 +1041,18 @@
     // Fungsi untuk menangani klik tombol replika fisik MPPT
 function sendButtonCommand(buttonName) {
     // 1. Tentukan topik MQTT untuk mengirimkan perintah/command ke logger/MPPT Anda
-    // Berdasarkan baris 1050 di kode Anda, topiknya adalah '14751036/mpptlogger/cmd'
     const topic = "14751036/mpptlogger/cmd";
     
     // 2. Tentukan payload perintah berdasarkan tombol yang diklik
-    // CATATAN: Sesuaikan isi string perintah ini ('#ESC', '#UP', dll) dengan format yang diterima oleh firmware hardware monitoring Anda!
     let payload = "";
            if (buttonName === "ESC") {
-        payload = "1"; // atau coba "0" 
+        payload = "esc"; 
     } else if (buttonName === "UP") {
-        payload = "2"; // atau coba "1"
+        payload = "up";
     } else if (buttonName === "DOWN") {
-        payload = "3"; // atau coba "2"
+        payload = "down";
     } else if (buttonName === "FUNCTION") {
-        payload = "4"; // atau coba "3"
+        payload = "function";
     }
 
     console.log(`Mengirim perintah tombol fisik: ${buttonName} -> Payload: ${payload}`);
@@ -1064,9 +1062,6 @@ function sendButtonCommand(buttonName) {
         const message = new Paho.MQTT.Message(payload);
         message.destinationName = topic;
         client.send(message);
-        
-        // Opsional: Berikan feedback visual singkat ke user (misal lewat custom alert) jika diperlukan
-        // showCustomAlert("Info", `Perintah ${buttonName} berhasil dikirim.`);
     } else {
         showCustomAlert("Kesalahan", "Gagal mengirim perintah. Koneksi MQTT terputus!");
     }
