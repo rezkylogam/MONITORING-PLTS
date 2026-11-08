@@ -1043,8 +1043,14 @@ function sendButtonCommand(commandValue) {
     const topicControl = "14751036/mpptlogger/cmd"; 
     
     if (typeof client !== 'undefined') {
-        // Menggabungkan dengan kode pemisah bawaan sistem Anda (1#$)
-        let formattedCommand = "1#$" + commandValue;
+        let btnCode = "1";
+        if (commandValue === "ESC") btnCode = "1";
+        if (commandValue === "UP") btnCode = "2";
+        if (commandValue === "DOWN") btnCode = "3";
+        if (commandValue === "FUNCTION") btnCode = "4";
+
+        // Menggunakan prefix menu control 2#$
+        let formattedCommand = "2#$" + btnCode;
 
         client.send(topicControl, formattedCommand);
         console.log(`Perintah dikirim ke MQTT: ${formattedCommand}`);
