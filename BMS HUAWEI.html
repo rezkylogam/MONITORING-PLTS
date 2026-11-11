@@ -484,18 +484,14 @@
     reRenderAllCards();
   }
   
-  // Fungsi untuk merender ulang semua card berdasarkan urutan terbaru
+    // Fungsi untuk merender ulang semua card berdasarkan urutan terbaru
   function reRenderAllCards() {
     const grid = document.getElementById("batteryGrid");
-    
-    // Kosongkan grid
     grid.innerHTML = '';
     
-    // Render ulang semua baterai sesuai urutan terbaru
     batteries.forEach(batt => {
       let cardId = `card-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`;
       
-      // Hapus timer lama jika ada
       if (cardTimers[cardId]) {
         clearTimeout(cardTimers[cardId]);
         delete cardTimers[cardId];
@@ -503,94 +499,88 @@
 
       let card = document.createElement("div");
       card.id = cardId;
-      card.className = "battery-card rounded-xl shadow-sm p-5 cursor-pointer hover:shadow-md fade-in hidden";
+      card.className = "battery-card rounded-xl shadow-sm p-5 cursor-pointer hover:shadow-md fade-in";
       card.dataset.loggerId = batt.loggerId;
       card.dataset.addr = String(batt.addr);
       card.dataset.typeBattery = batt.typeBattery;
+
+      let statusColor = batt.status === 'Charging' ? '#22c55e' : (batt.status === 'Discharging' ? '#f97316' : '#38bdf8');
+      let statusLabel = batt.status ? batt.status.toUpperCase() : 'IDLE';
+
       card.innerHTML = `
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-800">HUAWEI B1 2025 &nbsp; <span class="text-sm font-semibold text-gray-800">#${batt.addr}</span></h3>
-          <div class="led" id="led-card-${batt.loggerId}-${batt.typeBattery}-${batt.addr}"></div>
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-base font-bold text-gray-800">BATERAI #${batt.addr}</h3>
+          <div class="flex items-center gap-1.5">
+            <span id="status-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="text-xs font-bold uppercase" style="color: ${statusColor};">${statusLabel}</span>
+            <div class="led" id="led-card-${batt.loggerId}-${batt.typeBattery}-${batt.addr}"></div>
+          </div>
         </div>
+
         <div class="mb-4">
-          <div class="flex justify-between items-center mb-1">
-            <span class="text-sm font-semibold text-gray-800">SOC</span>
-            <span class="font-semibold" id="soc-value-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.soc}%</span>
+          <div class="flex justify-between items-center mb-1.5 text-xs font-bold">
+            <span>SOC: <span id="soc-value-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${parseFloat(batt.soc).toFixed(1)}%</span></span>
+            <span class="text-gray-400">SOH: <span id="soh-value-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${parseFloat(batt.soh).toFixed(0)}%</span></span>
           </div>
           <div class="progress-bar">
             <div id="soc-bar-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="progress-fill" style="width: ${batt.soc}%"></div>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-5 text-sm">
-          <div class="space-y-2">
-            <div class="flex items-center">
-              <i class="fas fa-bolt text-yellow-500 mr-2"></i>
-              <div>
-                <div class="text-gray-500">Voltage</div>
-                <div id="voltage-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="font-semibold">${batt.voltage} V</div>
-              </div>
-            </div>
-            <div class="flex items-center">
-              <i class="fas fa-minus-circle  text-blue-500 mr-2"></i>
-              <div>
-                <div class="text-gray-500">Diff Cell</div>
-                <div id="voltagedif-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="font-semibold">${batt.cell_vdif} mV</div>
-              </div>
-            </div>
-            <div class="flex items-center">
-              <i class="fas fa-minus-circle text-red-500 mr-2"></i>
-              <div>
-                <div class="text-gray-500">Min Cell</div>
-                <div id="cellmin-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="font-semibold">${batt.cell_vmin} V</div>
-              </div>
+
+        <div class="grid grid-cols-2 gap-4 py-3 border-t border-b border-gray-500/20 text-sm">
+          <div class="flex items-center">
+            <i class="fas fa-bolt text-yellow-500 mr-2.5 w-4 text-center"></i>
+            <div>
+              <div class="text-xs text-gray-400">Tegangan</div>
+              <div id="voltage-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="font-bold">${batt.voltage} V</div>
             </div>
           </div>
-          <div class="space-y-2">
-            <div class="flex items-center">
-              <i class="fas fa-tachometer-alt text-blue-500 mr-2"></i>
-              <div>
-                <div class="text-gray-500">Current</div>
-                <div id="current-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="font-semibold">${batt.current} A</div>
-              </div>
+
+          <div class="flex items-center">
+            <i class="fas fa-tachometer-alt text-blue-500 mr-2.5 w-4 text-center"></i>
+            <div>
+              <div class="text-xs text-gray-400">Arus</div>
+              <div id="current-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="font-bold">${batt.current} A</div>
             </div>
-            <div class="flex items-center">
-              <i class="fas fa-bolt text-red-500 mr-2"></i>
-              <div>
-                <div class="text-gray-500">Power</div>
-                <div id="power-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="font-semibold">${(batt.voltage*batt.current).toFixed(1)} W</div>
-              </div>
+          </div>
+
+          <div class="flex items-center">
+            <i class="fas fa-bolt text-red-500 mr-2.5 w-4 text-center"></i>
+            <div>
+              <div class="text-xs text-gray-400">Daya</div>
+              <div id="power-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="font-bold">${(batt.voltage * batt.current).toFixed(1)} W</div>
             </div>
-            <div class="flex items-center">
-              <i class="fas fa-plus-circle text-green-500 mr-2"></i>
-              <div>
-                <div class="text-gray-500">Max Cell</div>
-                <div id="cellmax-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="font-semibold">${batt.cell_vmax} V</div>
-              </div>
+          </div>
+
+          <div class="flex items-center">
+            <i class="fas fa-minus-circle text-blue-400 mr-2.5 w-4 text-center"></i>
+            <div>
+              <div class="text-xs text-gray-400">Selisih Sel</div>
+              <div id="voltagedif-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="font-bold">${batt.cell_vdif} mV</div>
             </div>
           </div>
         </div>
-        <div class="mt-4 pt-3 border-t border-gray-100 text-gray-500 flex justify-between items-center w-full">
-          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">DCHG Times: ${batt.cycles}</span>
-          <span class="text-sm font-semibold flex items-center gap-1">
-            Status: <span id="status-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">--</span>
-        </span>
-      </div>
+
+        <div class="mt-3 text-xs flex justify-between items-center w-full text-gray-300">
+          <span class="flex items-center gap-1.5">
+            <i class="fas fa-thermometer-half text-emerald-400"></i>
+            <span id="temp-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">Suhu: ${batt.minTemp}°C ~ ${batt.maxTemp}°C</span>
+          </span>
+          <span id="cycle-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="font-medium">Cycle: ${batt.cycles}</span>
+        </div>
       `;
+
       card.onclick = () => openModal(batt.loggerId, batt.addr, batt.typeBattery);
       grid.appendChild(card);
 
-      // Set SOC bar color
       const socBar = document.getElementById(`soc-bar-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
-      if (batt.soc > 70) socBar.className = 'progress-fill bg-green-500';
-      else if (batt.soc > 30) socBar.className = 'progress-fill bg-yellow-500';
+      if (batt.soc > 50) socBar.className = 'progress-fill bg-green-500';
+      else if (batt.soc > 20) socBar.className = 'progress-fill bg-yellow-500';
       else socBar.className = 'progress-fill bg-red-500';
 
-      // Blink LED
       const led = document.getElementById(`led-card-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
       led.classList.add("active");
       setTimeout(() => led.classList.remove("active"), 250);
 
-      // Set timeout untuk remove card
       cardTimers[cardId] = setTimeout(() => {
         let c = document.getElementById(cardId);
         if (c) {
@@ -729,14 +719,15 @@
     return `${hours}:${minutes}:${seconds}`;
   }
 
-  function normalizeFromMqtt(data, topic) {
+    function normalizeFromMqtt(data, topic) {
     const cells = data.cell_voltages.map(v => (v/1000).toFixed(3));
     const cell_vmax = Math.max(...data.cell_voltages) / 1000;
     const cell_vmin = Math.min(...data.cell_voltages) / 1000;
     const cell_vdiff = (cell_vmax - cell_vmin) * 1000;
+    const topicParts = topic.split('/');
     
     return {
-      loggerId: topic.split('/')[1],
+      loggerId: topicParts.at(1),
       typeBattery: data.typeBattery,
       addr: data.AddrBattery,
       soc: data.SOC !== undefined ? parseFloat(data.SOC).toFixed(2) : (data.remaining_capacity !== undefined ? parseFloat(data.remaining_capacity).toFixed(2) : "0.00"),
@@ -748,13 +739,15 @@
       remaining: data.rem_capacity.toFixed(2),
       cycles: data.cycle_count,
       cycle_count: data.cycle_count,
+      minTemp: data.min_temp !== undefined ? data.min_temp : "--",
+      maxTemp: data.max_temp !== undefined ? data.max_temp : "--",
       cells,
       cell_vmax: cell_vmax.toFixed(3),
       cell_vmin: cell_vmin.toFixed(3),
       cell_vdif: cell_vdiff.toFixed(0),
       time: getCurrentTimeHHMMSS(),
       power: (data.bat_voltage * data.bat_current).toFixed(2),
-      status: data.bat_current > 0.1 ? 'Charging' : (data.bat_current < -0.1 ? 'Discharging' : 'Standby')
+      status: data.bat_current > 0.2 ? 'Charging' : (data.bat_current < -0.2 ? 'Discharging' : 'Idle')
     };
   }
 
@@ -795,66 +788,52 @@
     return 'bg-green-500';                    // Hijau jika baterai > 50%
   }
 
-  function update_cards(batt) {
+    function update_cards(batt) {
     let cardId = `card-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`;
     let card = document.getElementById(cardId);
     
     if (!card) {
-      // Jika card tidak ada, tambahkan baterai ke array dan urutkan
       batt.elementId = `battery-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`;
       batteries.push(batt);
       sortBatteries();
       return;
     }
 
-    // Update card yang sudah ada
-    document.getElementById(`soc-value-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).textContent = `${batt.soc}%`;
-    let progressBar = document.getElementById(`soc-bar-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
-    if (progressBar) {
-    // 1. Update lebar bar sesuai persentase baterai
-    progressBar.style.width = `${batt.SOC}%`;
-    
-    // 2. Bersihkan kelas warna bawaan Tailwind agar tidak bentrok
-    progressBar.classList.remove('bg-green-500', 'bg-yellow-500', 'bg-red-500', 'bg-blue-500');
-    
-    // 3. Pasang warna baru yang sesuai dengan kondisi SOC saat ini
-    let colorClass = getSocColorClass(batt.SOC);
-    progressBar.classList.add(colorClass);
-    }
-    document.getElementById(`voltage-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).innerHTML = `${batt.voltage} V`;
-    document.getElementById(`current-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).innerHTML = `${batt.current} A`;
-    document.getElementById(`cellmin-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).innerHTML = `${batt.cell_vmin} V`;
-    document.getElementById(`cellmax-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).innerHTML = `${batt.cell_vmax} V`;
-    document.getElementById(`power-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).innerHTML = `${(batt.voltage*batt.current).toFixed(1)} W`;
-    document.getElementById(`voltagedif-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).innerHTML = `${batt.cell_vdif} mV`;
+    document.getElementById(`soc-value-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).textContent = `${parseFloat(batt.soc).toFixed(1)}%`;
+    document.getElementById(`soh-value-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).textContent = `${parseFloat(batt.soh).toFixed(0)}%`;
+    document.getElementById(`voltage-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).textContent = `${batt.voltage} V`;
+    document.getElementById(`current-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).textContent = `${batt.current} A`;
+    document.getElementById(`power-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).textContent = `${(batt.voltage * batt.current).toFixed(1)} W`;
+    document.getElementById(`voltagedif-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).textContent = `${batt.cell_vdif} mV`;
+    document.getElementById(`temp-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).textContent = `Suhu: ${batt.minTemp}°C ~ ${batt.maxTemp}°C`;
+    document.getElementById(`cycle-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`).textContent = `Cycle: ${batt.cycles}`;
 
     const socBar = document.getElementById(`soc-bar-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
-    if (batt.soc > 70) socBar.className = 'progress-fill bg-green-500';
-    else if (batt.soc > 30) socBar.className = 'progress-fill bg-yellow-500';
-    else socBar.className = 'progress-fill bg-red-500';
+    if (socBar) {
+      socBar.style.width = `${batt.soc}%`;
+      if (batt.soc > 50) socBar.className = 'progress-fill bg-green-500';
+      else if (batt.soc > 20) socBar.className = 'progress-fill bg-yellow-500';
+      else socBar.className = 'progress-fill bg-red-500';
+    }
 
     const statusElem = document.getElementById(`status-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
-if (statusElem) {
-    statusElem.textContent = batt.status;
-    
-    // Memaksa pewarnaan teks secara mutlak menggunakan inline styles
-    if (batt.status === 'Charging') {
-        statusElem.style.color = '#22c55e'; // Warna Hijau Terang (Green-500)
-        statusElem.style.fontWeight = 'bold';
-    } else if (batt.status === 'Discharging') {
-        statusElem.style.color = '#f97316'; // Warna Oranye Terang (Orange-500)
-        statusElem.style.fontWeight = 'bold';
-    } else {
-        statusElem.style.color = '#9ca3af'; // Warna Abu-abu Standby (Gray-400)
-        statusElem.style.fontWeight = 'normal';
+    if (statusElem) {
+      statusElem.textContent = batt.status.toUpperCase();
+      if (batt.status === 'Charging') {
+        statusElem.style.color = '#22c55e';
+      } else if (batt.status === 'Discharging') {
+        statusElem.style.color = '#f97316';
+      } else {
+        statusElem.style.color = '#38bdf8';
+      }
     }
-}
 
     const led = document.getElementById(`led-card-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
-    led.classList.add("active");
-    setTimeout(() => led.classList.remove("active"), 250);
+    if (led) {
+      led.classList.add("active");
+      setTimeout(() => led.classList.remove("active"), 250);
+    }
 
-    // Reset timeout
     if (cardTimers[cardId]) {
       clearTimeout(cardTimers[cardId]);
     }
@@ -867,11 +846,9 @@ if (statusElem) {
       delete cardTimers[cardId];
     }, 30000);
 
-    let currentCard = document.getElementById(cardId);
-    if (currentCard) {
-        currentCard.classList.remove('hidden');
-    }
+    card.classList.remove('hidden');
   }
+}
 
   function updateSummary() {
     if (batteries.length === 0) {
