@@ -517,10 +517,9 @@
             <div class="flex items-center gap-1">
               <span class="text-sm font-semibold text-gray-800">SOC :</span>
               <span class="text-sm font-semibold" id="soc-value-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.soc}%</span>
-            </div>
-            <span class="text-sm font-semibold" id="status-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.status || '--'}</span>
+             </div>
+             <span class="text-sm font-semibold" id="status-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.status || '--'}</span>
           </div>
-        </div>
           <div class="progress-bar">
             <div id="soc-bar-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="progress-fill" style="width: ${batt.soc}%"></div>
           </div>
