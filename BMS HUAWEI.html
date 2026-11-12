@@ -517,6 +517,8 @@
             <span class="text-sm font-semibold text-gray-800">SOC :</span>
             <span class="text-sm font-semibold" id="soc-value-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.soc}%</span>
           </div>
+          <span class="text-xs font-semibold" id="status-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.status || '--'}</span>
+        </div>
           <div class="progress-bar">
             <div id="soc-bar-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="progress-fill" style="width: ${batt.soc}%"></div>
           </div>
@@ -526,14 +528,14 @@
             <div class="flex items-center">
               <i class="fas fa-bolt text-yellow-500 mr-2"></i>
               <div>
-                <div class="text-gray-500">Voltage</div>
+                <div class="text-gray-500">Tegangan</div>
                 <div id="voltage-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="font-semibold">${batt.voltage} V</div>
               </div>
             </div>
             <div class="flex items-center">
               <i class="fas fa-minus-circle  text-blue-500 mr-2"></i>
               <div>
-                <div class="text-gray-500">Diff Cell</div>
+                <div class="text-gray-500">Selisih Sel</div>
                 <div id="voltagedif-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="font-semibold">${batt.cell_vdif} mV</div>
               </div>
             </div>
@@ -549,14 +551,14 @@
             <div class="flex items-center">
               <i class="fas fa-tachometer-alt text-blue-500 mr-2"></i>
               <div>
-                <div class="text-gray-500">Current</div>
+                <div class="text-gray-500">Arus</div>
                 <div id="current-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="font-semibold">${batt.current} A</div>
               </div>
             </div>
             <div class="flex items-center">
               <i class="fas fa-bolt text-red-500 mr-2"></i>
               <div>
-                <div class="text-gray-500">Power</div>
+                <div class="text-gray-500">Daya</div>
                 <div id="power-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="font-semibold">${(batt.voltage*batt.current).toFixed(1)} W</div>
               </div>
             </div>
@@ -841,6 +843,23 @@ if (tempElem) {
 if (cyclesElem) {
     cyclesElem.textContent = batt.cycles;
 }
+
+    const statusElem = document.getElementById(`status-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
+    if (statusElem) {
+      statusElem.textContent = batt.status;
+
+      // Memaksa pewarnaan teks secara mutlak menggunakan inline styles
+      if (batt.status === 'Charging') {
+        statusElem.style.color = '#22c55e'; // Warna Hijau Terang (Green-500)
+        statusElem.style.fontWeight = 'bold';
+      } else if (batt.status === 'Discharging') {
+        statusElem.style.color = '#f97316'; // Warna Oranye Terang (Orange-500)
+        statusElem.style.fontWeight = 'bold';
+      } else {
+        statusElem.style.color = '#9ca3af'; // Warna Abu-abu Standby (Gray-400)
+        statusElem.style.fontWeight = 'normal';
+      }
+    }
 
     const led = document.getElementById(`led-card-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
     led.classList.add("active");
