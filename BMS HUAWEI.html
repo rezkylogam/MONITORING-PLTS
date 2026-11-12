@@ -732,10 +732,13 @@
 
   function normalizeFromMqtt(data, topic) {
     const cells = data.cell_voltages.map(v => (v/1000).toFixed(3));
+    // Ambil array suhu per sel (sesuaikan nama key JSON dari ESP32/MQTT jika berbeda, misal: cell_temps)
+    const cell_temps = Array.isArray(data.cell_temps) ? data.cell_temps : [];
+  
     const cell_vmax = Math.max(...data.cell_voltages) / 1000;
     const cell_vmin = Math.min(...data.cell_voltages) / 1000;
     const cell_vdiff = (cell_vmax - cell_vmin) * 1000;
-    
+
     return {
       loggerId: topic.split('/')[1],
       typeBattery: data.typeBattery,
@@ -1043,26 +1046,28 @@ function updateModal() {
         statusClass = "border border-green-500 bg-green-50 text-green-700 font-medium"; 
       }
 
-      const cellBox = document.createElement("div");
-      cellBox.className = `cell-voltage ${statusClass} rounded-lg shadow-sm p-3 flex flex-col items-center justify-center transition-all duration-200`;
+    const cellBox = document.createElement("div");
+    cellBox.className = `cell-voltage ${statusClass} rounded-lg shadow-sm p-3 flex flex-col items-center justify-center transition-all`;
 
-      
-      const label = document.createElement("div");
-      label.className = "text-xs font-medium text-gray-500 mb-1";
-      label.textContent = `Cell ${i + 1}`;
+    const label = document.createElement("div");
+    label.className = "text-xs font-medium text-gray-500 mb-1";
+    label.textContent = `Cell ${i + 1}`;
 
-      const value = document.createElement("div");
-      value.className = "text-sm font-bold";
-      value.textContent = `${v} V`;
-      
-      if (statusClass === "cell-danger") value.className += " text-red-600";
-      else if (statusClass === "cell-warning") value.className += " text-yellow-600";
-      else value.className += " text-green-600";
+    const value = document.createElement("div");
+    value.className = "text-sm font-bold text-gray-800";
+    value.textContent = `${v} V`;
 
-      cellBox.appendChild(label);
-      cellBox.appendChild(value);
-      cellsDiv.appendChild(cellBox);
-    });
+    // Elemen baru untuk menampilkan suhu per sel
+    const tempVal = (batt.cell_temps && batt.cell_temps[i] !== undefined) ? `${batt.cell_temps[i]} °C` : "-";
+    const tempDiv = document.createElement("div");
+    tempDiv.className = "text-xs font-semibold text-teal-600 mt-1";
+    tempDiv.textContent = tempVal;
+
+    cellBox.appendChild(label);
+    cellBox.appendChild(value);
+    cellBox.appendChild(tempDiv);
+    cellsDiv.appendChild(cellBox);
+  });
     
     blinkLed("led-modal");
   }
