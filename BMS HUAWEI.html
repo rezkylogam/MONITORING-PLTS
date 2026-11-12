@@ -513,11 +513,13 @@
           <div class="led" id="led-card-${batt.loggerId}-${batt.typeBattery}-${batt.addr}"></div>
         </div>
         <div class="mb-4">
-          <div class="flex justify-start items-center gap-1 mb-1">
-            <span class="text-sm font-semibold text-gray-800">SOC :</span>
-            <span class="text-sm font-semibold" id="soc-value-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.soc}%</span>
+          <div class="flex justify-between items-center mb-1">
+            <div class="flex items-center gap-1">
+              <span class="text-sm font-semibold text-gray-800">SOC :</span>
+              <span class="text-sm font-semibold" id="soc-value-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.soc}%</span>
+            </div>
+            <span class="text-sm font-semibold" id="status-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.status || '--'}</span>
           </div>
-          <span class="text-xs font-semibold" id="status-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.status || '--'}</span>
         </div>
           <div class="progress-bar">
             <div id="soc-bar-${batt.loggerId}-${batt.typeBattery}-${batt.addr}" class="progress-fill" style="width: ${batt.soc}%"></div>
