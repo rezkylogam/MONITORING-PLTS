@@ -571,7 +571,7 @@
         </div>
          <div class="mt-4 pt-3 border-t border-gray-100 text-gray-500 flex justify-between items-center w-full">
           <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Suhu: <span id="temp-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.temp || '--'}</span></span>
-           <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Cycle: <span id="cycles-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.cycles}</span></span>
+           <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Siklus (Cycles) : <span id="cycles-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.cycles}</span></span>
         </div>
       `;
       card.onclick = () => openModal(batt.loggerId, batt.addr, batt.typeBattery);
@@ -753,7 +753,7 @@
       time: getCurrentTimeHHMMSS(),
       power: (data.bat_voltage * data.bat_current).toFixed(2),
       status: data.bat_current > 0.1 ? 'Charging' : (data.bat_current < -0.1 ? 'Discharging' : 'Standby'),
-      temp: data.temp_range || (data.min_temp !== undefined ? `${data.min_temp}°C ~ ${data.max_temp}°C` : (data.temperature !== undefined ? `${data.temperature}°C` : '--'))
+      temp: (data.minTemp !== undefined && data.maxTemp !== undefined) ? `${data.minTemp}°C ~ ${data.maxTemp}°C` : (data.min_temp !== undefined ? `${data.min_temp}°C ~ ${data.max_temp}°C` : (data.temps && data.temps.length > 0 ? `${Math.min(...data.temps)}°C ~ ${Math.max(...data.temps)}°C` : '--'))
     };
   }
 
