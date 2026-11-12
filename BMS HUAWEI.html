@@ -732,15 +732,13 @@
 
   function normalizeFromMqtt(data, topic) {
     const cells = data.cell_voltages.map(v => (v/1000).toFixed(3));
-    // Ambil array suhu per sel (sesuaikan nama key JSON dari ESP32/MQTT jika berbeda, misal: cell_temps)
     const cell_temps = Array.isArray(data.cell_temps) ? data.cell_temps : [];
-  
     const cell_vmax = Math.max(...data.cell_voltages) / 1000;
     const cell_vmin = Math.min(...data.cell_voltages) / 1000;
     const cell_vdiff = (cell_vmax - cell_vmin) * 1000;
 
     return {
-      loggerId: topic.split('/')[1],
+      loggerId: topic.split('/'),
       typeBattery: data.typeBattery,
       addr: data.AddrBattery,
       soc: data.SOC !== undefined ? parseFloat(data.SOC).toFixed(2) : (data.remaining_capacity !== undefined ? parseFloat(data.remaining_capacity).toFixed(2) : "0.00"),
@@ -1057,10 +1055,9 @@ function updateModal() {
     value.className = "text-sm font-bold text-gray-800";
     value.textContent = `${v} V`;
 
-    // Elemen baru untuk menampilkan suhu per sel
-    const tempVal = (batt.cell_temps && batt.cell_temps[i] !== undefined) ? `${batt.cell_temps[i]} °C` : "-";
+    const tempVal = (batt.cell_temps && batt.cell_temps[i] !== undefined) ? `${batt.cell_temps[i]} °C` : "-- °C";
     const tempDiv = document.createElement("div");
-    tempDiv.className = "text-xs font-semibold text-teal-600 mt-1";
+    tempDiv.className = "text-xs font-semibold text-emerald-600 mt-1";
     tempDiv.textContent = tempVal;
 
     cellBox.appendChild(label);
