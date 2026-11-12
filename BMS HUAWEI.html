@@ -569,12 +569,10 @@
             </div>
           </div>
         </div>
-        <div class="mt-4 pt-3 border-t border-gray-100 text-gray-500 flex justify-between items-center w-full">
-          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">DCHG Times: ${batt.cycles}</span>
-          <span class="text-sm font-semibold flex items-center gap-1">
-            Status: <span id="status-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">--</span>
-        </span>
-      </div>
+         <div class="mt-4 pt-3 border-t border-gray-100 text-gray-500 flex justify-between items-center w-full">
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Suhu: <span id="temp-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.temp || '--'}</span></span>
+          <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Cycle: <span id="cycles-${batt.loggerId}-${batt.typeBattery}-${batt.addr}">${batt.cycles}</span></span>
+        </div>
       `;
       card.onclick = () => openModal(batt.loggerId, batt.addr, batt.typeBattery);
       grid.appendChild(card);
@@ -755,6 +753,7 @@
       time: getCurrentTimeHHMMSS(),
       power: (data.bat_voltage * data.bat_current).toFixed(2),
       status: data.bat_current > 0.1 ? 'Charging' : (data.bat_current < -0.1 ? 'Discharging' : 'Standby')
+      temp: data.temp_range || (data.min_temp !== undefined ? `${data.min_temp}°C ~ ${data.max_temp}°C` : (data.temperature !== undefined ? `${data.temperature}°C` : '--'))
     };
   }
 
@@ -833,20 +832,14 @@
     else if (batt.soc > 30) socBar.className = 'progress-fill bg-yellow-500';
     else socBar.className = 'progress-fill bg-red-500';
 
-    const statusElem = document.getElementById(`status-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
-if (statusElem) {
-    statusElem.textContent = batt.status;
+    const tempElem = document.getElementById(`temp-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
+if (tempElem) {
+    tempElem.textContent = batt.temp;
+    }
     
-    // Memaksa pewarnaan teks secara mutlak menggunakan inline styles
-    if (batt.status === 'Charging') {
-        statusElem.style.color = '#22c55e'; // Warna Hijau Terang (Green-500)
-        statusElem.style.fontWeight = 'bold';
-    } else if (batt.status === 'Discharging') {
-        statusElem.style.color = '#f97316'; // Warna Oranye Terang (Orange-500)
-        statusElem.style.fontWeight = 'bold';
-    } else {
-        statusElem.style.color = '#9ca3af'; // Warna Abu-abu Standby (Gray-400)
-        statusElem.style.fontWeight = 'normal';
+    const cyclesElem = document.getElementById(`cycles-${batt.loggerId}-${batt.typeBattery}-${batt.addr}`);
+if (cyclesElem) {
+    cyclesElem.textContent = batt.cycles;
     }
 }
 
