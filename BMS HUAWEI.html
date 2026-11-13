@@ -263,7 +263,7 @@
     
     <!-- Summary Section -->
       <div id="summarySection" class="mb-8 hidden">
-        <h3 class="text-lg font-semibold text-light gray-850 mb-4">Ringkasan Keseluruhan</h3>
+        <h3 class="text-lg font-semibold text-light gray-850 mb-4">RINGKASAN SISTEM TOTAL</h3>
             <div class="summary-card rounded-xl border border-gray-700/50 shadow-sm p-5">
       <!-- Grid diubah menjadi grid-cols-3 agar mengunci tampilan menjadi 3 kolom sejajar (2 Baris) -->
       <div class="grid grid-cols-3 gap-4 text-center justify-center text-lg">
@@ -273,14 +273,14 @@
         <!-- 1. SOC -->
         <div class="space-y-1 bg-white/5 p-2 rounded-lg flex flex-col items-center justify-center">
           <i class="fa fa-battery-three-quarters" style="color: green;"></i>
-          <div class="text-light gray-1000 text-xs font-medium uppercase tracking-wider">SOC</div>
+          <div class="text-light gray-1000 text-xs font-medium uppercase tracking-wider">RATA RATA SOC</div>
           <div id="avg-soc" class="font-semibold text-white-1500"></div>
         </div>
 
         <!-- 2. SOH -->
         <div class="space-y-1 bg-white/5 p-2 rounded-lg flex flex-col items-center justify-center">
           <i class="fa fa-heartbeat" style="color: pink;"></i>
-          <div class="text-light gray-1000 text-xs font-medium uppercase tracking-wider">SOH</div>
+          <div class="text-light gray-1000 text-xs font-medium uppercase tracking-wider">RATA RATA SOH</div>
           <div id="avg-soh" class="font-semibold text-white-1500"></div>
         </div>
 
@@ -296,21 +296,21 @@
         <!-- 4. VOLTAGE -->
         <div class="space-y-1 bg-white/5 p-2 rounded-lg flex flex-col items-center justify-center">
           <i class="fa fa-bolt" style="color: yellow;"></i>
-          <div class="text-light gray-1000 text-xs font-medium uppercase tracking-wider">VOLTAGE</div>
+          <div class="text-light gray-1000 text-xs font-medium uppercase tracking-wider">TEGANGAN RATA RATA</div>
           <div id="avg-voltage" class="font-semibold text-white-1500"></div>
         </div>
 
         <!-- 5. CURRENT -->
         <div class="space-y-1 bg-white/5 p-2 rounded-lg flex flex-col items-center justify-center">
           <i class="fa fa-wave-square" style="color: orange;"></i>
-          <div class="text-light gray-1000 text-xs font-medium uppercase tracking-wider">CURRENT</div>
+          <div class="text-light gray-1000 text-xs font-medium uppercase tracking-wider">TOTAL ARUS</div>
           <div id="total-current" class="font-semibold text-white-1500"></div>
         </div>
 
         <!-- 6. POWER -->
         <div class="space-y-1 bg-white/5 p-2 rounded-lg flex flex-col items-center justify-center">
           <i class="fa-solid fa-plug-circle-bolt" style="color: red;"></i>
-          <div class="text-light gray-1000 text-xs font-medium uppercase tracking-wider">POWER</div>
+          <div class="text-light gray-1000 text-xs font-medium uppercase tracking-wider">TOTAL DAYA</div>
           <div id="total-power" class="font-semibold text-white-1500"></div>
         </div>
       </div>
@@ -391,7 +391,7 @@
         <div class="space-y-4">
           <div class="bg-gray-50 p-4 rounded-lg">
             <h3 class="font-medium text-gray-700 mb-3 flex items-center">
-              <i class="fas fa-bolt text-yellow-500 mr-2"></i> Voltage Metrics
+              <i class="fas fa-bolt text-yellow-500 mr-2"></i> TEGANGAN & KESEIMBANGAN SEL
             </h3>
             <div class="space-y-3">
               <div class="flex justify-between items-center">
@@ -411,7 +411,7 @@
                 <span class="font-semibold text-gray-800" id="modalcellmax"></span>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-gray-600">Voltage Difference</span>
+                <span class="text-gray-600">selisih (Diff)</span>
                 <span class="font-semibold text-gray-800" id="modalcelldif"></span>
               </div>
             </div>
@@ -421,7 +421,7 @@
         <div class="space-y-4">
           <div class="bg-gray-50 p-4 rounded-lg">
             <h3 class="font-medium text-gray-700 mb-3 flex items-center">
-              <i class="fas fa-wave-square text-orange-500 mr-2"></i> Current Metrics
+              <i class="fas fa-wave-square text-orange-500 mr-2"></i> ARUS & DAYA
             </h3>
             <div class="space-y-3">
               <div class="flex justify-between items-center">
@@ -441,7 +441,7 @@
                 <span class="font-semibold text-gray-800" id="modalBusPower"></span>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-gray-600">Loss Power</span>
+                <span class="text-gray-600">Estimasi Loss</span>
                 <span class="font-semibold text-gray-800" id="modalLossPower"></span>
               </div>
             </div>
