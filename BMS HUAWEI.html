@@ -949,7 +949,7 @@ function updateModal() {
   if (!batt) return;
 
   // Header
-  document.getElementById("modalTitle").textContent = `${batt.typeBattery || 'HUAWEI B1 2025'} #${batt.addr}`;
+  document.getElementById("modalTitle").innerHTML = `HUAWEI B1 2025 &nbsp;&nbsp; #${batt.addr}`;
 
   // 1. Kapasitas & Kesehatan
   document.getElementById("modalSoc").textContent = `${batt.soc}%`;
