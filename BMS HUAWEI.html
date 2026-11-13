@@ -370,6 +370,9 @@
           <div class="w-full h-2 rounded-full overflow-hidden" style="background-color: #232734;">
             <div id="modalSocBar" class="h-full bg-emerald-400 transition-all duration-300" style="width: 0%;"></div>
           </div>
+          <div class="w-full h-1.5 rounded-full overflow-hidden" style="background-color: #232734; margin-top: 6px;">
+            <div id="modalSohBar" class="h-full transition-all duration-300" style="width: 0%; background-color: #38bdf8;"></div>
+          </div>
           <div class="grid grid-cols-3 gap-2 pt-2 border-t text-xs" style="border-color: #232734;">
             <div>
               <div class="text-[10px] text-slate-400">Siklus (Cycles)</div>
@@ -950,6 +953,7 @@ function updateModal() {
   document.getElementById("modalRem").textContent = `${batt.remaining} Ah`;
   document.getElementById("modalSoh").textContent = `${batt.soh}%`;
   document.getElementById("modalSocBar").style.width = `${Math.min(100, Math.max(0, parseFloat(batt.soc)))}%`;
+  document.getElementById("modalSohBar").style.width = `${Math.min(100, Math.max(0, parseFloat(batt.soh)))}%`;
   document.getElementById("modalCycles").textContent = batt.cycles;
   document.getElementById("modalTempRange").textContent = batt.temp ? batt.temp.replace('~', '/') : '-- / --';
   document.getElementById("modalTime").textContent = batt.time;
