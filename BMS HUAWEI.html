@@ -938,8 +938,9 @@ if (cyclesElem) {
   }
 
 function updateModal() {
-  if (selectedBatteryIndex === null || !batteries[selectedBatteryIndex]) return;
-  const batt = batteries[selectedBatteryIndex];
+  if (currentAddr === null || currentLoggerId === null) return;
+  const batt = batteries.find(b => b.addr === currentAddr && b.loggerId === currentLoggerId && b.typeBattery === currentTypeBattery);
+  if (!batt) return;
 
   // Header
   document.getElementById("modalTitle").textContent = `${batt.typeBattery || 'HUAWEI B1 2025'} #${batt.addr}`;
