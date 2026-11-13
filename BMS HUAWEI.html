@@ -341,120 +341,114 @@
   </div>
 </footer>
 
-<!-- Modal -->
-<div id="batteryModal" class="fixed inset-0 hidden bg-black/50 flex items-center justify-center z-50 p-4">
-  <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-    <div class="flex items-center justify-between px-6 py-4 border-b">
-      <div class="flex items-center">
-        <div id="led-modal" class="w-3 h-3 rounded-full bg-gray-300 mr-3"></div>
-        <h2 id="modalTitle" class="text-xl font-semibold text-gray-800"></h2>
+<!-- Modal Detail Baterai (Tema Gelap Presisi seperti Lokal ESP32) -->
+<div id="batteryModal" class="fixed inset-0 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+  <div class="w-full max-w-2xl rounded-xl border shadow-2xl overflow-hidden text-slate-200 flex flex-col max-h-[90vh]" style="background-color: #161922; border-color: #2d3343;">
+    
+    <!-- Header Modal -->
+    <div class="flex items-center justify-between px-6 py-4 border-b" style="background-color: #1c202b; border-color: #2d3343;">
+      <div class="flex items-center gap-2.5">
+        <span id="led-modal" class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+        <h2 id="modalTitle" class="text-base font-bold tracking-wide text-white uppercase">HUAWEI B1 2025 #214</h2>
       </div>
-      <button id="closeModal" class="text-gray-500 hover:text-gray-700">
-        <i class="fas fa-times text-xl"></i>
+      <button id="closeModal" class="text-slate-400 hover:text-white text-xl font-bold leading-none">
+        <i class="fas fa-times"></i>
       </button>
     </div>
 
-    <div class="overflow-y-auto flex-1 p-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div class="bg-blue-50 p-4 rounded-lg">
-          <div class="flex justify-between items-start mb-2">
-            <div class="text-blue-700 font-medium">State Of Charge</div>
-            <div class="text-2xl font-bold text-blue-700" id="modalSOC"></div>
-          </div>
-          <div class="progress-bar">
-            <div id="soc-progress" class="progress-fill bg-blue-500"></div>
-          </div>
-          <div class="text-xs font-semibold text-gray-500 mt-1">Remaining: <span id="modalRemaining"></span> Ah</div>
-        </div>
-        
-        <div class="bg-green-50 p-4 rounded-lg">
-          <div class="flex justify-between items-start mb-2">
-            <div class="text-green-700 font-medium">State Of Health</div>
-            <div class="text-2xl font-bold text-green-700" id="modalSOH"></div>
-          </div>
-          <div class="progress-bar">
-            <div id="soh-progress" class="progress-fill bg-green-500"></div>
-          </div>
-          <div class="text-xs font-semibold text-gray-500 mt-1">Full Capacity: <span id="modalCapacity"></span> Ah</div>
-        </div>
-        
-        <div class="bg-purple-50 p-4 rounded-lg">
-          <div class="flex justify-between items-center mb-2">
-            <div class="text-purple-700 font-medium">Discharge Times</div>
-            <div class="text-2xl font-bold text-purple-700" id="modalCycles"></div>
-          </div>
-          <div class="text-xs font-semibold text-gray-500 mt-1">Last updated: <span id="modalLastUpdate"></span></div>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div class="space-y-4">
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h3 class="font-medium text-gray-700 mb-3 flex items-center">
-              <i class="fas fa-bolt text-yellow-500 mr-2"></i> TEGANGAN & KESEIMBANGAN SEL
-            </h3>
-            <div class="space-y-3">
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Pack Voltage</span>
-                <span class="font-semibold text-gray-800" id="modalVoltage"></span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Bus Voltage</span>
-                <span class="font-semibold text-gray-800" id="modalBusVoltage"></span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Min Cell Voltage</span>
-                <span class="font-semibold text-gray-800" id="modalcellmin"></span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Max Cell Voltage</span>
-                <span class="font-semibold text-gray-800" id="modalcellmax"></span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">selisih (Diff)</span>
-                <span class="font-semibold text-gray-800" id="modalcelldif"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h3 class="font-medium text-gray-700 mb-3 flex items-center">
-              <i class="fas fa-wave-square text-orange-500 mr-2"></i> ARUS & DAYA
-            </h3>
-            <div class="space-y-3">
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Pack Current</span>
-                <span class="font-semibold text-gray-800" id="modalCurrent"></span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Bus Current</span>
-                <span class="font-semibold text-gray-800" id="modalBusCurrent"></span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Pack Power</span>
-                <span class="font-semibold text-gray-800" id="modalPower"></span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Bus Power</span>
-                <span class="font-semibold text-gray-800" id="modalBusPower"></span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Estimasi Loss</span>
-                <span class="font-semibold text-gray-800" id="modalLossPower"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <!-- Body Modal -->
+    <div class="p-6 space-y-5 overflow-y-auto flex-1">
       
-      <div class="bg-gray-50 p-4 rounded-lg">
-        <h3 class="font-medium text-gray-700 mb-4 flex items-center">
-          <i class="fas fa-battery-three-quarters text-green-500 mr-2"></i> Cell Voltages & Temperatures
-        </h3>
-        <div id="modalCells" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"></div>
+      <!-- 1. KAPASITAS & KESEHATAN -->
+      <div>
+        <div class="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-2">KAPASITAS & KESEHATAN</div>
+        <div class="rounded-lg border p-3.5 space-y-3" style="background-color: #11141c; border-color: #2d3343;">
+          <div class="flex justify-between items-center text-xs font-bold">
+            <span class="text-white">SOC: <span id="modalSoc">0.00%</span> (<span id="modalRem">0.00 Ah</span>)</span>
+            <span class="text-white">SOH: <span id="modalSoh">100.00%</span></span>
+          </div>
+          <div class="w-full h-2 rounded-full overflow-hidden" style="background-color: #232734;">
+            <div id="modalSocBar" class="h-full bg-emerald-400 transition-all duration-300" style="width: 0%;"></div>
+          </div>
+          <div class="grid grid-cols-3 gap-2 pt-2 border-t text-xs" style="border-color: #232734;">
+            <div>
+              <div class="text-[10px] text-slate-400">Siklus (Cycles)</div>
+              <div id="modalCycles" class="font-bold text-white mt-0.5">0</div>
+            </div>
+            <div>
+              <div class="text-[10px] text-slate-400">Suhu Min / Max</div>
+              <div id="modalTempRange" class="font-bold text-white mt-0.5">-- / --</div>
+            </div>
+            <div>
+              <div class="text-[10px] text-slate-400">Pembaruan</div>
+              <div id="modalTime" class="font-bold text-white mt-0.5">--:--:--</div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- 2. TEGANGAN & KESEIMBANGAN SEL -->
+      <div>
+        <div class="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-2">TEGANGAN & KESEIMBANGAN SEL</div>
+        <div class="rounded-lg border p-3.5 grid grid-cols-5 gap-2 text-xs" style="background-color: #11141c; border-color: #2d3343;">
+          <div>
+            <div class="text-[10px] text-slate-400">Pack Voltage</div>
+            <div id="modalPackVolt" class="font-bold text-white mt-0.5">0.00 V</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-slate-400">Bus Voltage</div>
+            <div id="modalBusVolt" class="font-bold text-white mt-0.5">0.00 V</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-slate-400">Min Cell</div>
+            <div id="modalMinCell" class="font-bold text-sky-400 mt-0.5">0.000 V</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-slate-400">Max Cell</div>
+            <div id="modalMaxCell" class="font-bold text-orange-400 mt-0.5">0.000 V</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-slate-400">Selisih (Diff)</div>
+            <div id="modalDiffCell" class="font-bold text-white mt-0.5">0 mV</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. ARUS & DAYA -->
+      <div>
+        <div class="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-2">ARUS & DAYA</div>
+        <div class="rounded-lg border p-3.5 grid grid-cols-5 gap-2 text-xs" style="background-color: #11141c; border-color: #2d3343;">
+          <div>
+            <div class="text-[10px] text-slate-400">Pack Current</div>
+            <div id="modalPackCurr" class="font-bold text-white mt-0.5">0.00 A</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-slate-400">Bus Current</div>
+            <div id="modalBusCurr" class="font-bold text-white mt-0.5">0.00 A</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-slate-400">Pack Power</div>
+            <div id="modalPackPower" class="font-bold text-white mt-0.5">0.00 W</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-slate-400">Bus Power</div>
+            <div id="modalBusPower" class="font-bold text-white mt-0.5">0.00 W</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-slate-400">Estimasi Loss</div>
+            <div id="modalLossPower" class="font-bold text-white mt-0.5">0.00 W</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. TEGANGAN & SUHU 15 SEL -->
+      <div>
+        <div class="text-[11px] font-bold tracking-wider uppercase text-slate-400 mb-2">
+          TEGANGAN & SUHU 15 SEL (BIRU = MIN, ORANYE = MAX)
+        </div>
+        <div id="modalCells" class="grid grid-cols-5 gap-2.5"></div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -745,6 +739,7 @@
     soh: parseFloat(data.SOH).toFixed(2),
     voltage: data.bat_voltage.toFixed(2),
     busVoltage: data.bus_voltage.toFixed(2),
+    busCurrent: data.bus_current !== undefined ? data.bus_current.toFixed(2) : data.bat_current.toFixed(2),
     current: data.bat_current.toFixed(2),
     capacity: data.full_capacity.toFixed(2),
     remaining: data.rem_capacity.toFixed(2),
@@ -943,140 +938,87 @@ if (cyclesElem) {
   }
 
 function updateModal() {
-    if (currentAddr === null || currentLoggerId === null || currentTypeBattery === null) return;
+  if (selectedBatteryIndex === null || !batteries[selectedBatteryIndex]) return;
+  const batt = batteries[selectedBatteryIndex];
 
-    const batt = batteries.find(b => b.loggerId === currentLoggerId && b.addr === currentAddr && b.typeBattery === currentTypeBattery);
-    if (!batt) return;
+  // Header
+  document.getElementById("modalTitle").textContent = `${batt.typeBattery || 'HUAWEI B1 2025'} #${batt.addr}`;
 
-    // 1. Mengisi Informasi Judul, Persentase, dan Siklus Baterai
-    document.getElementById("modalTitle").innerHTML = `HUAWEI B1 2025 &nbsp; <span class="text-sm font-semibold text-black-800">#${batt.addr}</span>`;
-    document.getElementById("modalSOC").textContent = `${batt.soc}%`;
-    document.getElementById("modalSOH").textContent = `${batt.soh}%`;
-    document.getElementById("modalCycles").textContent = batt.cycles;
-    
-    // Rumus Kapasitas berdasarkan nilai SOC
-    const currentSOC = parseFloat(batt.soc) || 0;
-    const capFull = (batt.capacity && parseFloat(batt.capacity) > 0) ? parseFloat(batt.capacity).toFixed(2) : "100.00";
-    const capRemaining = (batt.remaining && parseFloat(batt.remaining) > 0) ? parseFloat(batt.remaining).toFixed(2) : ((currentSOC / 100) * parseFloat(capFull)).toFixed(2);
-    
-    document.getElementById("modalRemaining").textContent = capRemaining;
-    document.getElementById("modalCapacity").textContent = capFull;
+  // 1. Kapasitas & Kesehatan
+  document.getElementById("modalSoc").textContent = `${batt.soc}%`;
+  document.getElementById("modalRem").textContent = `${batt.remaining} Ah`;
+  document.getElementById("modalSoh").textContent = `${batt.soh}%`;
+  document.getElementById("modalSocBar").style.width = `${Math.min(100, Math.max(0, parseFloat(batt.soc)))}%`;
+  document.getElementById("modalCycles").textContent = batt.cycles;
+  document.getElementById("modalTempRange").textContent = batt.temp ? batt.temp.replace('~', '/') : '-- / --';
+  document.getElementById("modalTime").textContent = batt.time;
 
-    // 2. Mengisi Data Voltage Metrics (Kembali normal membaca dari MQTT)
-    document.getElementById("modalVoltage").textContent = `${batt.voltage} V`;
-    const busVolt = batt.busVoltage !== undefined ? batt.busVoltage : batt.voltage;
-    document.getElementById("modalBusVoltage").textContent = `${busVolt} V`;
+  // 2. Tegangan & Keseimbangan Sel
+  document.getElementById("modalPackVolt").textContent = `${batt.voltage} V`;
+  document.getElementById("modalBusVolt").textContent = `${batt.busVoltage} V`;
+  document.getElementById("modalMinCell").textContent = `${batt.cell_vmin} V`;
+  document.getElementById("modalMaxCell").textContent = `${batt.cell_vmax} V`;
+  document.getElementById("modalDiffCell").textContent = `${batt.cell_vdif} mV`;
 
-    // 3. RUMUS KUNCI ARUS: Mengunci selisih Bus Current tepat 0.8 A lebih besar dari Pack Current
-    const pCurrent = parseFloat(batt.current) || 0; 
-    
-    // Menggunakan Math.sign agar penambahan 0.8 A tetap sinkron dan presisi berjarak 0.8 baik minus maupun plus
-    const bCurrent = pCurrent !== 0 ? pCurrent + (Math.sign(pCurrent) * 0.80) : 0;
+  // 3. Arus & Daya
+  const packPower = parseFloat(batt.voltage) * parseFloat(batt.current);
+  // Gunakan bus_current dari MQTT jika ada, atau samakan dengan current jika tidak tersedia
+  const busCurrVal = batt.busCurrent !== undefined ? parseFloat(batt.busCurrent) : parseFloat(batt.current);
+  const busPower = parseFloat(batt.busVoltage) * busCurrVal;
+  const lossPower = Math.abs(packPower - busPower);
 
-    // 4. Memasukkan Nilai ke Menu CURRENT METRICS
-    document.getElementById("modalCurrent").textContent = `${pCurrent.toFixed(2)} A`;
-    document.getElementById("modalBusCurrent").textContent = `${bCurrent.toFixed(2)} A`;
+  document.getElementById("modalPackCurr").textContent = `${parseFloat(batt.current).toFixed(2)} A`;
+  document.getElementById("modalBusCurr").textContent = `${busCurrVal.toFixed(2)} A`;
+  document.getElementById("modalPackPower").textContent = `${packPower.toFixed(2)} W`;
+  document.getElementById("modalBusPower").textContent = `${busPower.toFixed(2)} W`;
+  document.getElementById("modalLossPower").textContent = `${lossPower.toFixed(2)} W`;
 
-    // 5. Mengisi Detail Cell Voltages dan Waktu Update
-    document.getElementById("modalLastUpdate").textContent = batt.time;
-    document.getElementById("modalcellmin").textContent = `${batt.cell_vmin} V`;
-    document.getElementById("modalcellmax").textContent = `${batt.cell_vmax} V`;
-    document.getElementById("modalcelldif").textContent = `${batt.cell_vdif} mV`;
+  // 4. Kotak 15 Sel (Tema Gelap Presisi: Biru = Min, Oranye = Max)
+  const cellsDiv = document.getElementById("modalCells");
+  cellsDiv.innerHTML = "";
 
-    // 6. Kalkulasi Otomatis Daya Watt Berdasarkan Selisih Arus Baru 0.8 A
-    const pPower = batt.power !== undefined ? parseFloat(batt.power) : (parseFloat(batt.voltage) * pCurrent);
-    const bPower = (parseFloat(busVolt) * bCurrent);
-    
-    // Menghitung Loss Power secara otomatis dari selisih daya
-    const lPower = Math.abs(bPower - pPower);
+  const minVal = parseFloat(batt.cell_vmin);
+  const maxVal = parseFloat(batt.cell_vmax);
 
-    // 7. Memasukkan Hasil Hitungan Daya ke Layar Menu Modal
-    document.getElementById("modalPower").textContent = `${pPower.toFixed(2)} W`;
-    document.getElementById("modalBusPower").textContent = `${bPower.toFixed(2)} W`;
-    document.getElementById("modalLossPower").textContent = `${lPower.toFixed(2)} W`;
+  batt.cells.forEach((v, i) => {
+    const val = parseFloat(v);
+    const cellBox = document.createElement("div");
+    cellBox.className = "rounded-lg p-2.5 text-center border transition-all";
 
-    document.getElementById("soc-progress").style.width = `${batt.soc}%`;
-    document.getElementById("soh-progress").style.width = `${batt.soh}%`;
-    
-    const socProgress = document.getElementById("soc-progress");
-    const sohProgress = document.getElementById("soh-progress");
-    
-    if (batt.soc > 70) socProgress.className = "progress-fill bg-blue-500";
-    else if (batt.soc > 30) socProgress.className = "progress-fill bg-yellow-500";
-    else socProgress.className = "progress-fill bg-red-500";
-    
-    if (batt.soh > 80) sohProgress.className = "progress-fill bg-green-500";
-    else if (batt.soh > 60) sohProgress.className = "progress-fill bg-yellow-500";
-    else sohProgress.className = "progress-fill bg-red-500";
+    if (Math.abs(val - minVal) < 0.0005) {
+      cellBox.style.borderColor = "#38bdf8";      // Biru Terang (Min)
+      cellBox.style.backgroundColor = "#132638";
+    } else if (Math.abs(val - maxVal) < 0.0005) {
+      cellBox.style.borderColor = "#fb923c";      // Oranye Terang (Max)
+      cellBox.style.backgroundColor = "#2d201a";
+    } else {
+      cellBox.style.borderColor = "#2d3343";      // Abu Gelap Normal
+      cellBox.style.backgroundColor = "#11141c";
+    }
 
-    const cellsDiv = document.getElementById("modalCells");
-    cellsDiv.innerHTML = "";
-    
-    batt.cells.forEach((v, i) => {
-      const cellValue = parseFloat(v);
-      let statusClass = "border border-gray-200 dark:border-gray-700 bg-white";
-      let extraStyle = "";
-        
-      // Ambil nilai pembanding max & min dari data MQTT
-      const maxVal = parseFloat(batt.cell_vmax);
-      const minVal = parseFloat(batt.cell_vmin);
-
-      // 1. Cek sel dengan tegangan tertinggi (Untuk monitoring Balancing)
-      if (cellValue === maxVal && maxVal !== minVal) {
-          statusClass = "border border-blue-500 bg-blue-50/60 text-blue-900 shadow-[0_0_8px_rgba(59,130,246,0.4)]"; 
-      } 
-      // 2. Cek sel dengan tegangan terendah 
-      else if (cellValue === minVal && maxVal !== minVal) {
-        statusClass = "border border-amber-500 bg-amber-50/60 text-amber-900 shadow-[0_0_8px_rgba(245,158,11,0.4)]"; 
-      } 
-      // 3. Kondisi SANGAT KRITIS / KOSONG (Di bawah 3.0V) -> Baterai < 5%, wajib segera diputus/dicas
-      else if (cellValue < 3.0) {
-        statusClass = "border-2 border-red-600 bg-red-100 text-red-700 font-bold pulse-animation"; 
-      } 
-      // 4. Kondisi PERINGATAN / LEMAH (3.0V sampai 3.19V) -> Kapasitas tersisa sekitar 5% - 15%
-      else if (cellValue < 3.2) {
-        statusClass = "border border-red-400 bg-red-50 text-red-600"; 
-      } 
-      // 5. Kondisi NORMAL & SEHAT (3.2V sampai 3.6V) -> Area kerja utama LiFePO4
-      else if (cellValue <= 3.6) {
-        statusClass = "border border-gray-200 bg-white text-gray-700"; 
-      } 
-      // 6. Kondisi PENUH / OVERCHARGE PROTECTION (Di atas 3.6V) -> Sel mendekati batas atas 3.65V
-      else {
-        statusClass = "border border-green-500 bg-green-50 text-green-700 font-medium"; 
-      }
-
-      const cellBox = document.createElement("div");
-      cellBox.className = `cell-voltage ${statusClass} rounded-lg shadow-sm p-3 flex flex-col items-center justify-center transition-all duration-200`;
-
-      
     const label = document.createElement("div");
-    label.className = "text-xs font-medium text-gray-500 mb-1";
-    label.textContent = `Cell ${i + 1}`;
+    label.className = "text-[10px] font-bold tracking-wider mb-1";
+    label.style.color = "#94a3b8";
+    label.textContent = `CELL ${i + 1}`;
 
     const value = document.createElement("div");
-    value.className = "text-sm font-bold";
+    value.className = "text-xs font-bold text-white";
     value.textContent = `${v} V`;
 
-    if (statusClass === "cell-danger") value.className += " text-red-600";
-    else if (statusClass === "cell-warning") value.className += " text-yellow-600";
-    else value.className += " text-green-600";
-
-    // <-- MULAI BARIS BARU: Tambahkan elemen suhu sel -->
     const tempEl = document.createElement("div");
-    tempEl.className = "text-xs font-semibold text-emerald-500 mt-1";
+    tempEl.className = "text-[11px] font-semibold mt-1";
+    tempEl.style.color = "#00e676";
     const cTemp = (batt.cell_temps && batt.cell_temps[i] !== undefined) ? `${batt.cell_temps[i]} °C` : "-- °C";
     tempEl.textContent = cTemp;
-    // <-- SELESAI BARIS BARU -->
 
     cellBox.appendChild(label);
     cellBox.appendChild(value);
-    cellBox.appendChild(tempEl); // <-- BARIS BARU: Masukkan suhu ke dalam kotak sel
+    cellBox.appendChild(tempEl);
     cellsDiv.appendChild(cellBox);
   });
-    
-    blinkLed("led-modal");
-  }
+
+  blinkLed("led-modal");
+}
 
   document.getElementById("closeModal").onclick = () => {
     modal.classList.add("hidden");
