@@ -274,7 +274,7 @@
       </div>
       <div>
         <label class="block text-xs font-bold text-gray-600 mb-1">PIN Keamanan</label>
-        <input type="password" id="setSecurityPin" placeholder="Masukkan PIN (1234)" class="w-full p-2 border border-gray-300 rounded-lg text-sm">
+        <input type="password" id="setSecurityPin" placeholder="Masukkan PIN" class="w-full p-2 border border-gray-300 rounded-lg text-sm">
       </div>
     </div>
 
@@ -282,12 +282,12 @@
     <div class="mb-4 p-3 rounded-lg border border-gray-200">
       <div class="text-xs font-bold text-gray-700 uppercase mb-2">1. Kontrol Saklar & Reset</div>
       <div class="grid grid-cols-2 gap-2 mb-2">
-        <button onclick="sendBmsCommand(4377, 1)" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 px-3 rounded-lg">Saklar 1 ON (Reg 4377)</button>
-        <button onclick="sendBmsCommand(4377, 0)" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 px-3 rounded-lg">Saklar 1 OFF (Reg 4377)</button>
+        <button onclick="sendBmsCommand(4377, 1)" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 px-3 rounded-lg">Saklar 1 ON</button>
+        <button onclick="sendBmsCommand(4377, 0)" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 px-3 rounded-lg">Saklar 1 OFF</button>
       </div>
       <div class="grid grid-cols-2 gap-2">
-        <button onclick="sendBmsCommand(4376, 1)" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-3 rounded-lg">Kontrol 2 / Reset (Reg 4376=1)</button>
-        <button onclick="sendBmsCommand(4376, 0)" class="bg-gray-600 hover:bg-gray-700 text-white text-xs font-bold py-2 px-3 rounded-lg">Kontrol 2 OFF (Reg 4376=0)</button>
+        <button onclick="sendBmsCommand(4376, 1)" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-3 rounded-lg">Kontrol 2 / Reset</button>
+        <button onclick="sendBmsCommand(4376, 0)" class="bg-gray-600 hover:bg-gray-700 text-white text-xs font-bold py-2 px-3 rounded-lg">Kontrol 2 OFF</button>
       </div>
     </div>
 
