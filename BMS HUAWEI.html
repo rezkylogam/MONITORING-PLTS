@@ -293,8 +293,8 @@
   <div class="p-3 rounded-lg border border-gray-200">
     <div class="text-xs font-bold text-gray-700 uppercase mb-2">1. KONTROL SAKLAR</div>
     <div class="grid grid-cols-2 gap-2">
-      <button onclick="sendBmsCommand(4377, 1)" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 px-2 rounded-lg">Saklar 1 ON</button>
-      <button onclick="sendBmsCommand(4377, 0)" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 px-2 rounded-lg">Saklar 1 OFF</button>
+      <button onclick="sendBmsCommand(4377, 1)" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 px-2 rounded-lg">ON</button>
+      <button onclick="sendBmsCommand(4377, 0)" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 px-2 rounded-lg">OFF</button>
     </div>
   </div>
 
@@ -302,8 +302,8 @@
   <div class="p-3 rounded-lg border border-gray-200">
     <div class="text-xs font-bold text-gray-700 uppercase mb-2">KONTROL RESET</div>
     <div class="grid grid-cols-2 gap-2">
-      <button onclick="sendBmsCommand(4376, 1)" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-2 rounded-lg">Saklar 2 / Reset</button>
-      <button onclick="sendBmsCommand(4376, 0)" class="bg-gray-600 hover:bg-gray-700 text-white text-xs font-bold py-2 px-2 rounded-lg">Saklar 2 OFF</button>
+      <button onclick="sendBmsCommand(4376, 1)" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-2 rounded-lg">Reset</button>
+      <button onclick="sendBmsCommand(4376, 0)" class="bg-gray-600 hover:bg-gray-700 text-white text-xs font-bold py-2 px-2 rounded-lg">OFF</button>
     </div>
   </div>
 </div>
@@ -315,7 +315,7 @@
     <div class="text-xs font-bold text-gray-700 uppercase mb-2">2. BATAS ARUS CHARGE</div>
     <div class="grid grid-cols-2 gap-2">
       <input type="number" id="valReg4109" placeholder="Contoh: 15.0 (A)" step="0.1" class="w-full p-2 border border-gray-300 rounded-lg text-xs">
-      <button onclick="sendCurrentLimit(4109, 'valReg4109')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-2 rounded-lg">Simpan Arus 1</button>
+      <button onclick="sendCurrentLimit(4109, 'valReg4109')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-2 rounded-lg">OK</button>
     </div>
   </div>
 
@@ -324,7 +324,7 @@
     <div class="text-xs font-bold text-gray-700 uppercase mb-2">BATAS ARUS DISCHARGE</div>
     <div class="grid grid-cols-2 gap-2">
       <input type="number" id="valReg4123" placeholder="Contoh: 15.0 (A)" step="0.1" class="w-full p-2 border border-gray-300 rounded-lg text-xs">
-      <button onclick="sendCurrentLimit(4123, 'valReg4123')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-2 rounded-lg">Simpan Arus 2</button>
+      <button onclick="sendCurrentLimit(4123, 'valReg4123')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-2 rounded-lg">OK</button>
     </div>
   </div>
 </div>
