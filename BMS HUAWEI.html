@@ -1397,7 +1397,7 @@ document.addEventListener("DOMContentLoaded", function() {
           if (topic === statusTopic) {
             try {
               const res = JSON.parse(message.toString());
-              showSettingStatus(res.ok, (res.ok ? "✅ " : "❌ ") + res.msg);
+              showSettingStatus(res.ok, (res.ok ? "✅ " : "❌ ") + res.msg.replace(/\s*\(Reg\s*\d+\)/gi, ""));
             } catch (e) {}
           }
         });
