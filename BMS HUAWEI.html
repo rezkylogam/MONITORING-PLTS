@@ -248,7 +248,7 @@
 </div>
 <!-- Modal Setting BMS -->
 <div id="bmsSettingModal" class="fixed inset-0 bg-black/60 flex items-center justify-center hidden z-50 p-4">
-  <div class="bg-white text-gray-800 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-16 relative">
+  <div class="bg-white text-gray-800 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-20 relative">
     <button id="closeBmsSetting" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl font-bold">✖</button>
     <h2 class="text-xl font-bold mb-1 text-gray-900">⚙️ Pengaturan BMS Online</h2>
     <p class="text-xs text-gray-500 mb-4">Kirim perintah konfigurasi langsung ke BMS Huawei via ESP32 & RS485.</p>
@@ -314,7 +314,7 @@
   <div class="p-3 rounded-lg border border-gray-200">
     <div class="text-xs font-bold text-gray-700 uppercase mb-2">2. BATAS ARUS CHARGE</div>
     <div class="grid grid-cols-2 gap-2">
-      <input type="number" id="valReg4109" placeholder="Contoh: 15.0 (A)" step="0.1" class="w-full p-2 border border-gray-300 rounded-lg text-xs">
+      <input type="number" id="valReg4109" placeholder="Contoh : 15.0 (A)" step="0.1" class="w-full p-2 border border-gray-300 rounded-lg text-xs">
       <button onclick="sendCurrentLimit(4109, 'valReg4109')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-2 rounded-lg">OK</button>
     </div>
   </div>
@@ -323,7 +323,7 @@
   <div class="p-3 rounded-lg border border-gray-200">
     <div class="text-xs font-bold text-gray-700 uppercase mb-2">BATAS ARUS DISCHARGE</div>
     <div class="grid grid-cols-2 gap-2">
-      <input type="number" id="valReg4123" placeholder="Contoh:15.0(A)" step="0.1" class="w-full p-2 border border-gray-300 rounded-lg text-xs">
+      <input type="number" id="valReg4123" placeholder="Contoh : 15.0 (A)" step="0.1" class="w-full p-2 border border-gray-300 rounded-lg text-xs">
       <button onclick="sendCurrentLimit(4123, 'valReg4123')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-2 rounded-lg">OK</button>
     </div>
   </div>
