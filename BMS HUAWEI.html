@@ -248,23 +248,23 @@
 </div>
 <!-- Modal Setting BMS -->
 <div id="bmsSettingModal" class="fixed inset-0 bg-black/60 flex items-center justify-center hidden z-50 p-4">
-    <div class="bg-white text-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl min-h-[85vh] max-h-[95vh] flex flex-col justify-between overflow-y-auto p-8 relative">
-    <button id="closeBmsSetting" class="absolute top-5 right-6 text-gray-500 hover:text-gray-800 text-2xl font-bold">✕</button>
+      <div class="bg-white text-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[92vh] overflow-y-auto p-5 sm:p-8 relative">
+    <button id="closeBmsSetting" class="absolute top-4 right-5 text-gray-500 hover:text-gray-800 text-2xl font-bold">✕</button>
 
     <!-- Header Modal -->
-    <div class="mb-4">
-      <h2 class="text-2xl font-bold mb-1 text-gray-900">⚙️ Pengaturan BMS Online</h2>
-      <p class="text-sm text-gray-500">Kirim perintah konfigurasi langsung ke BMS Huawei via ESP32 & RS485.</p>
+    <div class="mb-4 pr-6">
+      <h2 class="text-xl sm:text-2xl font-bold mb-1 text-gray-900">⚙️ Pengaturan BMS Online</h2>
+      <p class="text-xs sm:text-sm text-gray-500">Kirim perintah konfigurasi langsung ke BMS Huawei via ESP32 & RS485.</p>
     </div>
 
     <!-- Notifikasi Status dari ESP32 -->
-    <div id="settingFeedbackBox" class="hidden mb-4 p-4 rounded-xl text-base font-semibold"></div>
+    <div id="settingFeedbackBox" class="hidden mb-4 p-3.5 rounded-xl text-sm sm:text-base font-semibold"></div>
 
     <!-- Target Baterai & PIN Keamanan -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 bg-gray-50 p-5 rounded-xl border border-gray-200">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 bg-gray-50 p-4 sm:p-5 rounded-xl border border-gray-200">
       <div>
-        <label class="block text-sm font-bold text-gray-700 mb-2">Target Unit Baterai</label>
-        <select id="setTargetAddr" class="w-full p-3.5 border border-gray-300 rounded-xl text-base bg-white">
+        <label class="block text-sm font-bold text-gray-700 mb-1.5">Target Unit Baterai</label>
+        <select id="setTargetAddr" class="w-full p-3 border border-gray-300 rounded-xl text-base bg-white">
           <option value="0">Semua Baterai Online</option>
           <option value="214">HUAWEI #214</option>
           <option value="215">HUAWEI #215</option>
@@ -285,60 +285,63 @@
         </select>
       </div>
       <div>
-        <label class="block text-sm font-bold text-gray-700 mb-2">PIN Keamanan</label>
-        <input type="password" id="setSecurityPin" placeholder="Masukkan PIN" class="w-full p-3.5 border border-gray-300 rounded-xl text-base bg-white">
+        <label class="block text-sm font-bold text-gray-700 mb-1.5">PIN Keamanan</label>
+        <input type="password" id="setSecurityPin" placeholder="Masukkan PIN" class="w-full p-3 border border-gray-300 rounded-xl text-base bg-white">
       </div>
     </div>
 
     <!-- 1. Kontrol Saklar & Kontrol Reset (2 Kotak Terpisah) -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-4">
       <!-- Kotak Kiri: 1. Kontrol Saklar -->
-      <div class="p-5 rounded-xl border border-gray-200 bg-white shadow-sm">
-        <div class="text-sm font-bold text-gray-700 uppercase mb-3">1. KONTROL SAKLAR</div>
+      <div class="p-4 sm:p-5 rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div class="text-sm font-bold text-gray-700 uppercase mb-2.5">1. KONTROL SAKLAR</div>
         <div class="grid grid-cols-2 gap-3">
-          <button onclick="sendBmsCommand(4377, 1)" class="bg-green-600 hover:bg-green-700 text-white text-base font-bold py-3.5 px-4 rounded-xl">ON</button>
-          <button onclick="sendBmsCommand(4377, 0)" class="bg-red-600 hover:bg-red-700 text-white text-base font-bold py-3.5 px-4 rounded-xl">OFF</button>
+          <button onclick="sendBmsCommand(4377, 1)" class="bg-green-600 hover:bg-green-700 text-white text-base font-bold py-3 px-4 rounded-xl">ON</button>
+          <button onclick="sendBmsCommand(4377, 0)" class="bg-red-600 hover:bg-red-700 text-white text-base font-bold py-3 px-4 rounded-xl">OFF</button>
         </div>
       </div>
 
       <!-- Kotak Kanan: Kontrol Reset -->
-      <div class="p-5 rounded-xl border border-gray-200 bg-white shadow-sm">
-        <div class="text-sm font-bold text-gray-700 uppercase mb-3">KONTROL RESET</div>
+      <div class="p-4 sm:p-5 rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div class="text-sm font-bold text-gray-700 uppercase mb-2.5">KONTROL RESET</div>
         <div class="grid grid-cols-2 gap-3">
-          <button onclick="sendBmsCommand(4376, 1)" class="bg-blue-600 hover:bg-blue-700 text-white text-base font-bold py-3.5 px-4 rounded-xl">Reset</button>
-          <button onclick="sendBmsCommand(4376, 0)" class="bg-gray-600 hover:bg-gray-700 text-white text-base font-bold py-3.5 px-4 rounded-xl">OFF</button>
+          <button onclick="sendBmsCommand(4376, 1)" class="bg-blue-600 hover:bg-blue-700 text-white text-base font-bold py-3 px-4 rounded-xl">Reset</button>
+          <button onclick="sendBmsCommand(4376, 0)" class="bg-gray-600 hover:bg-gray-700 text-white text-base font-bold py-3 px-4 rounded-xl">OFF</button>
         </div>
       </div>
     </div>
 
     <!-- 2. Batas Arus Charge & Batas Arus Discharge (2 Kotak Terpisah) -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-4">
       <!-- Kotak Kiri: Batas Arus Charge -->
-      <div class="p-5 rounded-xl border border-gray-200 bg-white shadow-sm">
-        <div class="text-sm font-bold text-gray-700 uppercase mb-3">2. BATAS ARUS CHARGE</div>
+      <div class="p-4 sm:p-5 rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div class="text-sm font-bold text-gray-700 uppercase mb-2.5">2. BATAS ARUS CHARGE</div>
         <div class="grid grid-cols-2 gap-3">
-          <input type="number" id="valReg4109" placeholder="Contoh: 15.0 (A)" step="0.1" class="w-full p-3.5 border border-gray-300 rounded-xl text-base">
-          <button onclick="sendCurrentLimit(4109, 'valReg4109')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-base font-bold py-3.5 px-4 rounded-xl">OK</button>
+          <input type="number" id="valReg4109" placeholder="15.0 (A)" step="0.1" class="w-full p-3 border border-gray-300 rounded-xl text-base">
+          <button onclick="sendCurrentLimit(4109, 'valReg4109')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-base font-bold py-3 px-4 rounded-xl">OK</button>
         </div>
       </div>
 
       <!-- Kotak Kanan: Batas Arus Discharge -->
-      <div class="p-5 rounded-xl border border-gray-200 bg-white shadow-sm">
-        <div class="text-sm font-bold text-gray-700 uppercase mb-3">BATAS ARUS DISCHARGE</div>
+      <div class="p-4 sm:p-5 rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div class="text-sm font-bold text-gray-700 uppercase mb-2.5">BATAS ARUS DISCHARGE</div>
         <div class="grid grid-cols-2 gap-3">
-          <input type="number" id="valReg4123" placeholder="Contoh: 15.0 (A)" step="0.1" class="w-full p-3.5 border border-gray-300 rounded-xl text-base">
-          <button onclick="sendCurrentLimit(4123, 'valReg4123')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-base font-bold py-3.5 px-4 rounded-xl">OK</button>
+          <input type="number" id="valReg4123" placeholder="15.0 (A)" step="0.1" class="w-full p-3 border border-gray-300 rounded-xl text-base">
+          <button onclick="sendCurrentLimit(4123, 'valReg4123')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-base font-bold py-3 px-4 rounded-xl">OK</button>
         </div>
       </div>
     </div>
 
     <!-- 3. Mode Teknisi (Custom Register Write) -->
-    <div class="p-5 rounded-xl border border-gray-200 bg-gray-50 shadow-sm">
-      <div class="text-sm font-bold text-gray-700 uppercase mb-3">3. Custom Register (Mode Teknisi)</div>
+    <div class="p-4 sm:p-5 rounded-xl border border-gray-200 bg-gray-50 shadow-sm">
+      <div class="text-sm font-bold text-gray-700 uppercase mb-2.5">3. Custom Register (Mode Teknisi)</div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <input type="number" id="customRegAddr" placeholder="No. Register" class="w-full p-3.5 border border-gray-300 rounded-xl text-base bg-white">
-        <input type="number" id="customRegVal" placeholder="Nilai (Value)" class="w-full p-3.5 border border-gray-300 rounded-xl text-base bg-white">
-        <button onclick="sendCustomRegister()" class="w-full bg-gray-800 hover:bg-black text-white text-base font-bold py-3.5 px-4 rounded-xl">Kirim</button>
+        <input type="number" id="customRegAddr" placeholder="No. Register" class="w-full p-3 border border-gray-300 rounded-xl text-base bg-white">
+        <input type="number" id="customRegVal" placeholder="Nilai (Value)" class="w-full p-3 border border-gray-300 rounded-xl text-base bg-white">
+        <button onclick="sendCustomRegister()" class="w-full bg-gray-800 hover:bg-black text-white text-base font-bold py-3 px-4 rounded-xl">Kirim</button>
+      </div>
+    </div>
+  </div>
       </div>
     </div>
   </div>
