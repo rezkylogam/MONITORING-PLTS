@@ -287,36 +287,44 @@
       </div>
     </div>
 
-    <!-- 1. Kontrol Saklar MOSFET (Reg 4377 & 4376) -->
-    <div class="mb-4 p-3 rounded-lg border border-gray-200">
-  <div class="text-xs font-bold text-gray-700 uppercase mb-2">1. Kontrol Saklar & Reset</div>
-  <div class="grid grid-cols-2 gap-3">
-    <!-- Kolom Kiri: Saklar 1 -->
-    <div class="flex flex-col gap-2">
-      <button onclick="sendBmsCommand(4377, 1)" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 px-3 rounded-lg">Saklar 1 ON</button>
-      <button onclick="sendBmsCommand(4377, 0)" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 px-3 rounded-lg">Saklar 1 OFF</button>
+    <!-- 1. Kontrol Saklar & Kontrol Reset (2 Kotak Terpisah) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+  <!-- Kotak Kiri: 1. Kontrol Saklar -->
+  <div class="p-3 rounded-lg border border-gray-200">
+    <div class="text-xs font-bold text-gray-700 uppercase mb-2">1. KONTROL SAKLAR</div>
+    <div class="grid grid-cols-2 gap-2">
+      <button onclick="sendBmsCommand(4377, 1)" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 px-2 rounded-lg">Saklar 1 ON</button>
+      <button onclick="sendBmsCommand(4377, 0)" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 px-2 rounded-lg">Saklar 1 OFF</button>
     </div>
-    <!-- Kolom Kanan: Kontrol 2 / Reset -->
-    <div class="flex flex-col gap-2">
-      <button onclick="sendBmsCommand(4376, 1)" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-3 rounded-lg">Kontrol 2 / Reset</button>
-      <button onclick="sendBmsCommand(4376, 0)" class="bg-gray-600 hover:bg-gray-700 text-white text-xs font-bold py-2 px-3 rounded-lg">Kontrol 2 OFF</button>
+  </div>
+
+  <!-- Kotak Kanan: Kontrol Reset -->
+  <div class="p-3 rounded-lg border border-gray-200">
+    <div class="text-xs font-bold text-gray-700 uppercase mb-2">KONTROL RESET</div>
+    <div class="grid grid-cols-2 gap-2">
+      <button onclick="sendBmsCommand(4376, 1)" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-2 rounded-lg">Saklar 2 / Reset</button>
+      <button onclick="sendBmsCommand(4376, 0)" class="bg-gray-600 hover:bg-gray-700 text-white text-xs font-bold py-2 px-2 rounded-lg">Saklar 2 OFF</button>
     </div>
   </div>
 </div>
 
-<!-- 2. Pengaturan Batas Arus (Reg 4109 & 4123) -->
-<div class="mb-4 p-3 rounded-lg border border-gray-200">
-  <div class="text-xs font-bold text-gray-700 uppercase mb-2">2. Batas Arus Charge / Discharge</div>
-  <div class="grid grid-cols-2 gap-3">
-    <!-- Kolom Kiri: Arus 1 -->
-    <div class="flex flex-col gap-2">
-      <input type="number" id="valReg4109" placeholder="Contoh: 15.0 (Ampere)" step="0.1" class="w-full p-2 border border-gray-300 rounded-lg text-xs">
-      <button onclick="sendCurrentLimit(4109, 'valReg4109')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-3 rounded-lg">Simpan Arus 1</button>
+<!-- 2. Batas Arus Charge & Batas Arus Discharge (2 Kotak Terpisah) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+  <!-- Kotak Kiri: Batas Arus Charge -->
+  <div class="p-3 rounded-lg border border-gray-200">
+    <div class="text-xs font-bold text-gray-700 uppercase mb-2">2. BATAS ARUS CHARGE</div>
+    <div class="grid grid-cols-2 gap-2">
+      <input type="number" id="valReg4109" placeholder="Contoh: 15.0 (A)" step="0.1" class="w-full p-2 border border-gray-300 rounded-lg text-xs">
+      <button onclick="sendCurrentLimit(4109, 'valReg4109')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-2 rounded-lg">Simpan Arus 1</button>
     </div>
-    <!-- Kolom Kanan: Arus 2 -->
-    <div class="flex flex-col gap-2">
-      <input type="number" id="valReg4123" placeholder="Contoh: 15.0 (Ampere)" step="0.1" class="w-full p-2 border border-gray-300 rounded-lg text-xs">
-      <button onclick="sendCurrentLimit(4123, 'valReg4123')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-3 rounded-lg">Simpan Arus 2</button>
+  </div>
+
+  <!-- Kotak Kanan: Batas Arus Discharge -->
+  <div class="p-3 rounded-lg border border-gray-200">
+    <div class="text-xs font-bold text-gray-700 uppercase mb-2">BATAS ARUS DISCHARGE</div>
+    <div class="grid grid-cols-2 gap-2">
+      <input type="number" id="valReg4123" placeholder="Contoh: 15.0 (A)" step="0.1" class="w-full p-2 border border-gray-300 rounded-lg text-xs">
+      <button onclick="sendCurrentLimit(4123, 'valReg4123')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-2 rounded-lg">Simpan Arus 2</button>
     </div>
   </div>
 </div>
